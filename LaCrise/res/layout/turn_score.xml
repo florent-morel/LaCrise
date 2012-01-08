@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dip" >
+
+    <TextView
+        android:id="@+id/turn_score_player_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:text="@string/turn_score_player" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <EditText
+            android:id="@+id/turn_score_field"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/turn_score_hint"
+            android:inputType="number" >
+
+            <requestFocus />
+        </EditText>
+
+        <CheckBox
+            android:id="@+id/turn_score_box_white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/turn_score_white_text" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dip" >
+
+        <TextView
+            android:id="@+id/turn_score_target_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dip" />
+
+        <TextView
+            android:id="@+id/turn_score_warning"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dip"
+            android:text="@string/turn_score_player_warning"
+            android:textColor="#FF0000"
+            android:textSize="30dip" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/submit_turn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:text="@string/submit_turn_score" />
+
+</LinearLayout>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="10dip"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/turn_score_target_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:text="@string/turn_target"
+    />
+
+    <TextView
+        android:id="@+id/turn_score_warning"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:text="@string/turn_score_player_warning"
+    />
+
+
+</LinearLayout>

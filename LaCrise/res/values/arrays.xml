@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <!-- Used in activity/create/NewGame.java -->
+    <integer-array name="warmUp">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </integer-array>
+</resources>

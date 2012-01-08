@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dip" >
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:text="@string/player_name" />
+
+    <EditText
+        android:id="@+id/name_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/give_name_player"
+        android:singleLine="true" />
+
+    <Button
+        android:id="@+id/rename"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/rename_player" />
+
+</LinearLayout>

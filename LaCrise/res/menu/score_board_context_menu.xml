@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/rename"
+          android:title="@string/rename_player" />
+    <item android:id="@+id/turn_history_id"
+          android:title="@string/turn_history" />
+</menu>

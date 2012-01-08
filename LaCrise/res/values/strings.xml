@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Nervous breakdown</string>
+    <string name="app_name">LaCrise</string>
+    <string name="menu_new">New game</string>
+    <string name="menu_new_debug">New game (debug)</string>
+    <string name="menu_new_quick">New quick game</string>
+    <string name="menu_continue">Continue current game</string>
+    <string name="menu_launch">Launch game</string>
+    <string name="menu_back_game">Back to game</string>
+    <string name="menu_rename_players">Rename players</string>
+    <string name="menu_turn_history">Turn history</string>
+    
+    <string name="create_game">Create game</string>
+    <string name="number_player">Number of players</string>
+    <string name="default_number_player">3</string>
+    
+    <string name="player_name">Player name</string>
+    <string name="player_name_default">Player #</string>
+    <string name="no_player">No player found</string>
+    <string name="no_score">No score yet</string>
+    
+    <string name="score">Score</string>
+    <string name="board_game">Board game</string>
+    <string name="rename_player">Rename player</string>
+    <string name="give_name_player">Player name</string>
+    <string name="score_to_reach">Target score</string>
+    <string name="number_of_warmups">Number of warm-up rounds</string>
+    <string name="default_score_to_reach">5000</string>
+    <string name="default_warm_up_rounds">3</string>
+    
+    <string name="score_board">Round %1$d, total to reach: %2$d</string>
+    <string name="player_rank">%1$d</string>
+    <string name="second_line_player_warmup">Still in warm-up (%1$d).</string>
+    <string name="second_line_player_zero">zero!</string>
+    <string name="second_line_player_last_turn">Last turn score (turn id): %1$d (%2$d)</string>
+    
+    <string name="dialog_welcome">Number of warm-up rounds: %1$d</string>
+    <string name="dialog_game_over">Game over!</string>
+    <string name="dialog_game_really_over">Game is over dude.</string>
+    <string name="dialog_total_reached">Total reached, ending round.</string>
+    
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_player_new_score">"%1$s's new score: %2$s"</string>
+    <string name="dialog_penalty">Penalty applied!</string>
+    <string name="penalty_reason_own">Got 2 zeros.</string>
+    <string name="penalty_reason_other">"%1$s landed on %2$s"</string>
+    <string name="dialog_next_player">"Next player: %1$s"</string>
+    <string name="dialog_winner_is">"%1$s wins the game!"</string>
+    
+    
+    <string name="turn_score_title">Turn # %1$d. %2$s to play.</string>
+    <string name="turn_score">Turn score</string>
+    <string name="turn_score_hint">Turn score</string>
+    <string name="turn_score_invalid">Turn score must be an even multiple of 50.</string>
+    <string name="turn_score_player">Player %1$s, current score: %2$s</string>
+    <string name="turn_score_white_text">White</string>
+    <string name="turn_score_player_warning">You have a zero!</string>
+    <string name="default_turn_score">1000</string>
+    <string name="turn_target">Your target(s) for this turn: </string>
+    <string name="target_your_score">Your score: %1$s</string>
+    <string name="target_player">%1$s: %2$s</string>
+    <string name="submit_turn_score">Validate</string>
+    
+    
+    <string name="turn_history">Turn history</string>
+    <string name="turn_history_title">Player %1$s, turn history.</string>
+    <string name="turn_history_id">%1$d</string>
+    <string name="turn_history_first_line">Turn score: %1$d</string>
+    <string name="turn_history_second_line">white</string>
+    
+    <string name="welcome_messages">Hello, %1$s! You have %2$d new messages.</string>
+    
+</resources>
