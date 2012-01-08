@@ -86,6 +86,18 @@ public class GameBoard extends ListActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, LAUNCH_ID, 0, R.string.menu_launch);
+
+		// FIXME this code is dupe with LaCrise
+		if (mGameManager.getGame().getPlayerList() != null) {
+			// A game is ongoing, add menu to continue
+			if (menu.findItem(Constants.GAME_CONTINUE) == null) {
+				menu.add(0, Constants.GAME_CONTINUE, 1, R.string.menu_continue);
+			}
+		} else {
+			if (menu.findItem(Constants.GAME_CONTINUE) != null) {
+				menu.removeItem(Constants.GAME_CONTINUE);
+			}
+		}
 		return true;
 	}
 
