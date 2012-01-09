@@ -33,6 +33,7 @@ public class GameManager {
 
 	private Player mCurrentPlayer;
 
+	// TODO should create Rounds and store them in the Game.
 	private int mRoundNumbers = 0;
 
 	private GameManager() {
