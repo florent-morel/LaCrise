@@ -33,6 +33,11 @@
     <string name="number_of_warmups">Number of warm-up rounds</string>
     <string name="default_score_to_reach">5000</string>
     <string name="default_warm_up_rounds">3</string>
+    
+    <string name="add_player">Add player</string>
+    <string name="add_player_confirm">Player %1$s added to game.</string>
+    <string name="add_player_name_invalid">Cannot pick this name.</string>
+    <string name="add_player_score_invalid">Player score must be an even multiple of 50.</string>
 
     <string name="score_board">Round %1$d, total to reach: %2$d</string>
     <string name="player_rank">%1$d</string>

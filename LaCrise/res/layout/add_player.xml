@@ -14,12 +14,12 @@
 
     <EditText
         android:id="@+id/newPlayerName"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/give_name_player" />
+        android:hint="@string/give_name_player" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dip"
         android:text="@string/player_score" />
@@ -29,25 +29,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="number"
-        android:text="@string/player_score" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dip"
-        android:text="@string/number_of_warmups" />
-
-    <EditText
-        android:id="@+id/warmUpRounds"
-        android:layout_width="94dp"
-        android:layout_height="wrap_content"
-        android:text="@string/default_warm_up_rounds" 
-        android:inputType="number" />
+        android:hint="@string/player_score" />
 
     <Button
         android:id="@+id/create"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/create_game" />
+        android:text="@string/add_player" />
 
 </LinearLayout>

@@ -69,11 +69,11 @@ public class AddPlayer extends Activity implements OnClickListener {
 			newPlayer.getPlayerScore().setTotal(Integer.valueOf(playerScore));
 			mGameManager.getGame().addPlayerToList(newPlayer);
 
-			Toast toast = Toast.makeText(this,
-					mResources.getString(R.string.turn_score_invalid),
-					Toast.LENGTH_SHORT);
+			Toast toast = Toast.makeText(this, String.format(
+					mResources.getString(R.string.add_player_confirm),
+					playerName), Toast.LENGTH_SHORT);
 			toast.show();
-			
+
 			this.setResult(Constants.ACTIVITY_SUCCESS);
 			finish();
 		}
@@ -88,7 +88,7 @@ public class AddPlayer extends Activity implements OnClickListener {
 		} else {
 			// Wrong input, reject
 			Toast toast = Toast.makeText(this,
-					mResources.getString(R.string.turn_score_invalid),
+					mResources.getString(R.string.add_player_name_invalid),
 					Toast.LENGTH_SHORT);
 			toast.show();
 		}
@@ -103,7 +103,7 @@ public class AddPlayer extends Activity implements OnClickListener {
 		} else {
 			// Wrong input, reject
 			Toast toast = Toast.makeText(this,
-					mResources.getString(R.string.turn_score_invalid),
+					mResources.getString(R.string.add_player_score_invalid),
 					Toast.LENGTH_SHORT);
 			toast.show();
 		}
