@@ -16,9 +16,11 @@
         android:id="@+id/newPlayerName"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/give_name_player" />
+        android:hint="@string/give_name_player"
+        android:singleLine="true" />
 
     <TextView
+        android:id="@+id/newScoreText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dip"

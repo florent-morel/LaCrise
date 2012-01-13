@@ -35,6 +35,7 @@
     <string name="default_warm_up_rounds">3</string>
     
     <string name="add_player">Add player</string>
+    <string name="add_player_no_score_text">Player will start with no score.</string>
     <string name="add_player_confirm">Player %1$s added to game.</string>
     <string name="add_player_name_invalid">Cannot pick this name.</string>
     <string name="add_player_score_invalid">Player score must be an even multiple of 50.</string>
@@ -80,6 +81,8 @@
     <string name="turn_history_second_line">white</string>
 
     <string name="game_options">Game options</string>
+    <string name="dialog_options_score_invalid">New score must be superior to %1$d</string>
+    <string name="new_total_confirm">New total to reach: %1$s</string>
     <string name="submit_options">Validate</string>
 
 

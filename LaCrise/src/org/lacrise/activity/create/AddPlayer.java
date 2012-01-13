@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -43,6 +44,11 @@ public class AddPlayer extends Activity implements OnClickListener {
 		mName = (EditText) findViewById(R.id.newPlayerName);
 
 		mScore = (EditText) findViewById(R.id.newScore);
+		if (!mGameManager.getGame().allPlayerStarted()) {
+			TextView scoreText = (TextView) findViewById(R.id.newScoreText);
+			scoreText.setText(R.string.add_player_no_score_text);
+			mScore.setVisibility(View.GONE);
+		}
 
 		Button button = (Button) findViewById(R.id.create);
 		button.setOnClickListener(this);
@@ -66,7 +72,15 @@ public class AddPlayer extends Activity implements OnClickListener {
 			Player newPlayer = new Player(mGameManager.getGame()
 					.getPlayerList().size());
 			newPlayer.setName(playerName);
-			newPlayer.getPlayerScore().setTotal(Integer.valueOf(playerScore));
+
+			if (mGameManager.getGame().allPlayerStarted()) {
+				// Set given score to player
+				newPlayer.getPlayerScore().setTotal(
+						Integer.valueOf(playerScore));
+				// No Warm-up in case all player already started
+				newPlayer.setHasStarted();
+			}
+
 			mGameManager.getGame().addPlayerToList(newPlayer);
 
 			Toast toast = Toast.makeText(this, String.format(
@@ -125,7 +139,7 @@ public class AddPlayer extends Activity implements OnClickListener {
 
 		if (mGameManager.isTurnScoreValid(score)) {
 			Integer newPlayerScore = Integer.valueOf(score);
-			if (newPlayerScore > 0 && !this.isExistingScore(newPlayerScore)) {
+			if (!this.isExistingScore(newPlayerScore)) {
 				isValid = true;
 			}
 		}
