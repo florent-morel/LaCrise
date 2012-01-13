@@ -30,8 +30,6 @@ public class EnterTurnScore extends Activity implements OnClickListener {
 	private EditText mTurnScoreField;
 
 	private CheckBox mBoxWhite;
-	
-	public static Pattern mScorePattern = Pattern.compile("[0-9]{1,5}");
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,14 +39,11 @@ public class EnterTurnScore extends Activity implements OnClickListener {
 
 		setContentView(R.layout.turn_score);
 
-		setTitle(String.format(mResources
-				.getString(R.string.turn_score_title), mGameManager
-				.getGame().getRoundNumber(), mGameManager
-				.getCurrentPlayer().getName()));
+		setTitle(String.format(mResources.getString(R.string.turn_score_title),
+				mGameManager.getGame().getRoundNumber(), mGameManager
+						.getCurrentPlayer().getName()));
 
 		createTurnTargetLayout();
-
-		mTurnScoreField = (EditText) findViewById(R.id.turn_score_field);
 
 		Button button = (Button) findViewById(R.id.submit_turn);
 		button.setOnClickListener(this);
@@ -57,18 +52,26 @@ public class EnterTurnScore extends Activity implements OnClickListener {
 
 	private void createTurnTargetLayout() {
 
-		String playerScore;
-		if(mGameManager.getCurrentPlayer().getPlayerScore().getTotal() == null) {
-			playerScore = mResources.getString(R.string.no_score);
-		}
-		else {
-			playerScore = mGameManager.getCurrentPlayer().getPlayerScore().getTotal().toString();
+		Integer gap;
+		Player currentPlayer = mGameManager.getCurrentPlayer();
+		if (currentPlayer.getPlayerScore().getTotal() == null) {
+			gap = mGameManager.getGame().getScoreToReach();
+		} else {
+			gap = mGameManager.getGame().getScoreToReach()
+					- currentPlayer.getPlayerScore().getTotal();
 		}
 
 		TextView turnDialog = (TextView) findViewById(R.id.turn_score_player_text);
-		turnDialog.setText(String.format(mResources
-				.getString(R.string.turn_score_player), mGameManager
-				.getCurrentPlayer().getName(), playerScore));
+		turnDialog.setText(String.format(
+				mResources.getString(R.string.turn_score_player),
+				currentPlayer.getName(), gap.toString()));
+
+		mTurnScoreField = (EditText) findViewById(R.id.turn_score_field);
+		
+		if (!currentPlayer.hasStarted()) {
+			mTurnScoreField.setHint(mResources
+					.getString(R.string.turn_score_hint_warmup));
+		}
 
 		TextView targetDialog = (TextView) findViewById(R.id.turn_score_target_text);
 
@@ -77,7 +80,7 @@ public class EnterTurnScore extends Activity implements OnClickListener {
 
 		// Fill the gap target view
 		Map<Integer, Player> playersGap = mGameManager
-				.getPlayersGap(mGameManager.getCurrentPlayer());
+				.getPlayersGap(currentPlayer);
 		if (playersGap != null && !playersGap.isEmpty()) {
 			StringBuilder targetString = new StringBuilder(
 					mResources.getString(R.string.turn_target));
@@ -87,12 +90,11 @@ public class EnterTurnScore extends Activity implements OnClickListener {
 				Integer delta = e.getKey();
 				Player player = e.getValue();
 
-				if (player.getId().equals(
-						mGameManager.getCurrentPlayer().getId())) {
+				if (player.getId().equals(currentPlayer.getId())) {
 					String playerScoreText;
-					if (mGameManager.getCurrentPlayer().getTotalScore() != null) {
-						playerScoreText = mGameManager.getCurrentPlayer()
-								.getTotalScore().toString();
+					if (currentPlayer.getTotalScore() != null) {
+						playerScoreText = currentPlayer.getTotalScore()
+								.toString();
 					} else {
 						playerScoreText = mResources
 								.getString(R.string.no_score);
@@ -116,10 +118,9 @@ public class EnterTurnScore extends Activity implements OnClickListener {
 
 		// Display warning in case player risks penalty
 		TextView warningDialog = (TextView) findViewById(R.id.turn_score_warning);
-		if (!mGameManager.getCurrentPlayer().getPlayerScore().hasZero()) {
-			// TODO remove the TextView in case no zero
+		if (!currentPlayer.getPlayerScore().hasZero()) {
+			// Remove the TextView in case no zero
 			warningDialog.setVisibility(View.GONE);
-//			this.dismissDialog(warningDialog.getId());
 		}
 	}
 
@@ -128,31 +129,12 @@ public class EnterTurnScore extends Activity implements OnClickListener {
 				.toString()));
 	}
 
-	private boolean isTurnScoreValid() {
-		boolean isValid;
-		
-		Matcher m = mScorePattern.matcher(mTurnScoreField.getText().toString());
-		isValid = m.matches();
-		
-		if(isValid) {
-			Integer turnScore = Integer.valueOf(mTurnScoreField.getText().toString());
-			if(!Constants.ZERO_VALUE.equals(turnScore)) {
-				// If not a zero, check that is x*50
-				int modulo = turnScore % 50;
-				if (modulo != 0) {
-					isValid = false;
-				}
-			}
-		}
-		
-		return isValid;
-	}
-
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.submit_turn:
-			if (isTurnScoreValid()) {
+			if (mGameManager.isTurnScoreValid(mTurnScoreField.getText()
+					.toString())) {
 				// Valid score, process
 				Turn mPlayedTurn = this.submitTurnScore();
 				if (mBoxWhite.isChecked()) {

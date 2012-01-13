@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.lacrise.engine.Constants;
 import org.lacrise.engine.game.Game;
@@ -35,6 +37,8 @@ public class GameManager {
 
 	// TODO should create Rounds and store them in the Game.
 	private int mRoundNumbers = 0;
+	
+	public static Pattern mScorePattern = Pattern.compile("[0-9]{1,5}");
 
 	private GameManager() {
 		if (mGame == null) {
@@ -233,6 +237,36 @@ public class GameManager {
 		mCurrentTurn.setTurnResultCode(result);
 
 		return mCurrentTurn;
+	}
+
+	/**
+	 * Check if a score is valid (Integer multiple of 50).
+	 * 
+	 * @param score
+	 * @return
+	 */
+	public boolean isTurnScoreValid(String score) {
+		boolean isValid = false;
+
+		if (score != null) {
+
+			Matcher m = mScorePattern.matcher(score);
+			isValid = m.matches();
+
+			if (isValid) {
+				Integer playerScore = Integer.valueOf(score);
+				if (!Constants.ZERO_VALUE.equals(playerScore)) {
+					// If not a zero, check that is x*50
+					int modulo = playerScore % 50;
+					if (modulo != 0) {
+						isValid = false;
+					}
+				}
+			}
+
+		}
+
+		return isValid;
 	}
 
 	/**

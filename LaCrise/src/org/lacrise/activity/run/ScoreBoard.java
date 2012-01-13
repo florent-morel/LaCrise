@@ -4,6 +4,7 @@ import java.util.SortedSet;
 
 import org.lacrise.GameManager;
 import org.lacrise.R;
+import org.lacrise.activity.create.AddPlayer;
 import org.lacrise.activity.create.RenamePlayer;
 import org.lacrise.adapter.PlayerScoreAdapter;
 import org.lacrise.engine.Constants;
@@ -20,6 +21,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -66,6 +68,39 @@ public class ScoreBoard extends Activity {
 			}
 		});
 
+	}
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    super.onCreateOptionsMenu(menu);
+    menu.add(0, Constants.MENU_GAME_OPTIONS, 0, R.string.menu_game_options);
+    menu.add(0, Constants.MENU_ADD_PLAYER, 0, R.string.menu_add_player);
+
+    return true;
+  }
+
+	@Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		switch (item.getItemId()) {
+		case Constants.MENU_GAME_OPTIONS:
+			launchGameOptions();
+			return true;
+		case Constants.MENU_ADD_PLAYER:
+			launchAddPlayer();
+			return true;
+		}
+
+		return super.onMenuItemSelected(featureId, item);
+	}
+
+	private void launchGameOptions() {
+		Intent intent = new Intent(this, GameOptions.class);
+		startActivityForResult(intent, Constants.ACTIVITY_LAUNCH);
+	}
+
+	private void launchAddPlayer() {
+		Intent intent = new Intent(this, AddPlayer.class);
+		startActivityForResult(intent, Constants.ACTIVITY_LAUNCH);
 	}
 
 	/**
@@ -129,7 +164,7 @@ public class ScoreBoard extends Activity {
 
 	/**
 	 * Refresh the score board player list.
-	 * 
+	 *
 	 * @param descending
 	 */
 	private void refreshList() {
@@ -189,7 +224,7 @@ public class ScoreBoard extends Activity {
 			// Create the dialog
 			createAlert(message.toString());
 		}
-		
+
 		refreshList();
 	}
 

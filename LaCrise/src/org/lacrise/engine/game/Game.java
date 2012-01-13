@@ -80,6 +80,10 @@ public class Game {
 		return mPlayerList;
 	}
 
+	public void addPlayerToList(Player player) {
+		this.mPlayerList.add(player);
+	}
+
 	public void setPlayerList(List<Player> playerList) {
 		this.mPlayerList = playerList;
 	}
