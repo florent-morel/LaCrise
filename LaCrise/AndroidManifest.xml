@@ -42,6 +42,10 @@
             android:name=".activity.run.TurnHistory"
             android:label="@string/turn_history" >
         </activity>
+        <activity
+            android:name=".activity.run.GameOptions"
+            android:label="@string/game_options" >
+        </activity>
     </application>
 
 </manifest>

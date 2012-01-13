@@ -72,6 +72,8 @@
     <string name="turn_history_first_line">Turn score: %1$d</string>
     <string name="turn_history_second_line">white</string>
 
-    <string name="welcome_messages">Hello, %1$s! You have %2$d new messages.</string>
+    <string name="game_options">Game options</string>
+    <string name="submit_options">Validate</string>
+
 
 </resources>

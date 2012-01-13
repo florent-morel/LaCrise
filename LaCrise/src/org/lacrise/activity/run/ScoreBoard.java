@@ -20,6 +20,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -67,6 +68,14 @@ public class ScoreBoard extends Activity {
 		});
 
 	}
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    super.onCreateOptionsMenu(menu);
+    menu.add(0, Menu.FIRST, 0, R.string.menu_game_options);
+
+    return true;
+  }
 
 	/**
 	 * Display welcome dialog message. Display toast with remaining number of
@@ -129,7 +138,7 @@ public class ScoreBoard extends Activity {
 
 	/**
 	 * Refresh the score board player list.
-	 * 
+	 *
 	 * @param descending
 	 */
 	private void refreshList() {
@@ -189,7 +198,7 @@ public class ScoreBoard extends Activity {
 			// Create the dialog
 			createAlert(message.toString());
 		}
-		
+
 		refreshList();
 	}
 
