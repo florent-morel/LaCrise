@@ -24,8 +24,6 @@ public interface Constants {
 	static final String GTH = ">";
 
 	static final int RESULT_OK = -1;
-	
-	static final int ACTIVITY_LAUNCH = 0;
 
 	static final int PENALTY_APPLIED = 1;
 
@@ -50,4 +48,14 @@ public interface Constants {
 	static final int ENTER_TURN_SCORE = 12;
 
 	static final int GAME_TURN_HISTORY = 13;
+	
+
+
+	static final int MENU_GAME_OPTIONS = 10;
+
+	static final int MENU_ADD_PLAYER = 11;
+	
+	static final int ACTIVITY_LAUNCH = 0;
+	
+	static final int ACTIVITY_SUCCESS = 20;
 }

@@ -11,6 +11,7 @@
     <string name="menu_launch">Launch game</string>
     <string name="menu_back_game">Back to game</string>
     <string name="menu_game_options">Game options</string>
+    <string name="menu_add_player">Add a player</string>
     <string name="menu_rename_players">Rename players</string>
     <string name="menu_turn_history">Turn history</string>
 
@@ -28,6 +29,7 @@
     <string name="rename_player">Rename player</string>
     <string name="give_name_player">Player name</string>
     <string name="score_to_reach">Target score</string>
+    <string name="player_score">Player score</string>
     <string name="number_of_warmups">Number of warm-up rounds</string>
     <string name="default_score_to_reach">5000</string>
     <string name="default_warm_up_rounds">3</string>

@@ -44,7 +44,12 @@ public class GameOptions extends Activity implements OnClickListener {
 
   @Override
   public void onClick(View v) {
-    mGameManager.getGame().setScoreToReach(Integer.valueOf(mScoreToReachText.getText().toString()));
+	  Integer newTotal = Integer.valueOf(mScoreToReachText.getText().toString());
+		if (newTotal != null
+				&& newTotal.compareTo(mGameManager.getFirstRankedPlayer()
+						.getTotalScore()) > 0) {
+		  mGameManager.getGame().setScoreToReach(newTotal);
+	  }
   }
 
 }
