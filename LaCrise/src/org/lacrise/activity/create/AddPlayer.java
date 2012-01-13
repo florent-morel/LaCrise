@@ -109,9 +109,12 @@ public class AddPlayer extends Activity implements OnClickListener {
 		return isValid;
 	}
 
-	private boolean processPlayerScore(String string) {
+	private boolean processPlayerScore(String score) {
 		boolean isValid = false;
-		if (this.validateNewPlayerScore(string)) {
+		if (this.validateNewPlayerScore(score)) {
+			// New player score is valid, process
+			isValid = true;
+		} else if (!mGameManager.getGame().allPlayerStarted()) {
 			// New player score is valid, process
 			isValid = true;
 		} else {
@@ -124,10 +127,10 @@ public class AddPlayer extends Activity implements OnClickListener {
 		return isValid;
 	}
 
-	private boolean validateNewPlayerName(String string) {
+	private boolean validateNewPlayerName(String name) {
 		boolean isValid = false;
 
-		if (!this.isExistingName(string)) {
+		if (!name.isEmpty() && !this.isExistingName(name)) {
 			isValid = true;
 		}
 
