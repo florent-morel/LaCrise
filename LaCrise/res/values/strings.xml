@@ -63,8 +63,9 @@
     <string name="turn_score_title">Turn # %1$d. %2$s to play.</string>
     <string name="turn_score">Turn score</string>
     <string name="turn_score_hint">Turn score</string>
+    <string name="turn_score_hint_warmup">Still in warm-up</string>
     <string name="turn_score_invalid">Turn score must be an even multiple of 50.</string>
-    <string name="turn_score_player">Player %1$s, current score: %2$s</string>
+    <string name="turn_score_player">Player %1$s, remaining: %2$s</string>
     <string name="turn_score_white_text">White</string>
     <string name="turn_score_player_warning">You have a zero!</string>
     <string name="default_turn_score">1000</string>
