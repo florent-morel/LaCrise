@@ -94,7 +94,7 @@ public class GameManager {
 		if (mCurrentPlayer.getId().equals(Constants.ZERO_VALUE)) {
 			// Each time first player plays, increment the number of played
 			// rounds
-			mGame.increaseRoundNumber();
+			mGame.createNewRound();
 		}
 		// In case warm rounds are over, force player to enter the game
 		if (!mCurrentPlayer.hasStarted() && mGame.getRoundNumber() > mGame.getWarmUpRounds()) {

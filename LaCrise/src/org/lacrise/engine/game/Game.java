@@ -1,7 +1,9 @@
 package org.lacrise.engine.game;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -13,6 +15,8 @@ public class Game {
 	 * List of players currently playing the game.
 	 */
 	private List<Player> mPlayerList;
+	
+	private List<Round> mRoundList;
 
 	private Integer mScoreToReach = Constants.DEFAULT_SCORE_TO_REACH;
 
@@ -23,9 +27,11 @@ public class Game {
 	private boolean mIsGameOver = false;
 	
 	private boolean mIsTotalReached = false;
-	
+
 	public Game() {
 		super();
+		mPlayerList = new ArrayList<Player>();
+		mRoundList = new ArrayList<Round>();
 	}
 
 	public void setGameOver(boolean mIsGameOver) {
@@ -42,6 +48,20 @@ public class Game {
 	
 	public boolean isTotalReached() {
 		return mIsTotalReached;
+	}
+	
+	public List<Round> getRoundList() {
+		return mRoundList;
+	}
+	
+	public List<Integer> getPlayerScorePerRound(Integer playerId) {
+		List<Integer> roundsScores = new ArrayList<Integer>();
+		for (Round round : this.mRoundList) {
+			Integer score = round.getPlayerScoreMap().get(playerId);
+			roundsScores.add(score);
+		}
+		
+		return roundsScores;
 	}
 
 	public Player getPlayerById(Integer playerId) {
@@ -108,8 +128,18 @@ public class Game {
 		return mRoundNumber;
 	}
 
-	public void increaseRoundNumber() {
+	public void createNewRound() {
 		this.mRoundNumber++;
+		
+		Map <Integer, Integer> playerScoreMap = new HashMap<Integer, Integer>();
+		
+		for (Player player : this.getPlayerList()) {
+			playerScoreMap.put(player.getId(), player.getTotalScore());
+		}
+		
+		Round newRound = new Round(mRoundNumber, playerScoreMap);
+		
+		this.mRoundList.add(newRound);
 	}
 
 	/**

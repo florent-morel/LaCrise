@@ -52,12 +52,12 @@ public class ScoreChart extends Activity {
 		Bitmap charty = Bitmap.createBitmap(width, height,
 				Bitmap.Config.ARGB_8888);
 
-		charty = drawPlayerChart(mGameManager.getFirstRankedPlayer(), emptyBmap);
+		charty = drawPlayerChart(emptyBmap);
 
 		image.setImageBitmap(charty);
 	}
 
-	public static Bitmap drawPlayerChart(Player player, Bitmap bitmap) {
+	public static Bitmap drawPlayerChart(Bitmap bitmap) {
 		// code to get bitmap onto screen
 		Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
 				bitmap.getHeight(), Config.ARGB_8888);
@@ -89,13 +89,16 @@ public class ScoreChart extends Activity {
 
 		draw_the_grid(canvas, labels);
 
+		for (Player player : mGameManager.getGame().getPlayerList()) {
+			
+		
 		// se the data to be plotted and we should on our way
 		List<Integer> playerScoreList = new ArrayList<Integer>();
 		// Add zero value as starting score
 		playerScoreList.add(Constants.ZERO_VALUE);
-		for (Turn currentTurn : player.getPlayerScore().getTurnList()) {
-			if (currentTurn.getScore() != null) {
-				playerScoreList.add(currentTurn.getScore());
+		for (Integer roundScore : mGameManager.getGame().getPlayerScorePerRound(player.getId())) {
+			if (roundScore != null) {
+				playerScoreList.add(roundScore);
 			}
 		}
 		// Vector data_2_plot = new Vector();
@@ -109,6 +112,7 @@ public class ScoreChart extends Activity {
 		// data_2_plot.add("16.2");
 
 		plot_array_list(canvas, playerScoreList, labels, "the title", 0);
+		}
 
 		canvas.drawBitmap(bitmap, rect, rect, paint);
 
@@ -187,7 +191,7 @@ public class ScoreChart extends Activity {
 				Double.toString(rounded_max), Double.toString(rounded_min),
 				cur_elt_array[0], 2, 0);
 
-	} // --- end of draw_grid ---
+	}
 
 	public static void print_axis_values_4_grid(Canvas thisDrawingArea,
 			String cur_units, String cur_max, String cur_min, String cur_label,
@@ -411,7 +415,7 @@ public class ScoreChart extends Activity {
 
 		}
 
-	} // --- end of plot_array_list --
+	}
 
 	// need the width of the labels
 	private static int getCurTextLengthInPixels(Paint this_paint,
@@ -420,7 +424,7 @@ public class ScoreChart extends Activity {
 		Rect rect = new Rect();
 		this_paint.getTextBounds(this_text, 0, this_text.length(), rect);
 		return rect.width();
-	} // --- end of getCurTextLengthInPixels ---
+	}
 
 	public static double get_ceiling_or_floor(double this_val, boolean is_max) {
 		double this_min_tmp;
@@ -484,6 +488,6 @@ public class ScoreChart extends Activity {
 
 		return this_rounded;
 
-	} // --- end of get_ceiling_or_floor ---
+	}
 
 }
