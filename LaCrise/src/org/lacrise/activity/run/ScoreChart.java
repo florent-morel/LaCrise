@@ -81,7 +81,7 @@ public class ScoreChart extends Activity {
 		String[] cur_elt_array = new String[4];
 		cur_elt_array[0] = "Voltage";
 		cur_elt_array[1] = "volts";
-		cur_elt_array[2] = "93"; // max
+		cur_elt_array[2] = "1000"; // max
 		cur_elt_array[3] = "0"; // min
 
 		Vector labels = new Vector();
@@ -98,15 +98,15 @@ public class ScoreChart extends Activity {
 				playerScoreList.add(currentTurn.getScore());
 			}
 		}
-//		Vector data_2_plot = new Vector();
-//
-//		data_2_plot.add("0.2");
-//		data_2_plot.add("1.2");
-//		data_2_plot.add("9.6");
-//		data_2_plot.add("83.2");
-//		data_2_plot.add("44.2");
-//		data_2_plot.add("20.2");
-//		data_2_plot.add("16.2");
+		// Vector data_2_plot = new Vector();
+		//
+		// data_2_plot.add("0.2");
+		// data_2_plot.add("1.2");
+		// data_2_plot.add("9.6");
+		// data_2_plot.add("83.2");
+		// data_2_plot.add("44.2");
+		// data_2_plot.add("20.2");
+		// data_2_plot.add("16.2");
 
 		plot_array_list(canvas, playerScoreList, labels, "the title", 0);
 
@@ -189,9 +189,6 @@ public class ScoreChart extends Activity {
 
 	} // --- end of draw_grid ---
 
-	// provate void print_axis_values_4_grid(Graphics thisDrawingArea, string
-	// cur_units , string cur_max , string cur_min , string cur_label , ByVal
-	// x_guide As Integer, ByVal this_idx As Integer)
 	public static void print_axis_values_4_grid(Canvas thisDrawingArea,
 			String cur_units, String cur_max, String cur_min, String cur_label,
 			int x_guide, int this_idx) {
@@ -286,8 +283,8 @@ public class ScoreChart extends Activity {
 	} // --- end of scale_point --
 
 	public static boolean plot_array_list(Canvas this_g,
-			List<Integer> this_array_list, Vector these_labels, String this_title,
-			int only_this_idx) {
+			List<Integer> playerScoreList, Vector these_labels,
+			String this_title, int only_this_idx) {
 		int idx;
 		int lRow;
 		int nParms;
@@ -315,7 +312,7 @@ public class ScoreChart extends Activity {
 		try // catch in this block for some thing
 		{
 
-			points_2_plot = this_array_list.size();
+			points_2_plot = playerScoreList.size();
 			{
 				cur_start_x = 0;
 				cur_points_2_plot = points_2_plot;
@@ -326,7 +323,7 @@ public class ScoreChart extends Activity {
 			// 'Create the plot points for this series from the ChartPoints
 			// array:
 
-			curElt = (String) this_array_list.get(0).toString();
+			curElt = (String) playerScoreList.get(0).toString();
 
 			// the lines have to come out good
 			paint.setStyle(Paint.Style.STROKE);
@@ -344,10 +341,10 @@ public class ScoreChart extends Activity {
 				cur_minY = get_ceiling_or_floor(
 						Double.parseDouble(cur_elt_array2[3]), false);
 
-				cur_points_2_plot = this_array_list.size();
+				cur_points_2_plot = playerScoreList.size();
 				cur_maxX = cur_points_2_plot;
 
-				curElt = (String) this_array_list.get(0).toString();
+				curElt = (String) playerScoreList.get(0).toString();
 				cur_OBD_val = Double.parseDouble(curElt);
 
 				cur_point = scale_point(0, cur_OBD_val, cur_point,
@@ -370,10 +367,11 @@ public class ScoreChart extends Activity {
 				prev_y = cur_y;
 
 				// 'go and plot point for this parm -- pont after the 1st one
-				for (lRow = cur_start_x + 1; lRow < cur_start_x
-						+ cur_points_2_plot - 1; lRow++) {
+				// for (lRow = cur_start_x + 1; lRow < cur_start_x
+				// + cur_points_2_plot - 1; lRow++) {
+				for (lRow = 1; lRow < playerScoreList.size(); lRow++) {
 
-					curElt = (String) this_array_list.get(lRow).toString();
+					curElt = (String) playerScoreList.get(lRow).toString();
 
 					cur_OBD_val = Double.parseDouble(curElt);
 
