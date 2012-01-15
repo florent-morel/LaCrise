@@ -28,6 +28,8 @@ public class Game {
 	
 	private boolean mIsTotalReached = false;
 
+	private Round currentRound;
+
 	public Game() {
 		super();
 		mPlayerList = new ArrayList<Player>();
@@ -55,13 +57,14 @@ public class Game {
 	}
 	
 	public List<Integer> getPlayerScorePerRound(Integer playerId) {
-		List<Integer> roundsScores = new ArrayList<Integer>();
+		List<Integer> listRoundScore = new ArrayList<Integer>();
 		for (Round round : this.mRoundList) {
-			Integer score = round.getPlayerScoreMap().get(playerId);
-			roundsScores.add(score);
+			List<Integer> scoreList = round.getPlayerScoreMap().get(playerId);
+			if (scoreList != null && !scoreList.isEmpty()) {
+				listRoundScore.addAll(scoreList);
+			}
 		}
-		
-		return roundsScores;
+		return listRoundScore;
 	}
 
 	public Player getPlayerById(Integer playerId) {
@@ -131,17 +134,22 @@ public class Game {
 	public void createNewRound() {
 		this.mRoundNumber++;
 		
-		Map <Integer, Integer> playerScoreMap = new HashMap<Integer, Integer>();
+		Map <Integer, List<Integer>> playerScoreMap = new HashMap<Integer, List<Integer>>();
 		
 		for (Player player : this.getPlayerList()) {
-			playerScoreMap.put(player.getId(), player.getTotalScore());
+			List<Integer> listRoundScore = new ArrayList<Integer>();
+			Integer totalScore = player.getTotalScore(true);
+			if (totalScore != null) {
+				listRoundScore.add(totalScore);
+			}
+			playerScoreMap.put(player.getId(), listRoundScore);
 		}
 		
-		Round newRound = new Round(mRoundNumber, playerScoreMap);
+		currentRound = new Round(mRoundNumber, playerScoreMap);
 		
-		this.mRoundList.add(newRound);
+		this.mRoundList.add(currentRound);
 	}
-
+	
 	/**
 	 * Check if all player entered the game (i.e. are not in warm-up rounds anymore).
 	 * 
@@ -161,5 +169,38 @@ public class Game {
 			}
 		}
 		return allPlayerStarted;
+	}
+
+	/**
+	 * Add given score to player's total.
+	 * 
+	 * @param newScore
+	 *            value <i>to be added</i> to the player's total.
+	 */
+	public void addTurnScoreToTotal(Player player, Integer newScore) {
+		PlayerScore playerScore = player.getPlayerScore();
+		Integer score = playerScore.getTotal();
+		if (score == null) {
+			score = Constants.ZERO_VALUE;
+		}
+
+		playerScore.setTotal(score + newScore);
+		
+		// Add score to current round player score
+		List<Integer> list = currentRound.getPlayerScoreMap().get(player.getId());
+		list.add(playerScore.getTotal());
+		currentRound.getPlayerScoreMap().put(player.getId(), list);
+	}
+
+	/**
+	 * Add the penalty to the list of player's penalties. Commit penalty score
+	 * to player's total.
+	 * 
+	 * @param penalty
+	 */
+	public void applyPenalty(Player player, Penalty penalty) {
+		PlayerScore playerScore = player.getPlayerScore();
+		playerScore.getPenaltyList().add(penalty);
+		this.addTurnScoreToTotal(player, penalty.getPenaltyValue());
 	}
 }

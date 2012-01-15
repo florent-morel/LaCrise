@@ -92,8 +92,8 @@ public class EnterTurnScore extends Activity implements OnClickListener {
 
 				if (player.getId().equals(currentPlayer.getId())) {
 					String playerScoreText;
-					if (currentPlayer.getTotalScore() != null) {
-						playerScoreText = currentPlayer.getTotalScore()
+					if (currentPlayer.getTotalScore(true) != null) {
+						playerScoreText = currentPlayer.getTotalScore(true)
 								.toString();
 					} else {
 						playerScoreText = mResources

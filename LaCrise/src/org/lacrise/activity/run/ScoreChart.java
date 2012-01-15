@@ -29,7 +29,9 @@ public class ScoreChart extends Activity {
 
 	private static GameManager mGameManager;
 
-	private Resources mResources;
+	private static Resources mResources;
+	
+	private static int[] colors = {Color.RED, Color.BLUE, Color.GREEN};
 
 	// these_labela has elemnes[label,maxX,maxY]
 	static int draw_only_this_idx = -1;
@@ -79,10 +81,12 @@ public class ScoreChart extends Activity {
 
 		// Set the labels info manually
 		String[] cur_elt_array = new String[4];
-		cur_elt_array[0] = "Voltage";
+		cur_elt_array[0] = String.format(mResources
+				.getString(R.string.score_board), mGameManager.getGame()
+				.getRoundNumber(), mGameManager.getGame().getScoreToReach());
 		cur_elt_array[1] = "volts";
-		cur_elt_array[2] = "1000"; // max
-		cur_elt_array[3] = "0"; // min
+		cur_elt_array[2] = mGameManager.getPlayersByRank().first().getTotalScore(false).toString(); //"1000"; // max
+		cur_elt_array[3] = mGameManager.getPlayersByRank().last().getTotalScore(false).toString(); //"0"; // min
 
 		Vector labels = new Vector();
 		labels.add(cur_elt_array);
@@ -101,17 +105,8 @@ public class ScoreChart extends Activity {
 				playerScoreList.add(roundScore);
 			}
 		}
-		// Vector data_2_plot = new Vector();
-		//
-		// data_2_plot.add("0.2");
-		// data_2_plot.add("1.2");
-		// data_2_plot.add("9.6");
-		// data_2_plot.add("83.2");
-		// data_2_plot.add("44.2");
-		// data_2_plot.add("20.2");
-		// data_2_plot.add("16.2");
 
-		plot_array_list(canvas, playerScoreList, labels, "the title", 0);
+		plot_array_list(canvas, playerScoreList, labels, "the title", 0, colors[player.getId()]);
 		}
 
 		canvas.drawBitmap(bitmap, rect, rect, paint);
@@ -288,7 +283,7 @@ public class ScoreChart extends Activity {
 
 	public static boolean plot_array_list(Canvas this_g,
 			List<Integer> playerScoreList, Vector these_labels,
-			String this_title, int only_this_idx) {
+			String this_title, int only_this_idx, int lineColor) {
 		int idx;
 		int lRow;
 		int nParms;
@@ -360,7 +355,8 @@ public class ScoreChart extends Activity {
 				cur_x = cur_point.x;
 				cur_y = cur_point.y;
 
-				paint.setColor(Color.GREEN);
+				int color = Color.GREEN;
+				paint.setColor(lineColor);
 
 				// the point is only cool when samples are low
 				if (cur_points_2_plot < POINTS_TO_CHANGE)

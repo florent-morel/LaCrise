@@ -260,7 +260,7 @@ public class ScoreBoard extends Activity {
 					message.append(Constants.NEW_LINE);
 					message.append(String.format(mResources
 							.getString(R.string.dialog_player_new_score),
-							victim.getName(), victim.getTotalScore()));
+							victim.getName(), victim.getTotalScore(true)));
 				}
 
 			}

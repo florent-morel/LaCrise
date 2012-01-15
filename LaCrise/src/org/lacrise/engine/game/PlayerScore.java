@@ -47,17 +47,6 @@ public class PlayerScore {
 		mTurnList.add(turn);
 	}
 
-	/**
-	 * Add the penalty to the list of player's penalties. Commit penalty score
-	 * to player's total.
-	 * 
-	 * @param penalty
-	 */
-	public void applyPenalty(Penalty penalty) {
-		mPenaltyList.add(penalty);
-		this.addTurnScoreToTotal(penalty.getPenaltyValue());
-	}
-
 	public List<Penalty> getPenaltyList() {
 		return mPenaltyList;
 	}
@@ -71,21 +60,6 @@ public class PlayerScore {
 		playerString.append(this.getTotal());
 
 		return playerString.toString();
-	}
-
-	/**
-	 * Add given score to player's total.
-	 * 
-	 * @param score
-	 *            value <i>to be added</i> to the player's total.
-	 */
-	public void addTurnScoreToTotal(Integer score) {
-		Integer playerScore = this.getTotal();
-		if (playerScore == null) {
-			playerScore = Constants.ZERO_VALUE;
-		}
-
-		this.setTotal(playerScore + score);
 	}
 
 }

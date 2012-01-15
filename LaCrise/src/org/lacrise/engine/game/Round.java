@@ -1,20 +1,21 @@
 package org.lacrise.engine.game;
 
+import java.util.List;
 import java.util.Map;
 
 public class Round {
 
 	private Integer mRoundNumber;
 	
-	private Map<Integer, Integer> mPlayerScoreMap;
+	private Map<Integer, List<Integer>> mPlayerScoreMap;
 
-	public Round(Integer mRoundNumber, Map<Integer, Integer> mPlayerScoreMap) {
+	public Round(Integer mRoundNumber, Map<Integer, List<Integer>> mPlayerScoreMap) {
 		super();
 		this.mRoundNumber = mRoundNumber;
 		this.mPlayerScoreMap = mPlayerScoreMap;
 	}
 
-	public Map<Integer, Integer> getPlayerScoreMap() {
+	public Map<Integer, List<Integer>> getPlayerScoreMap() {
 		return mPlayerScoreMap;
 	}
 	

@@ -159,7 +159,7 @@ public class AddPlayer extends Activity implements OnClickListener {
 	private boolean isExistingScore(Integer playerScore) {
 		boolean exist = false;
 		for (Player player : mGameManager.getGame().getPlayerList()) {
-			if (playerScore.equals(player.getTotalScore())) {
+			if (playerScore.equals(player.getTotalScore(true))) {
 				exist = true;
 				break;
 			}

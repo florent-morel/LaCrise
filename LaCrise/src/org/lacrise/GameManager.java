@@ -122,8 +122,8 @@ public class GameManager {
 	}
 
 	private Integer checkEndGame(Integer result) {
-		if (getPlayersByRank().size() > 0 && getPlayersByRank().first().getTotalScore() != null) {
-			if (getPlayersByRank().first().getTotalScore() >= mGame
+		if (getPlayersByRank().size() > 0 && getPlayersByRank().first().getTotalScore(true) != null) {
+			if (getPlayersByRank().first().getTotalScore(true) >= mGame
 					.getScoreToReach()) {
 				// Total score reached
 				if (!mGame.isTotalReached()) {
@@ -173,14 +173,14 @@ public class GameManager {
 	 */
 	public SortedMap<Integer, Player> getPlayersGap(Player player) {
 		TreeMap<Integer, Player> playerGap = new TreeMap<Integer, Player>();
-		Integer playerScore = player.getTotalScore();
+		Integer playerScore = player.getTotalScore(true);
 		if (playerScore == null) {
 			playerScore = Constants.ZERO_VALUE;
 		}
 
 		SortedSet<Player> rankingSet = mGame.getSortedPlayers();
 		for (Player otherPlayer : rankingSet) {
-			Integer otherScore = otherPlayer.getTotalScore();
+			Integer otherScore = otherPlayer.getTotalScore(true);
 			if (otherScore != null) {
 				playerGap.put(otherScore - playerScore, otherPlayer);
 			
@@ -216,7 +216,7 @@ public class GameManager {
 		playerScore.addTurn(mCurrentTurn);
 
 		// Compute score
-		result = computePlayerScore(playerScore);
+		result = computePlayerScore(mCurrentPlayer);
 
 		// Commit and apply penalties on other players
 		List<Player> playerList = new ArrayList<Player>();
@@ -273,20 +273,22 @@ public class GameManager {
 	 * Compute player score only if the player has already started the game
 	 * (i.e. he is done with the warm-up rounds).
 	 * 
-	 * @param playerScore
+	 * @param player
 	 * @return
 	 */
-	private Integer computePlayerScore(PlayerScore playerScore) {
+	private Integer computePlayerScore(Player player) {
 		Integer result = Constants.RESULT_OK;
 
 		if (mCurrentPlayer.hasStarted()
 				|| mCurrentTurn.getScore() > Constants.ZERO_VALUE) {
 			mCurrentPlayer.setHasStarted();
+			PlayerScore playerScore = player.getPlayerScore();
+			
 			if (Constants.ZERO_VALUE.equals(mCurrentTurn.getScore())) {
 				if (playerScore.hasZero()) {
 					Penalty penalty = new Penalty(mCurrentPlayer,
 							mCurrentPlayer, mCurrentTurn.getId());
-					playerScore.applyPenalty(penalty);
+					mGame.applyPenalty(player, penalty);
 					mCurrentTurn.setScore(penalty.getPenaltyValue());
 					playerScore.setHasZero(false);
 					result = Constants.PENALTY_APPLIED;
@@ -298,8 +300,9 @@ public class GameManager {
 				playerScore.setHasZero(false);
 			}
 
-			if(playerScore.getTotal() != null || !Constants.ZERO_VALUE.equals(mCurrentTurn.getScore())) {
-				playerScore.addTurnScoreToTotal(mCurrentTurn.getScore());
+			if (player.getTotalScore(true) != null
+					|| !Constants.ZERO_VALUE.equals(mCurrentTurn.getScore())) {
+				mGame.addTurnScoreToTotal(player, mCurrentTurn.getScore());
 			}
 		}
 
@@ -329,7 +332,7 @@ public class GameManager {
 
 					Penalty penalty = new Penalty(currentPlayer, otherPlayer,
 							mCurrentTurn.getId());
-					otherPlayer.getPlayerScore().applyPenalty(penalty);
+					mGame.applyPenalty(otherPlayer, penalty);
 					mCurrentTurn.addPenalty(penalty);
 					penaltyApplied = true;
 					List<Player> newPlayerList = new ArrayList<Player>();
