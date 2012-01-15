@@ -2,13 +2,11 @@ package org.lacrise.activity.run;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import org.lacrise.GameManager;
 import org.lacrise.R;
 import org.lacrise.engine.Constants;
 import org.lacrise.engine.game.Player;
-import org.lacrise.engine.game.Turn;
 
 import android.app.Activity;
 import android.content.res.Resources;
@@ -17,7 +15,6 @@ import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Paint.FontMetrics;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -30,8 +27,8 @@ public class ScoreChart extends Activity {
 	private static GameManager mGameManager;
 
 	private static Resources mResources;
-	
-	private static int[] colors = {Color.RED, Color.BLUE, Color.GREEN};
+
+	private static int[] colors = { Color.RED, Color.BLUE, Color.GREEN };
 
 	// these_labela has elemnes[label,maxX,maxY]
 	static int draw_only_this_idx = -1;
@@ -43,7 +40,6 @@ public class ScoreChart extends Activity {
 		setContentView(R.layout.score_chart);
 		mResources = getResources();
 		mGameManager = GameManager.getSingletonObject();
-		// setTitle("Quick XY Plot");
 
 		ImageView image = (ImageView) findViewById(R.id.score_chart_img);
 
@@ -59,7 +55,7 @@ public class ScoreChart extends Activity {
 		image.setImageBitmap(charty);
 	}
 
-	public static Bitmap drawPlayerChart(Bitmap bitmap) {
+	private Bitmap drawPlayerChart(Bitmap bitmap) {
 		// code to get bitmap onto screen
 		Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
 				bitmap.getHeight(), Config.ARGB_8888);
@@ -85,28 +81,29 @@ public class ScoreChart extends Activity {
 				.getString(R.string.score_board), mGameManager.getGame()
 				.getRoundNumber(), mGameManager.getGame().getScoreToReach());
 		cur_elt_array[1] = "volts";
-		cur_elt_array[2] = mGameManager.getPlayersByRank().first().getTotalScore(false).toString(); //"1000"; // max
-		cur_elt_array[3] = mGameManager.getPlayersByRank().last().getTotalScore(false).toString(); //"0"; // min
+		cur_elt_array[2] = mGameManager.getGame().getMaxScore().toString();
+		cur_elt_array[3] = mGameManager.getGame().getMinScore().toString();
 
-		Vector labels = new Vector();
+		List<String[]> labels = new ArrayList<String[]>();
 		labels.add(cur_elt_array);
 
-		draw_the_grid(canvas, labels);
+		this.drawGrid(canvas, labels);
 
 		for (Player player : mGameManager.getGame().getPlayerList()) {
-			
-		
-		// se the data to be plotted and we should on our way
-		List<Integer> playerScoreList = new ArrayList<Integer>();
-		// Add zero value as starting score
-		playerScoreList.add(Constants.ZERO_VALUE);
-		for (Integer roundScore : mGameManager.getGame().getPlayerScorePerRound(player.getId())) {
-			if (roundScore != null) {
-				playerScoreList.add(roundScore);
-			}
-		}
 
-		plot_array_list(canvas, playerScoreList, labels, "the title", 0, colors[player.getId()]);
+			// set the data to be plotted and we should be on our way
+			List<Integer> playerScoreList = new ArrayList<Integer>();
+			// Add zero value as starting score
+			playerScoreList.add(Constants.ZERO_VALUE);
+			for (Integer roundScore : mGameManager.getGame()
+					.getPlayerScorePerRound(player.getId())) {
+				if (roundScore != null) {
+					playerScoreList.add(roundScore);
+				}
+			}
+
+			drawPlayerScores(canvas, playerScoreList, labels, 0,
+					colors[player.getId()]);
 		}
 
 		canvas.drawBitmap(bitmap, rect, rect, paint);
@@ -116,28 +113,25 @@ public class ScoreChart extends Activity {
 
 	// these_labels is vector of [label,units,max.min]
 
-	public static void draw_the_grid(Canvas this_g, Vector these_labels) {
+	private void drawGrid(Canvas canvas, List<String[]> labels) {
 
 		double rounded_max = 0.0;
 		double rounded_min = 0.0;
-		double rounded_max_temp;
 		Object curElt;
 		String[] cur_elt_array;
-		int left_margin_d, right_margin_d;
+		int left_margin_d;
 
 		if (draw_only_this_idx == -1)
-			curElt = these_labels.elementAt(0); // default it to 1st one if non
-												// set
+			curElt = labels.get(0); // default it to 1st one if non set
 		else
-			curElt = these_labels.elementAt(draw_only_this_idx); // now just the
-																	// 1st elt
+			curElt = labels.get(draw_only_this_idx); // now just the 1st elt
 
 		cur_elt_array = (String[]) curElt;
 
 		rounded_max = get_ceiling_or_floor(
-				Double.parseDouble(cur_elt_array[2]), true);
+		 Double.parseDouble(cur_elt_array[2]), true);
 		rounded_min = get_ceiling_or_floor(
-				Double.parseDouble(cur_elt_array[3]), false);
+		 Double.parseDouble(cur_elt_array[3]), false);
 
 		// ok so now we have the max value of the set just get a cool ceiling
 		// and we go on
@@ -149,16 +143,17 @@ public class ScoreChart extends Activity {
 		// keep the position for later drawing -- leave space for the legend
 		int p_height = 170;
 		int p_width = 220;
+		int nbCells = 3;
 		int[] tmp_draw_sizes = { 2 + left_margin_d, 25,
-				p_width - 2 - left_margin_d, p_height - 25 - 5 };
+				p_width - 2 - left_margin_d, p_height - 25 - nbCells };
 		drawSizes = tmp_draw_sizes; // keep it for later processing
 
-		// with the mzrgins worked out draw the plotting grid
+		// with the margins worked out draw the plotting grid
 		paint.setStyle(Paint.Style.FILL);
-		paint.setColor(Color.WHITE);
+		paint.setColor(Color.BLACK);
 
 		// Android does by coords
-		this_g.drawRect(drawSizes[0], drawSizes[1],
+		canvas.drawRect(drawSizes[0], drawSizes[1],
 				drawSizes[0] + drawSizes[2], drawSizes[1] + drawSizes[3], paint);
 
 		paint.setColor(Color.GRAY);
@@ -166,93 +161,79 @@ public class ScoreChart extends Activity {
 		// finally draw the grid
 
 		paint.setStyle(Paint.Style.STROKE);
-		this_g.drawRect(drawSizes[0], drawSizes[1],
+		canvas.drawRect(drawSizes[0], drawSizes[1],
 				drawSizes[0] + drawSizes[2], drawSizes[1] + drawSizes[3], paint);
 
-		for (int i = 1; i < 5; i++) {
+		for (int i = 1; i < nbCells; i++) {
 
-			this_g.drawLine(drawSizes[0],
-					drawSizes[1] + (i * drawSizes[3] / 5), drawSizes[0]
+			// Test to display lines gray and white alternatively
+//			if (i % 2 == 0) {
+//				paint.setColor(Color.GRAY);
+//			} else {
+//				paint.setColor(Color.WHITE);
+//			}
+			
+			canvas.drawLine(drawSizes[0],
+					drawSizes[1] + (i * drawSizes[3] / nbCells), drawSizes[0]
 							+ drawSizes[2], drawSizes[1]
-							+ (i * drawSizes[3] / 5), paint);
-			this_g.drawLine(drawSizes[0] + (i * drawSizes[2] / 5),
-					drawSizes[1], drawSizes[0] + (i * drawSizes[2] / 5),
+							+ (i * drawSizes[3] / nbCells), paint);
+			canvas.drawLine(drawSizes[0] + (i * drawSizes[2] / nbCells),
+					drawSizes[1], drawSizes[0] + (i * drawSizes[2] / nbCells),
 					drawSizes[1] + drawSizes[3], paint);
 
 		}
 
 		// good for one value
-		print_axis_values_4_grid(this_g, cur_elt_array[1],
-				Double.toString(rounded_max), Double.toString(rounded_min),
-				cur_elt_array[0], 2, 0);
+		print_axis_values_4_grid(canvas,
+				Double.valueOf(rounded_max).intValue(),
+				Double.valueOf(rounded_min).intValue(), cur_elt_array[0], 2, 0);
 
 	}
 
-	public static void print_axis_values_4_grid(Canvas thisDrawingArea,
-			String cur_units, String cur_max, String cur_min, String cur_label,
+	private void print_axis_values_4_grid(Canvas thisDrawingArea,
+			Integer curMax, Integer curMin, String cur_label,
 			int x_guide, int this_idx) {
-		String this_str;
-		double delta = (Double.valueOf(cur_max).doubleValue() - Double.valueOf(
-				cur_min).doubleValue()) / 5;
+		Integer lineLabel;
+		int nbSectors = curMax / 50;
+		Integer delta = (curMax - curMin) / nbSectors;
 		final Paint paint = new Paint();
 
 		paint.setColor(Color.WHITE);
 		paint.setTypeface(Typeface.SANS_SERIF);
 
-		// Font smallyFont = Font.getDefault().derive(Font.PLAIN, 12);
-		// thisDrawingArea.setFont(smallyFont);
 		paint.setTextSize(8);
 
-		for (int i = 0; i < 6; i++) {
+		// '<=' because we display from zero to curMax
+		for (int i = 0; i <= nbSectors; i++) {
 			// 'work our the values so is proper
 
-			this_str = Double
-					.toString((Double.valueOf(cur_min).doubleValue() + delta
-							* i));
+			lineLabel = curMin + delta * i;
 
-			final int point = this_str.indexOf('.');
-			if (point > 0) {
-				// If has a decimal point, may need to clip off after or force 2
-				// decimal places
-				this_str = this_str + "00";
-				this_str = this_str.substring(0, point + 3);
+			if (i == nbSectors) {
+				thisDrawingArea.drawText(lineLabel.toString(), x_guide - 2, drawSizes[1]
+						+ drawSizes[3] - (i * drawSizes[3] / nbSectors), paint);
 			} else {
-				this_str = this_str + ".00";
+				thisDrawingArea.drawText(lineLabel.toString(), x_guide - 2, drawSizes[1]
+						+ drawSizes[3] - (i * drawSizes[3] / nbSectors) - 3, paint);
 			}
-
-			if (i == 5)
-				// thisDrawingArea.drawText(this_str, x_guide - 2, drawSizes[1]
-				// + drawSizes[3] - (i *drawSizes[3] / 5) );
-				thisDrawingArea.drawText(this_str, x_guide - 2, drawSizes[1]
-						+ drawSizes[3] - (i * drawSizes[3] / 5), paint);
-			else
-				thisDrawingArea.drawText(this_str, x_guide - 2, drawSizes[1]
-						+ drawSizes[3] - (i * drawSizes[3] / 5) - 3, paint);
 		}
 
-		// smallyFont = Font.getDefault().derive(Font.BOLD, 12);
-		// thisDrawingArea.setFont(smallyFont);
 		paint.setTextSize(10);
 		switch (this_idx) {
 		case 0:
-
-			thisDrawingArea.drawText("  " + cur_label + " - " + cur_units,
-					x_guide - 2, drawSizes[1] - 15, paint);
+			thisDrawingArea.drawText(cur_label, x_guide - 2, drawSizes[1] - 15,
+					paint);
 			break;
-
 		case 1:
 
-			// int len = getFont().getAdvance(cur_label +" - " +cur_units)
-
-			thisDrawingArea.drawText("  " + cur_label + " - " + cur_units,
-					x_guide - 2 - 30, drawSizes[1] - 15, paint);
+			thisDrawingArea.drawText(cur_label, x_guide - 2 - 30,
+					drawSizes[1] - 15, paint);
 			break;
-
 		}
 
-	} // --- end of print_axis_values_4_grid ---
+	}
 
-	private static Point scale_point(int this_x, double this_y,
+	private Point scalePoint(int this_x, double this_y,
 			Point drawPoint, int scr_x, int scr_y, int scr_width,
 			int src_height, double maxX, double minX, double maxY, double minY) {
 		int temp_x, temp_y;
@@ -279,30 +260,27 @@ public class ScoreChart extends Activity {
 
 		return temp;
 
-	} // --- end of scale_point --
+	}
 
-	public static boolean plot_array_list(Canvas this_g,
-			List<Integer> playerScoreList, Vector these_labels,
-			String this_title, int only_this_idx, int lineColor) {
-		int idx;
+	private boolean drawPlayerScores(Canvas canvas,
+			List<Integer> playerScoreList, List<String[]> these_labels,
+			int only_this_idx, int lineColor) {
 		int lRow;
 		int nParms;
-		int i, points_2_plot, shifted_idx;
-		int prev_x, prev_y;
+		int prev_x = 0, prev_y = 0;
 		int cur_x = 0, cur_y = 0;
 		// Dim ShowMarker As Object
-		Point cur_point = new Point();
-		cur_point.set(0, 0);
+		Point point = new Point();
+		point.set(0, 0);
 
-		double cur_maxX, cur_minX, cur_maxY = 20, cur_minY = 0, cur_rangeY;
-		int cur_start_x, cur_points_2_plot;
+		double cur_maxX, cur_minX = 0, cur_maxY = 20, cur_minY = 0;
+		int cur_points_2_plot;
 
 		int POINTS_TO_CHANGE = 30;
 		double cur_OBD_val;
 
 		// Object curElt;
 		String curElt;
-		String[] cur_elt_array;
 		Object curElt2;
 		String[] cur_elt_array2;
 
@@ -311,17 +289,8 @@ public class ScoreChart extends Activity {
 		try // catch in this block for some thing
 		{
 
-			points_2_plot = playerScoreList.size();
-			{
-				cur_start_x = 0;
-				cur_points_2_plot = points_2_plot;
-				cur_maxX = cur_points_2_plot;
-				cur_minX = 0;
-			}
-
 			// 'Create the plot points for this series from the ChartPoints
 			// array:
-
 			curElt = (String) playerScoreList.get(0).toString();
 
 			// the lines have to come out good
@@ -332,7 +301,7 @@ public class ScoreChart extends Activity {
 			{
 
 				// get cur item labels
-				curElt2 = these_labels.elementAt(nParms);
+				curElt2 = these_labels.get(nParms);
 				cur_elt_array2 = (String[]) curElt2;
 
 				cur_maxY = get_ceiling_or_floor(
@@ -343,33 +312,28 @@ public class ScoreChart extends Activity {
 				cur_points_2_plot = playerScoreList.size();
 				cur_maxX = cur_points_2_plot;
 
-				curElt = (String) playerScoreList.get(0).toString();
-				cur_OBD_val = Double.parseDouble(curElt);
+//				curElt = (String) playerScoreList.get(0).toString();
+//				cur_OBD_val = Double.parseDouble(curElt);
 
-				cur_point = scale_point(0, cur_OBD_val, cur_point,
-						drawSizes[0], drawSizes[1], drawSizes[2], drawSizes[3],
-						cur_maxX, cur_minX, cur_maxY, cur_minY); // '(CInt(curAxisValues.Mins(nParms
-																	// - 2) / 5)
-																	// + 1) * 5)
+//				point = scalePoint(0, cur_OBD_val, point, drawSizes[0],
+//						drawSizes[1], drawSizes[2], drawSizes[3], cur_maxX,
+//						cur_minX, cur_maxY, cur_minY);
 
-				cur_x = cur_point.x;
-				cur_y = cur_point.y;
+//				cur_x = point.x;
+//				cur_y = point.y;
 
-				int color = Color.GREEN;
 				paint.setColor(lineColor);
 
 				// the point is only cool when samples are low
 				if (cur_points_2_plot < POINTS_TO_CHANGE)
-					this_g.drawRect(cur_x - 2, cur_y - 2, cur_x - 2 + 4,
+					canvas.drawRect(cur_x - 2, cur_y - 2, cur_x - 2 + 4,
 							cur_y - 2 + 4, paint);
 
-				prev_x = cur_x;
-				prev_y = cur_y;
+//				prev_x = cur_x;
+//				prev_y = cur_y;
 
 				// 'go and plot point for this parm -- pont after the 1st one
-				// for (lRow = cur_start_x + 1; lRow < cur_start_x
-				// + cur_points_2_plot - 1; lRow++) {
-				for (lRow = 1; lRow < playerScoreList.size(); lRow++) {
+				for (lRow = 0; lRow < playerScoreList.size(); lRow++) {
 
 					curElt = (String) playerScoreList.get(lRow).toString();
 
@@ -377,52 +341,44 @@ public class ScoreChart extends Activity {
 
 					// 'work out an approx if cur Y values not avail(e.g.
 					// nothing)
-					// if (! (cur_elt_array[nParms ] == null ) ) //skip bad one
 					if (cur_OBD_val == Double.NaN)
 						continue; // skip bad one
 					{
 
-						cur_point = scale_point(lRow, cur_OBD_val, cur_point,
+						point = scalePoint(lRow, cur_OBD_val, point,
 								drawSizes[0], drawSizes[1], drawSizes[2],
 								drawSizes[3], cur_maxX, cur_minX, cur_maxY,
 								cur_minY);
 
-						cur_x = cur_point.x;
-						cur_y = cur_point.y;
+						cur_x = point.x;
+						cur_y = point.y;
 
 						if (cur_points_2_plot < POINTS_TO_CHANGE)
-							this_g.drawRect(cur_x - 2, cur_y - 2,
+							canvas.drawRect(cur_x - 2, cur_y - 2,
 									cur_x - 2 + 4, cur_y - 2 + 4, paint);
 
-						this_g.drawLine(prev_x, prev_y, cur_x, cur_y, paint);
+						canvas.drawLine(prev_x, prev_y, cur_x, cur_y, paint);
 						prev_x = cur_x;
 						prev_y = cur_y;
 
-					} // ' if end of this_array(lRow, nParms - 1)<> nothing
-
-				} // end of for lrow
-
-			} // end of for nParmns
-
-			// this_g.invalidate();
+					}
+				}
+			}
 			return (true);
 		} catch (Exception e) {
 			return (false);
-
 		}
-
 	}
 
 	// need the width of the labels
-	private static int getCurTextLengthInPixels(Paint this_paint,
+	private int getCurTextLengthInPixels(Paint this_paint,
 			String this_text) {
-		FontMetrics tp = this_paint.getFontMetrics();
 		Rect rect = new Rect();
 		this_paint.getTextBounds(this_text, 0, this_text.length(), rect);
 		return rect.width();
 	}
 
-	public static double get_ceiling_or_floor(double this_val, boolean is_max) {
+	private double get_ceiling_or_floor(double this_val, boolean is_max) {
 		double this_min_tmp;
 		int this_sign;
 		int this_10_factor = 0;

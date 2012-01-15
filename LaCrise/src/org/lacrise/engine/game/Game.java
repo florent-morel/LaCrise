@@ -29,6 +29,10 @@ public class Game {
 	private boolean mIsTotalReached = false;
 
 	private Round currentRound;
+	
+	private Integer mMaxScore = Constants.ZERO_VALUE;
+	
+	private Integer mMinScore = Constants.ZERO_VALUE;
 
 	public Game() {
 		super();
@@ -131,6 +135,14 @@ public class Game {
 		return mRoundNumber;
 	}
 
+	public Integer getMaxScore() {
+		return mMaxScore;
+	}
+
+	public Integer getMinScore() {
+		return mMinScore;
+	}
+
 	public void createNewRound() {
 		this.mRoundNumber++;
 		
@@ -184,12 +196,24 @@ public class Game {
 			score = Constants.ZERO_VALUE;
 		}
 
-		playerScore.setTotal(score + newScore);
+		Integer newTotal = score + newScore;
+		playerScore.setTotal(newTotal);
 		
 		// Add score to current round player score
 		List<Integer> list = currentRound.getPlayerScoreMap().get(player.getId());
-		list.add(playerScore.getTotal());
+		list.add(newTotal);
 		currentRound.getPlayerScoreMap().put(player.getId(), list);
+		
+		// Check it against max and min scores so far
+		if (mMaxScore.compareTo(newTotal) < 0) {
+			mMaxScore = newTotal;
+		}
+		
+		if (mMinScore.compareTo(newTotal) > 0) {
+			mMinScore = newTotal;
+		}
+		
+		
 	}
 
 	/**

@@ -289,7 +289,7 @@ public class GameManager {
 					Penalty penalty = new Penalty(mCurrentPlayer,
 							mCurrentPlayer, mCurrentTurn.getId());
 					mGame.applyPenalty(player, penalty);
-					mCurrentTurn.setScore(penalty.getPenaltyValue());
+//					mCurrentTurn.setScore(penalty.getPenaltyValue());
 					playerScore.setHasZero(false);
 					result = Constants.PENALTY_APPLIED;
 				} else {

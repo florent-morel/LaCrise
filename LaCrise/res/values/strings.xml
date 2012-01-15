@@ -89,6 +89,8 @@
     
     
     <string name="score_chart">Score chart</string>
+    <string name="score_chart_img_alt">Current game score chart.</string>
 
+    
 
 </resources>

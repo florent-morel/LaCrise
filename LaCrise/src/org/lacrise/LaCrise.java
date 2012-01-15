@@ -53,7 +53,7 @@ public class LaCrise extends Activity {
 			menu.add(0, Constants.NEW_GAME_QUICK, 1, R.string.menu_new_quick);
 		}
 
-		if (mGameManager.getGame().getPlayerList() != null) {
+		if (!mGameManager.getGame().getPlayerList().isEmpty()) {
 			// A game is ongoing, add menu to continue
 			if (menu.findItem(Constants.GAME_CONTINUE) == null) {
 				menu.add(0, Constants.GAME_CONTINUE, 2, R.string.menu_continue);

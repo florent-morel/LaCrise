@@ -122,6 +122,7 @@ public final class R {
         public static final int score=0x7f050014;
         public static final int score_board=0x7f050022;
         public static final int score_chart=0x7f050048;
+        public static final int score_chart_img_alt=0x7f050049;
         public static final int score_to_reach=0x7f050018;
         public static final int second_line_player_last_turn=0x7f050026;
         public static final int second_line_player_warmup=0x7f050024;
