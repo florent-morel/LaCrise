@@ -70,14 +70,15 @@ public class ScoreBoard extends Activity {
 
 	}
 
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    super.onCreateOptionsMenu(menu);
-    menu.add(0, Constants.MENU_GAME_OPTIONS, 0, R.string.menu_game_options);
-    menu.add(0, Constants.MENU_ADD_PLAYER, 0, R.string.menu_add_player);
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		menu.add(0, Constants.MENU_GAME_OPTIONS, 0, R.string.menu_game_options);
+		menu.add(0, Constants.MENU_ADD_PLAYER, 0, R.string.menu_add_player);
+		menu.add(0, Constants.MENU_SCORE_CHART, 0, R.string.menu_score_chart);
 
-    return true;
-  }
+		return true;
+	}
 
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
@@ -88,9 +89,17 @@ public class ScoreBoard extends Activity {
 		case Constants.MENU_ADD_PLAYER:
 			launchAddPlayer();
 			return true;
+		case Constants.MENU_SCORE_CHART:
+			launchScoreChart();
+			return true;
 		}
 
 		return super.onMenuItemSelected(featureId, item);
+	}
+
+	private void launchScoreChart() {
+		Intent intent = new Intent(this, ScoreChart.class);
+		startActivityForResult(intent, Constants.ACTIVITY_LAUNCH);
 	}
 
 	private void launchGameOptions() {
@@ -112,8 +121,7 @@ public class ScoreBoard extends Activity {
 			Context context = getApplicationContext();
 			Toast toast = Toast.makeText(context, String.format(mResources
 					.getString(R.string.dialog_welcome), mGameManager.getGame()
-					.getWarmUpRounds()),
-					Toast.LENGTH_LONG);
+					.getWarmUpRounds()), Toast.LENGTH_LONG);
 			toast.show();
 		}
 	}
@@ -164,7 +172,7 @@ public class ScoreBoard extends Activity {
 
 	/**
 	 * Refresh the score board player list.
-	 *
+	 * 
 	 * @param descending
 	 */
 	private void refreshList() {
@@ -175,8 +183,7 @@ public class ScoreBoard extends Activity {
 		mScoreList = (ListView) findViewById(R.id.scoreList);
 		mScoreAdapter = new PlayerScoreAdapter(this, R.layout.player_row);
 
-		SortedSet<Player> playersByRank = mGameManager
-				.getPlayersByRank();
+		SortedSet<Player> playersByRank = mGameManager.getPlayersByRank();
 
 		for (Player player : playersByRank) {
 			mScoreAdapter.addItem(player);
@@ -230,9 +237,9 @@ public class ScoreBoard extends Activity {
 
 	private void buildNextPlayerMessage(StringBuilder message) {
 		message.append(Constants.NEW_LINE);
-		message.append(String.format(
-				mResources.getString(R.string.dialog_next_player),
-				mGameManager.getNextPlayer().getName()));
+		message.append(String.format(mResources
+				.getString(R.string.dialog_next_player), mGameManager
+				.getNextPlayer().getName()));
 	}
 
 	private void buildPenaltyMessage(Player player, Turn playedTurn,

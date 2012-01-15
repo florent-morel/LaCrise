@@ -51,9 +51,11 @@ public interface Constants {
 	
 
 
-	static final int MENU_GAME_OPTIONS = 10;
+	static final int MENU_GAME_OPTIONS = 100;
 
-	static final int MENU_ADD_PLAYER = 11;
+	static final int MENU_ADD_PLAYER = 101;
+
+	static final int MENU_SCORE_CHART = 102;
 	
 	static final int ACTIVITY_LAUNCH = 0;
 	
