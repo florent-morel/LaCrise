@@ -2,6 +2,9 @@ package org.lacrise.activity.run;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.lacrise.GameManager;
 import org.lacrise.R;
@@ -95,14 +98,16 @@ public class ScoreChart extends Activity {
 			List<Integer> playerScoreList = new ArrayList<Integer>();
 			// Add zero value as starting score
 			playerScoreList.add(Constants.ZERO_VALUE);
-			for (Integer roundScore : mGameManager.getGame()
-					.getPlayerScorePerRound(player.getId())) {
-				if (roundScore != null) {
-					playerScoreList.add(roundScore);
-				}
-			}
 
-			drawPlayerScores(canvas, playerScoreList, labels, 0,
+			Map<Integer, List<Integer>> playerScorePerRound = mGameManager.getGame().getPlayerScorePerRound(player.getId());
+
+//			for (Integer roundScore : )) {
+//				if (roundScore != null) {
+//					playerScoreList.add(roundScore);
+//				}
+//			}
+
+			drawPlayerScores(canvas, playerScorePerRound, labels, 0,
 					colors[player.getId()]);
 		}
 
@@ -143,7 +148,7 @@ public class ScoreChart extends Activity {
 		// keep the position for later drawing -- leave space for the legend
 		int p_height = 170;
 		int p_width = 220;
-		int nbCells = 3;
+		int nbCells = mGameManager.getGame().getRoundNumber() + 1;
 		int[] tmp_draw_sizes = { 2 + left_margin_d, 25,
 				p_width - 2 - left_margin_d, p_height - 25 - nbCells };
 		drawSizes = tmp_draw_sizes; // keep it for later processing
@@ -172,7 +177,7 @@ public class ScoreChart extends Activity {
 //			} else {
 //				paint.setColor(Color.WHITE);
 //			}
-			
+
 			canvas.drawLine(drawSizes[0],
 					drawSizes[1] + (i * drawSizes[3] / nbCells), drawSizes[0]
 							+ drawSizes[2], drawSizes[1]
@@ -184,17 +189,23 @@ public class ScoreChart extends Activity {
 		}
 
 		// good for one value
-		print_axis_values_4_grid(canvas,
+		printAxisLegend(canvas,
 				Double.valueOf(rounded_max).intValue(),
 				Double.valueOf(rounded_min).intValue(), cur_elt_array[0], 2, 0);
 
 	}
 
-	private void print_axis_values_4_grid(Canvas thisDrawingArea,
+	private void printAxisLegend(Canvas thisDrawingArea,
 			Integer curMax, Integer curMin, String cur_label,
 			int x_guide, int this_idx) {
 		Integer lineLabel;
 		int nbSectors = curMax / 50;
+
+		if (nbSectors ==0 || nbSectors > 4) {
+		  // Default value: 4
+		  nbSectors = 4;
+		}
+
 		Integer delta = (curMax - curMin) / nbSectors;
 		final Paint paint = new Paint();
 
@@ -263,7 +274,7 @@ public class ScoreChart extends Activity {
 	}
 
 	private boolean drawPlayerScores(Canvas canvas,
-			List<Integer> playerScoreList, List<String[]> these_labels,
+	    Map<Integer, List<Integer>> playerScoreMap, List<String[]> these_labels,
 			int only_this_idx, int lineColor) {
 		int lRow;
 		int nParms;
@@ -291,7 +302,7 @@ public class ScoreChart extends Activity {
 
 			// 'Create the plot points for this series from the ChartPoints
 			// array:
-			curElt = (String) playerScoreList.get(0).toString();
+//			curElt = (String) playerScoreMap.get(0).toString();
 
 			// the lines have to come out good
 			paint.setStyle(Paint.Style.STROKE);
@@ -309,18 +320,19 @@ public class ScoreChart extends Activity {
 				cur_minY = get_ceiling_or_floor(
 						Double.parseDouble(cur_elt_array2[3]), false);
 
-				cur_points_2_plot = playerScoreList.size();
+				cur_points_2_plot = mGameManager.getGame().getRoundNumber() + 1;//playerScoreMap.size();
 				cur_maxX = cur_points_2_plot;
 
 //				curElt = (String) playerScoreList.get(0).toString();
 //				cur_OBD_val = Double.parseDouble(curElt);
 
-//				point = scalePoint(0, cur_OBD_val, point, drawSizes[0],
-//						drawSizes[1], drawSizes[2], drawSizes[3], cur_maxX,
-//						cur_minX, cur_maxY, cur_minY);
+				// Draw origin point
+				point = scalePoint(0, 0, point, drawSizes[0],
+						drawSizes[1], drawSizes[2], drawSizes[3], cur_maxX,
+						cur_minX, cur_maxY, cur_minY);
 
-//				cur_x = point.x;
-//				cur_y = point.y;
+				cur_x = point.x;
+				cur_y = point.y;
 
 				paint.setColor(lineColor);
 
@@ -329,40 +341,56 @@ public class ScoreChart extends Activity {
 					canvas.drawRect(cur_x - 2, cur_y - 2, cur_x - 2 + 4,
 							cur_y - 2 + 4, paint);
 
-//				prev_x = cur_x;
-//				prev_y = cur_y;
+				prev_x = cur_x;
+				prev_y = cur_y;
 
 				// 'go and plot point for this parm -- pont after the 1st one
-				for (lRow = 0; lRow < playerScoreList.size(); lRow++) {
+				// For each round, trace every scores player had
 
-					curElt = (String) playerScoreList.get(lRow).toString();
+				Set<Entry<Integer, List<Integer>>> entrySet = playerScoreMap.entrySet();
 
-					cur_OBD_val = Double.parseDouble(curElt);
+				for (Entry<Integer, List<Integer>> entry : entrySet) {
 
-					// 'work out an approx if cur Y values not avail(e.g.
-					// nothing)
-					if (cur_OBD_val == Double.NaN)
-						continue; // skip bad one
-					{
+				  Integer roundNumber = entry.getKey();
+				  List<Integer> scores = entry.getValue();
 
-						point = scalePoint(lRow, cur_OBD_val, point,
-								drawSizes[0], drawSizes[1], drawSizes[2],
-								drawSizes[3], cur_maxX, cur_minX, cur_maxY,
-								cur_minY);
+				  for (lRow = 0; lRow < scores.size(); lRow++) {
 
-						cur_x = point.x;
-						cur_y = point.y;
+				    curElt = (String) scores.get(lRow).toString();
 
-						if (cur_points_2_plot < POINTS_TO_CHANGE)
-							canvas.drawRect(cur_x - 2, cur_y - 2,
-									cur_x - 2 + 4, cur_y - 2 + 4, paint);
+				    cur_OBD_val = Double.parseDouble(curElt);
 
-						canvas.drawLine(prev_x, prev_y, cur_x, cur_y, paint);
-						prev_x = cur_x;
-						prev_y = cur_y;
+				    // 'work out an approx if cur Y values not avail(e.g.
+				    // nothing)
+				    if (cur_OBD_val == Double.NaN) {
+				      continue; // skip bad one
+				    } else {
 
-					}
+				      point = scalePoint(roundNumber, cur_OBD_val, point,
+				          drawSizes[0], drawSizes[1], drawSizes[2],
+				          drawSizes[3], cur_maxX, cur_minX, cur_maxY,
+				          cur_minY);
+
+				      cur_x = point.x;
+				      cur_y = point.y;
+
+				      if (cur_points_2_plot < POINTS_TO_CHANGE) {
+				        canvas.drawRect(cur_x - 2, cur_y - 2,
+				            cur_x - 2 + 4, cur_y - 2 + 4, paint);
+				      }
+
+//				      if (roundNumber > 0) {
+				        canvas.drawLine(prev_x, prev_y, cur_x, cur_y, paint);
+//				      }
+				      prev_x = cur_x;
+				      prev_y = cur_y;
+
+				    }
+				  }
+
 				}
+
+
 			}
 			return (true);
 		} catch (Exception e) {

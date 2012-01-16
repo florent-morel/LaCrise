@@ -6,7 +6,7 @@ import java.util.Map;
 public class Round {
 
 	private Integer mRoundNumber;
-	
+
 	private Map<Integer, List<Integer>> mPlayerScoreMap;
 
 	public Round(Integer mRoundNumber, Map<Integer, List<Integer>> mPlayerScoreMap) {
@@ -18,5 +18,9 @@ public class Round {
 	public Map<Integer, List<Integer>> getPlayerScoreMap() {
 		return mPlayerScoreMap;
 	}
-	
+
+  protected Integer getRoundNumber() {
+    return mRoundNumber;
+  }
+
 }
