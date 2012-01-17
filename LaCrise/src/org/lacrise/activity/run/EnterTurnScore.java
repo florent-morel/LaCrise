@@ -82,26 +82,6 @@ public class EnterTurnScore extends Activity implements OnClickListener {
 		if (!currentPlayer.hasStarted()) {
 			mTurnScoreField.setHint(mResources
 					.getString(R.string.turn_score_hint_warmup));
-		Integer gap;
-		Player currentPlayer = mGameManager.getCurrentPlayer();
-		if (currentPlayer.getPlayerScore().getTotal() == null) {
-			gap = mGameManager.getGame().getScoreToReach();
-		} else {
-			gap = mGameManager.getGame().getScoreToReach()
-					- currentPlayer.getPlayerScore().getTotal();
-		}
-
-    mTurnScoreField = (EditText) findViewById(R.id.turn_score_field);
-		TextView turnDialog = (TextView) findViewById(R.id.turn_score_player_text);
-		turnDialog.setText(String.format(
-				mResources.getString(R.string.turn_score_player),
-				currentPlayer.getName(), gap.toString()));
-
-		mTurnScoreField = (EditText) findViewById(R.id.turn_score_field);
-		
-		if (!currentPlayer.hasStarted()) {
-			mTurnScoreField.setHint(mResources
-					.getString(R.string.turn_score_hint_warmup));
 		}
 
 		TextView targetDialog = (TextView) findViewById(R.id.turn_score_target_text);
@@ -109,7 +89,22 @@ public class EnterTurnScore extends Activity implements OnClickListener {
 		mBoxWhite = (CheckBox) findViewById(R.id.turn_score_box_white);
 		mBoxWhite.setOnClickListener(this);
 
-		// Fill the gap target view
+		this.fillTargetView(currentPlayer, targetDialog);
+
+		// Display warning in case player risks penalty
+		TextView warningDialog = (TextView) findViewById(R.id.turn_score_warning);
+		if (!currentPlayer.getPlayerScore().hasZero()) {
+			// Remove the TextView in case no zero
+			warningDialog.setVisibility(View.GONE);
+		}
+	}
+
+  /**
+   * Fill the gap target view.
+   * @param currentPlayer
+   * @param targetDialog
+   */
+  private void fillTargetView(Player currentPlayer, TextView targetDialog) {
 		Map<Integer, Player> playersGap = mGameManager
 				.getPlayersGap(currentPlayer);
 		if (playersGap != null && !playersGap.isEmpty()) {
@@ -146,38 +141,11 @@ public class EnterTurnScore extends Activity implements OnClickListener {
 			}
 			targetDialog.setText(targetString.toString());
 		}
-
-		// Display warning in case player risks penalty
-		TextView warningDialog = (TextView) findViewById(R.id.turn_score_warning);
-		if (!currentPlayer.getPlayerScore().hasZero()) {
-			// Remove the TextView in case no zero
-			warningDialog.setVisibility(View.GONE);
-		}
-	}
+  }
 
 	private Turn submitTurnScore() {
 		return mGameManager.endTurn(Integer.valueOf(mTurnScoreField.getText()
 				.toString()));
-	}
-
-	private boolean isTurnScoreValid() {
-		boolean isValid;
-
-		Matcher m = mScorePattern.matcher(mTurnScoreField.getText().toString());
-		isValid = m.matches();
-
-		if(isValid) {
-			Integer turnScore = Integer.valueOf(mTurnScoreField.getText().toString());
-			if(!Constants.ZERO_VALUE.equals(turnScore)) {
-				// If not a zero, check that is x*50
-				int modulo = turnScore % 50;
-				if (modulo != 0) {
-					isValid = false;
-				}
-			}
-		}
-
-		return isValid;
 	}
 
 	@Override
