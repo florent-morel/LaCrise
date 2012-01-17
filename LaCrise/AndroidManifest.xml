@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.lacrise"
     android:versionCode="0"
-    android:versionName="0.1" android:installLocation="preferExternal">
+    android:versionName="0.1.1" android:installLocation="preferExternal">
 
     <uses-sdk android:minSdkVersion="10" />
 
@@ -27,6 +27,10 @@
             android:label="@string/board_game" >
         </activity>
         <activity
+            android:name=".activity.create.AddPlayer"
+            android:label="@string/menu_add_player" >
+        </activity>
+        <activity
             android:name=".activity.create.RenamePlayer"
             android:label="@string/rename_player" >
         </activity>
@@ -41,6 +45,10 @@
         <activity
             android:name=".activity.run.TurnHistory"
             android:label="@string/turn_history" >
+        </activity>
+        <activity
+            android:name=".activity.run.GameOptions"
+            android:label="@string/game_options" >
         </activity>
     </application>
 

@@ -7,6 +7,7 @@ import org.lacrise.GameManager;
 import org.lacrise.R;
 import org.lacrise.engine.Constants;
 import org.lacrise.engine.game.Player;
+import org.lacrise.engine.game.Turn;
 
 import android.app.Activity;
 import android.content.Context;
@@ -105,9 +106,14 @@ public class PlayerScoreAdapter extends ArrayAdapter<Player> {
 									- player.getLastPlayedTurnId())));
 		} 
 		else {
+			Turn currentTurn = player.getCurrentTurn();
+			Integer score = null;
+			if (currentTurn != null) {
+				score = currentTurn.getScore();
+			}
+			
 			StringBuilder secondLineBuilder = new StringBuilder(String.format(mResources.getString(
-					R.string.second_line_player_last_turn, player
-					.getCurrentTurn().getScore(), player
+					R.string.second_line_player_last_turn, score, player
 					.getLastPlayedTurnId())));
 			if (player.getPlayerScore().hasZero()) {
 				secondLineBuilder.append(Constants.SPACE);
