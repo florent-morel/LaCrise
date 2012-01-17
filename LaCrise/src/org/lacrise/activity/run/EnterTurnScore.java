@@ -1,8 +1,6 @@
 package org.lacrise.activity.run;
 
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.lacrise.GameManager;
 import org.lacrise.R;
