@@ -15,10 +15,10 @@ import android.widget.Toast;
 
 /**
  * Display ongoing game options.
- * 
- * 
+ *
+ *
  * @author fmorel
- * 
+ *
  */
 public class GameOptions extends Activity implements OnClickListener {
 
@@ -69,7 +69,7 @@ public class GameOptions extends Activity implements OnClickListener {
 
 	/**
 	 * Check if new score is valid (superior to current maximum player score).
-	 * 
+	 *
 	 * @param string
 	 * @return
 	 */

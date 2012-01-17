@@ -30,13 +30,13 @@ public interface Constants {
 	static final int TOTAL_REACHED = 2;
 
 	static final int GAME_NEW = 3;
-	
+
 	static final int GAME_CONTINUE = 4;
 
 	static final int GAME_OVER = 5;
 
 	static final int WHITE_FIST = 7;
-	
+
 	static final int NEW_GAME = 8;
 
 	static final int NEW_GAME_QUICK = 9;
@@ -48,16 +48,14 @@ public interface Constants {
 	static final int ENTER_TURN_SCORE = 12;
 
 	static final int GAME_TURN_HISTORY = 13;
-	
-
 
 	static final int MENU_GAME_OPTIONS = 100;
 
 	static final int MENU_ADD_PLAYER = 101;
 
 	static final int MENU_SCORE_CHART = 102;
-	
+
 	static final int ACTIVITY_LAUNCH = 0;
-	
+
 	static final int ACTIVITY_SUCCESS = 20;
 }

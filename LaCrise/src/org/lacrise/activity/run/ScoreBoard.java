@@ -172,7 +172,7 @@ public class ScoreBoard extends Activity {
 
 	/**
 	 * Refresh the score board player list.
-	 * 
+	 *
 	 * @param descending
 	 */
 	private void refreshList() {

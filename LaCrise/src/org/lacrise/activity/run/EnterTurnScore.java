@@ -1,8 +1,6 @@
 package org.lacrise.activity.run;
 
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.lacrise.GameManager;
 import org.lacrise.R;
@@ -11,10 +9,12 @@ import org.lacrise.engine.game.Player;
 import org.lacrise.engine.game.Turn;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -44,6 +44,15 @@ public class EnterTurnScore extends Activity implements OnClickListener {
 						.getCurrentPlayer().getName()));
 
 		createTurnTargetLayout();
+
+    // Display keyboard directly
+    mTurnScoreField.postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        InputMethodManager keyboard = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        keyboard.showSoftInput(mTurnScoreField, 0);
+      }
+    }, 200);
 
 		Button button = (Button) findViewById(R.id.submit_turn);
 		button.setOnClickListener(this);
@@ -78,7 +87,22 @@ public class EnterTurnScore extends Activity implements OnClickListener {
 		mBoxWhite = (CheckBox) findViewById(R.id.turn_score_box_white);
 		mBoxWhite.setOnClickListener(this);
 
-		// Fill the gap target view
+		this.fillTargetView(currentPlayer, targetDialog);
+
+		// Display warning in case player risks penalty
+		TextView warningDialog = (TextView) findViewById(R.id.turn_score_warning);
+		if (!currentPlayer.getPlayerScore().hasZero()) {
+			// Remove the TextView in case no zero
+			warningDialog.setVisibility(View.GONE);
+		}
+	}
+
+  /**
+   * Fill the gap target view.
+   * @param currentPlayer
+   * @param targetDialog
+   */
+  private void fillTargetView(Player currentPlayer, TextView targetDialog) {
 		Map<Integer, Player> playersGap = mGameManager
 				.getPlayersGap(currentPlayer);
 		if (playersGap != null && !playersGap.isEmpty()) {
