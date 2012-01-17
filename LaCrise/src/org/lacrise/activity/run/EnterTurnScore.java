@@ -11,10 +11,12 @@ import org.lacrise.engine.game.Player;
 import org.lacrise.engine.game.Turn;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -30,7 +32,7 @@ public class EnterTurnScore extends Activity implements OnClickListener {
 	private EditText mTurnScoreField;
 
 	private CheckBox mBoxWhite;
-	
+
 	public static Pattern mScorePattern = Pattern.compile("[0-9]{1,5}");
 
 	@Override
@@ -48,7 +50,14 @@ public class EnterTurnScore extends Activity implements OnClickListener {
 
 		createTurnTargetLayout();
 
-		mTurnScoreField = (EditText) findViewById(R.id.turn_score_field);
+    // Display keyboard directly
+    mTurnScoreField.postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        InputMethodManager keyboard = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        keyboard.showSoftInput(mTurnScoreField, 0);
+      }
+    }, 200);
 
 		Button button = (Button) findViewById(R.id.submit_turn);
 		button.setOnClickListener(this);
@@ -69,6 +78,8 @@ public class EnterTurnScore extends Activity implements OnClickListener {
 		turnDialog.setText(String.format(mResources
 				.getString(R.string.turn_score_player), mGameManager
 				.getCurrentPlayer().getName(), playerScore));
+
+    mTurnScoreField = (EditText) findViewById(R.id.turn_score_field);
 
 		TextView targetDialog = (TextView) findViewById(R.id.turn_score_target_text);
 
@@ -130,10 +141,10 @@ public class EnterTurnScore extends Activity implements OnClickListener {
 
 	private boolean isTurnScoreValid() {
 		boolean isValid;
-		
+
 		Matcher m = mScorePattern.matcher(mTurnScoreField.getText().toString());
 		isValid = m.matches();
-		
+
 		if(isValid) {
 			Integer turnScore = Integer.valueOf(mTurnScoreField.getText().toString());
 			if(!Constants.ZERO_VALUE.equals(turnScore)) {
@@ -144,7 +155,7 @@ public class EnterTurnScore extends Activity implements OnClickListener {
 				}
 			}
 		}
-		
+
 		return isValid;
 	}
 
