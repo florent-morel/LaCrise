@@ -3,8 +3,6 @@ package org.lacrise.engine.game;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lacrise.engine.Constants;
-
 public class PlayerScore {
 
 	/**
