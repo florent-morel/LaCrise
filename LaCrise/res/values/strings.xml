@@ -14,6 +14,7 @@
     <string name="menu_add_player">Add a player</string>
     <string name="menu_rename_players">Rename players</string>
     <string name="menu_turn_history">Turn history</string>
+    <string name="menu_score_chart">Score chart</string>
 
     <string name="create_game">Create game</string>
     <string name="number_player">Number of players</string>
