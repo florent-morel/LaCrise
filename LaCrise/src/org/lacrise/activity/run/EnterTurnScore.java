@@ -67,7 +67,7 @@ public class EnterTurnScore extends Activity implements OnClickListener {
 				currentPlayer.getName(), gap.toString()));
 
 		mTurnScoreField = (EditText) findViewById(R.id.turn_score_field);
-		
+
 		if (!currentPlayer.hasStarted()) {
 			mTurnScoreField.setHint(mResources
 					.getString(R.string.turn_score_hint_warmup));
