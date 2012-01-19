@@ -60,7 +60,10 @@ public class ScoreBoard extends Activity {
 					int position, long id) {
 				if (mGameManager.getGame().isGameOver()) {
 					// Prevent from creating next turn
-					buildGameOverMessage(null, null, new StringBuilder());
+				  StringBuilder message = new StringBuilder();
+					buildGameOverMessage(null, null, message);
+		      // Create the dialog
+		      createAlert(message.toString());
 				} else {
 					playNextTurn();
 				}
@@ -75,7 +78,8 @@ public class ScoreBoard extends Activity {
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, Constants.MENU_GAME_OPTIONS, 0, R.string.menu_game_options);
 		menu.add(0, Constants.MENU_ADD_PLAYER, 0, R.string.menu_add_player);
-		menu.add(0, Constants.MENU_SCORE_CHART, 0, R.string.menu_score_chart);
+    menu.add(0, Constants.MENU_SCORE_CHART, 0, R.string.menu_score_chart);
+    menu.add(0, Constants.MENU_SIMULATE_ROUNDS, 0, "simulate rounds");
 
 		return true;
 	}
@@ -89,18 +93,40 @@ public class ScoreBoard extends Activity {
 		case Constants.MENU_ADD_PLAYER:
 			launchAddPlayer();
 			return true;
-		case Constants.MENU_SCORE_CHART:
-			launchScoreChart();
-			return true;
+    case Constants.MENU_SCORE_CHART:
+      launchScoreChart();
+      return true;
+    case Constants.MENU_SIMULATE_ROUNDS:
+      simulateRounds();
+      return true;
 		}
 
 		return super.onMenuItemSelected(featureId, item);
 	}
 
-	private void launchScoreChart() {
-		Intent intent = new Intent(this, ScoreChart.class);
-		startActivityForResult(intent, Constants.ACTIVITY_LAUNCH);
-	}
+  private void simulateRounds() {
+
+    int NB_ROUNDS = 10;
+    // Simulate NB_ROUNDS number of rounds
+    for (int i = 0; i < NB_ROUNDS; i++) {
+
+      // Play one turn per player
+      for (Player player : mGameManager.getGame().getPlayerList()) {
+
+        mGameManager.playTurn();
+        Integer score = Double.valueOf(Math.random() * 10 * 50).intValue();
+        mGameManager.endTurn(score);
+      }
+
+    }
+
+    refreshList();
+  }
+
+  private void launchScoreChart() {
+    Intent intent = new Intent(this, ScoreChart.class);
+    startActivityForResult(intent, Constants.ACTIVITY_LAUNCH);
+  }
 
 	private void launchGameOptions() {
 		Intent intent = new Intent(this, GameOptions.class);
