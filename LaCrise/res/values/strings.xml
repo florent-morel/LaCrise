@@ -12,6 +12,7 @@
     <string name="menu_back_game">Back to game</string>
     <string name="menu_game_options">Game options</string>
     <string name="menu_add_player">Add a player</string>
+    <string name="menu_start_new_game">Start a new game</string>
     <string name="menu_rename_players">Rename players</string>
     <string name="menu_turn_history">Turn history</string>
 
@@ -44,6 +45,7 @@
     <string name="player_rank">%1$d</string>
     <string name="second_line_player_warmup">Still in warm-up (%1$d).</string>
     <string name="second_line_player_zero">zero!</string>
+    <string name="second_line_player_entering">Entering the game</string>
     <string name="second_line_player_last_turn">Last turn score (turn id): %1$d (%2$d)</string>
 
     <string name="dialog_welcome">Number of warm-up rounds: %1$d</string>

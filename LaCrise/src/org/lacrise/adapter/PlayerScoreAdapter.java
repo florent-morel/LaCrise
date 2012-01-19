@@ -81,6 +81,15 @@ public class PlayerScoreAdapter extends ArrayAdapter<Player> {
 		rank.setText(String.format(mResources.getString(R.string.player_rank),
 				position + 1));
 
+		buildFirstLine(v, player);
+
+		buildSecondLine(v, player);
+
+		return v;
+
+	}
+
+	private void buildFirstLine(View v, Player player) {
 		TextView firstLine = (TextView) v.findViewById(R.id.firstLine);
 		StringBuilder firstLineBuilder = new StringBuilder();
 		if (mNextPlayer != null && mNextPlayer.getId().equals(player.getId())) {
@@ -92,29 +101,44 @@ public class PlayerScoreAdapter extends ArrayAdapter<Player> {
 		if (player.getPlayerScore().getTotal() == null) {
 			firstLineBuilder.append(mResources.getString(R.string.no_score));
 		} else {
-			firstLineBuilder.append(player.getPlayerScore().getTotal().toString());
+			firstLineBuilder.append(player.getPlayerScore().getTotal()
+					.toString());
 		}
 
 		firstLine.setText(firstLineBuilder);
+	}
 
+	private void buildSecondLine(View v, Player player) {
 		TextView secondLine = (TextView) v.findViewById(R.id.secondLine);
-		if (!player.hasStarted()) {
+		if (!player.hasStarted()
+				&& player.getLastPlayedTurnId().compareTo(
+						mGameManager.getGame().getWarmUpRounds()) < 0) {
 			secondLine
 					.setText(String.format(mResources.getString(
 							R.string.second_line_player_warmup,
 							mGameManager.getGame().getWarmUpRounds()
 									- player.getLastPlayedTurnId())));
-		} 
-		else {
+		} else {
 			Turn currentTurn = player.getCurrentTurn();
 			Integer score = null;
+			boolean isWarmup = true;
 			if (currentTurn != null) {
 				score = currentTurn.getScore();
+				isWarmup = currentTurn.isWarmup();
 			}
-			
-			StringBuilder secondLineBuilder = new StringBuilder(String.format(mResources.getString(
-					R.string.second_line_player_last_turn, score, player
-					.getLastPlayedTurnId())));
+
+			StringBuilder secondLineBuilder = new StringBuilder();
+
+			if (!player.hasStarted() && isWarmup) {
+				// Player is entering the game and last turn was last warm-up
+				secondLineBuilder.append(mResources.getString(
+						R.string.second_line_player_entering));
+			} else {
+				secondLineBuilder.append(String.format(mResources.getString(
+						R.string.second_line_player_last_turn, score,
+						player.getLastPlayedTurnId())));
+			}
+
 			if (player.getPlayerScore().hasZero()) {
 				secondLineBuilder.append(Constants.SPACE);
 				secondLineBuilder.append(mResources
@@ -122,9 +146,6 @@ public class PlayerScoreAdapter extends ArrayAdapter<Player> {
 			}
 			secondLine.setText(secondLineBuilder);
 		}
-
-		return v;
-
 	}
 
 }

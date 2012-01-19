@@ -16,6 +16,11 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+/**
+ * @author florent
+ * @deprecated this activity is not needed anymore since 
+ * Game is directly launched by {@link#NewGame}
+ */
 public class GameBoard extends ListActivity {
 
 	private static final int ACTIVITY_NEW = 0;

@@ -26,6 +26,7 @@ public class Game {
 	
 	public Game() {
 		super();
+		mPlayerList = new ArrayList<Player>();
 	}
 
 	public void setGameOver(boolean mIsGameOver) {

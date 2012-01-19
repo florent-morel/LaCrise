@@ -37,7 +37,7 @@ public class GameManager {
 
 	// TODO should create Rounds and store them in the Game.
 	private int mRoundNumbers = 0;
-	
+
 	public static Pattern mScorePattern = Pattern.compile("[0-9]{1,5}");
 
 	private GameManager() {
@@ -58,23 +58,30 @@ public class GameManager {
 	}
 
 	public void startNewGame(Integer numberOfPlayers, Integer scoreToReach,
-			Integer nbWarmUps, boolean isDebug) {
+			Integer nbWarmUps, boolean isDebug, List<Player> playerList) {
 		mGame = new Game();
 		mCurrentPlayer = null;
 		mRoundNumbers = 0;
-		List<Player> playerList = new ArrayList<Player>(numberOfPlayers);
+
+		if (playerList == null) {
+			playerList = new ArrayList<Player>(numberOfPlayers);
+		}
 
 		for (int i = 0; i < numberOfPlayers; i++) {
-			Player player = new Player(Integer.valueOf(i));
-			// TODO StringBuilder nameBuilder = new
-			// StringBuilder(R.string.player_name_default);
-			// nameBuilder.append((i+1));
-			player.setName("P #" + (i + 1));
-			if (isDebug) {
-				player.getPlayerScore().setTotal((i + 1) * 100);
+
+			if (i < playerList.size()) {
+				Player player = playerList.get(i);
+				if (player == null) {
+					createNewPlayer(playerList, isDebug, i);
+				} else {
+					// Reset player game history
+					player.initPlayer();
+				}
+			} else {
+				// More requested players than existing
+				createNewPlayer(playerList, isDebug, i);
 			}
 
-			playerList.add(player);
 		}
 
 		mGame.setPlayerList(playerList);
@@ -85,24 +92,38 @@ public class GameManager {
 
 	}
 
+	private void createNewPlayer(List<Player> playerList, boolean isDebug, int i) {
+		Player player;
+		player = new Player(Integer.valueOf(i));
+		// TODO StringBuilder nameBuilder = new
+		// StringBuilder(R.string.player_name_default);
+		// nameBuilder.append((i+1));
+		player.setName("P #" + (i + 1));
+		if (isDebug) {
+			player.getPlayerScore().setTotal((i + 1) * 100);
+		}
+		playerList.add(player);
+	}
+
 	/**
 	 * Get the next player to play and initialize him for next turn.
 	 */
 	private void initNextPlayer() {
 		mCurrentPlayer = getNextPlayer();
-		
+
 		if (mCurrentPlayer.getId().equals(Constants.ZERO_VALUE)) {
 			// Each time first player plays, increment the number of played
 			// rounds
 			mGame.increaseRoundNumber();
 		}
 		// In case warm rounds are over, force player to enter the game
-		if (!mCurrentPlayer.hasStarted() && mGame.getRoundNumber() > mGame.getWarmUpRounds()) {
+		if (!mCurrentPlayer.hasStarted()
+				&& mGame.getRoundNumber() > mGame.getWarmUpRounds()) {
 			mCurrentPlayer.setHasStarted();
 		}
 
 	}
-	
+
 	/**
 	 * Get the next player to play.
 	 * 
@@ -110,19 +131,20 @@ public class GameManager {
 	 */
 	public Player getNextPlayer() {
 		Player nextPlayer;
-		
+
 		int nbPlayers = mGame.getPlayerList().size();
 		Player players[] = new Player[nbPlayers];
 		players = mGame.getPlayerList().toArray(players);
-		
+
 		int modulo = mRoundNumbers % nbPlayers;
 		nextPlayer = players[modulo];
-		
+
 		return nextPlayer;
 	}
 
 	private Integer checkEndGame(Integer result) {
-		if (getPlayersByRank().size() > 0 && getPlayersByRank().first().getTotalScore() != null) {
+		if (getPlayersByRank().size() > 0
+				&& getPlayersByRank().first().getTotalScore() != null) {
 			if (getPlayersByRank().first().getTotalScore() >= mGame
 					.getScoreToReach()) {
 				// Total score reached
@@ -144,7 +166,7 @@ public class GameManager {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Shortcut to get current #1 ranked player in current game.
 	 * 
@@ -183,7 +205,7 @@ public class GameManager {
 			Integer otherScore = otherPlayer.getTotalScore();
 			if (otherScore != null) {
 				playerGap.put(otherScore - playerScore, otherPlayer);
-			
+
 			}
 		}
 
@@ -195,7 +217,7 @@ public class GameManager {
 	 */
 	public void playTurn() {
 		initNextPlayer();
-		mCurrentTurn = new Turn(mGame.getRoundNumber());
+		mCurrentTurn = new Turn(mGame.getRoundNumber(), !mCurrentPlayer.hasStarted());
 	}
 
 	/**
@@ -293,12 +315,12 @@ public class GameManager {
 				} else {
 					playerScore.setHasZero(true);
 				}
-			}
-			else {
+			} else {
 				playerScore.setHasZero(false);
 			}
 
-			if(playerScore.getTotal() != null || !Constants.ZERO_VALUE.equals(mCurrentTurn.getScore())) {
+			if (playerScore.getTotal() != null
+					|| !Constants.ZERO_VALUE.equals(mCurrentTurn.getScore())) {
 				playerScore.addTurnScoreToTotal(mCurrentTurn.getScore());
 			}
 		}
@@ -323,7 +345,8 @@ public class GameManager {
 
 		for (Player otherPlayer : filteredPlayerList) {
 			// Do not apply penalty in case other player is still in warm up
-			if (otherPlayer.hasStarted() && otherPlayer.getPlayerScore().getTotal() != null) {
+			if (otherPlayer.hasStarted()
+					&& otherPlayer.getPlayerScore().getTotal() != null) {
 				if (otherPlayer.getPlayerScore().getTotal()
 						.equals(currentPlayer.getPlayerScore().getTotal())) {
 

@@ -54,6 +54,8 @@ public interface Constants {
 	static final int MENU_GAME_OPTIONS = 10;
 
 	static final int MENU_ADD_PLAYER = 11;
+
+	static final int MENU_STAR_NEW = 12;
 	
 	static final int ACTIVITY_LAUNCH = 0;
 	

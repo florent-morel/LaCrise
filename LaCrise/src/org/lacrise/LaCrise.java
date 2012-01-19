@@ -53,7 +53,7 @@ public class LaCrise extends Activity {
 			menu.add(0, Constants.NEW_GAME_QUICK, 1, R.string.menu_new_quick);
 		}
 
-		if (mGameManager.getGame().getPlayerList() != null) {
+		if (!mGameManager.getGame().getPlayerList().isEmpty()) {
 			// A game is ongoing, add menu to continue
 			if (menu.findItem(Constants.GAME_CONTINUE) == null) {
 				menu.add(0, Constants.GAME_CONTINUE, 2, R.string.menu_continue);
@@ -111,13 +111,13 @@ public class LaCrise extends Activity {
 	}
 
 	private void createQuickGame() {
-		mGameManager.startNewGame(3, 1500, 1, false);
+		mGameManager.startNewGame(3, 1500, 1, false, null);
 		Intent intent = new Intent(this, ScoreBoard.class);
 		startActivityForResult(intent, Constants.NEW_GAME_QUICK);
 	}
 
 	private void createGameDebug() {
-		mGameManager.startNewGame(3, 1500, 1, true);
+		mGameManager.startNewGame(3, 1500, 1, true, null);
 		Intent intent = new Intent(this, ScoreBoard.class);
 		startActivityForResult(intent, Constants.NEW_GAME_DEBUG);
 	}

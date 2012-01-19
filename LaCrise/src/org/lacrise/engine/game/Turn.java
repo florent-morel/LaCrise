@@ -13,14 +13,17 @@ public class Turn {
 
 	private Integer mScore = Constants.ZERO_VALUE;
 
+	private boolean mIsWarmup;
+
 	private boolean mIsWhite;
 	
 	private List<Penalty> mPenaltyList = new ArrayList<Penalty>();
 	
-	public Turn(Integer id) {
+	public Turn(Integer id, boolean isWarmup) {
 		super();
 		this.mId = id;
 		mPenaltyList = new ArrayList<Penalty>();
+		this.mIsWarmup = isWarmup;
 	}
 
 	public Integer getTurnResultCode() {
@@ -58,4 +61,9 @@ public class Turn {
 	public void setWhite(boolean isWhite) {
 		this.mIsWhite = isWhite;
 	}
+
+	public boolean isWarmup() {
+		return mIsWarmup;
+	}
+
 }

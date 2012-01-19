@@ -19,7 +19,13 @@ public class Player implements Comparable<Player> {
 	public Player(Integer internalId) {
 		super();
 		this.mId = internalId;
+		this.initPlayer();
+	}
+	
+	public void initPlayer() {
 		mPlayerScore = new PlayerScore();
+		mCurrentTurn = null;
+		mHasStarted = false;
 	}
 
 	public Turn getCurrentTurn() {

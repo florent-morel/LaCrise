@@ -5,6 +5,7 @@ import java.util.SortedSet;
 import org.lacrise.GameManager;
 import org.lacrise.R;
 import org.lacrise.activity.create.AddPlayer;
+import org.lacrise.activity.create.NewGame;
 import org.lacrise.activity.create.RenamePlayer;
 import org.lacrise.adapter.PlayerScoreAdapter;
 import org.lacrise.engine.Constants;
@@ -75,6 +76,7 @@ public class ScoreBoard extends Activity {
     super.onCreateOptionsMenu(menu);
     menu.add(0, Constants.MENU_GAME_OPTIONS, 0, R.string.menu_game_options);
     menu.add(0, Constants.MENU_ADD_PLAYER, 0, R.string.menu_add_player);
+    menu.add(0, Constants.MENU_STAR_NEW, 0, R.string.menu_start_new_game);
 
     return true;
   }
@@ -87,6 +89,9 @@ public class ScoreBoard extends Activity {
 			return true;
 		case Constants.MENU_ADD_PLAYER:
 			launchAddPlayer();
+			return true;
+		case Constants.MENU_STAR_NEW:
+			launchNewGame();
 			return true;
 		}
 
@@ -101,6 +106,11 @@ public class ScoreBoard extends Activity {
 	private void launchAddPlayer() {
 		Intent intent = new Intent(this, AddPlayer.class);
 		startActivityForResult(intent, Constants.ACTIVITY_LAUNCH);
+	}
+
+	private void launchNewGame() {
+		Intent i = new Intent(this, NewGame.class);
+		startActivityForResult(i, Constants.GAME_NEW);
 	}
 
 	/**
