@@ -227,4 +227,14 @@ public class Game {
 		playerScore.getPenaltyList().add(penalty);
 		this.addTurnScoreToTotal(player, penalty.getPenaltyValue());
 	}
+
+	public int getNumberActivePlayer() {
+		int nbActive = 0;
+		for (Player player : this.getPlayerList()) {
+			if (player.isActive()) {
+				nbActive++;
+			}
+		}
+		return nbActive;
+	}
 }

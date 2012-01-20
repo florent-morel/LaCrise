@@ -12,7 +12,6 @@ import org.lacrise.engine.game.Turn;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +39,7 @@ public class PlayerScoreAdapter extends ArrayAdapter<Player> {
     mGameManager = GameManager.getSingletonObject();
 
     if (!mGameManager.getGame().isGameOver()) {
-      mNextPlayer = mGameManager.getNextPlayer();
+      mNextPlayer = mGameManager.getNextPlayer(false);
     }
 
     this.mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

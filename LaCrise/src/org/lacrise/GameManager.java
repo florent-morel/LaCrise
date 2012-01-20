@@ -108,19 +108,32 @@ public class GameManager {
 	/**
 	 * Get the next player to play and initialize him for next turn.
 	 */
-	private void initNextPlayer() {
-		mCurrentPlayer = getNextPlayer();
+	public Player getNextPlayer(boolean initPlayer) {
+		mCurrentPlayer = computeNextPlayer();
 
-		if (mCurrentPlayer.getId().equals(Constants.ZERO_VALUE)) {
-			// Each time first player plays, increment the number of played
-			// rounds
-			mGame.createNewRound();
+		if (initPlayer) {
+
+			if (mCurrentPlayer.getId().equals(Constants.ZERO_VALUE)) {
+				// Each time first player plays, increment the number of played
+				// rounds
+				mGame.createNewRound();
+			}
+			// In case warm rounds are over, force player to enter the game
+			if (!mCurrentPlayer.hasStarted()
+					&& mGame.getRoundNumber() > mGame.getWarmUpRounds()) {
+				mCurrentPlayer.setHasStarted();
+			}
 		}
-		// In case warm rounds are over, force player to enter the game
-		if (!mCurrentPlayer.hasStarted()
-				&& mGame.getRoundNumber() > mGame.getWarmUpRounds()) {
-			mCurrentPlayer.setHasStarted();
+
+		if (mGame.getNumberActivePlayer() > 0) {
+			// Skip player if not active
+			while (!mCurrentPlayer.isActive()) {
+				mNbPlayersForThisRound++;
+				getNextPlayer(initPlayer);
+			}
 		}
+
+		return mCurrentPlayer;
 
 	}
 
@@ -129,7 +142,7 @@ public class GameManager {
 	 * 
 	 * @return
 	 */
-	public Player getNextPlayer() {
+	private Player computeNextPlayer() {
 		Player nextPlayer;
 
 		int nbPlayers = mGame.getPlayerList().size();
@@ -216,12 +229,7 @@ public class GameManager {
 	 * Initiate a turn: get next player and create new turn.
 	 */
 	public void playTurn() {
-		initNextPlayer();
-
-		while (!mCurrentPlayer.isActive()) {
-			mNbPlayersForThisRound++;
-			initNextPlayer();
-		}
+		getNextPlayer(true);
 
 		mCurrentTurn = new Turn(mGame.getRoundNumber(),
 				!mCurrentPlayer.hasStarted());

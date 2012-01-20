@@ -78,6 +78,7 @@
     <string name="submit_turn_score">Validate</string>
 
     <string name="activate_player">Toggle is active</string>
+    <string name="dialog_no_more_active">No active player in the game.</string>
     <string name="dialog_activate_player">Player %1$s is now</string>
     <string name="dialog_player_active">active</string>
     <string name="dialog_player_non_active">not active</string>

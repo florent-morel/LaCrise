@@ -193,9 +193,19 @@ public class ScoreBoard extends Activity {
 	}
 
 	private void playNextTurn() {
-		mGameManager.playTurn();
-		Intent intent = new Intent(this, EnterTurnScore.class);
-		startActivityForResult(intent, Constants.ENTER_TURN_SCORE);
+		if (mGameManager.getGame().getNumberActivePlayer() > 0) {
+			mGameManager.playTurn();
+			Intent intent = new Intent(this, EnterTurnScore.class);
+			startActivityForResult(intent, Constants.ENTER_TURN_SCORE);
+		} else {
+			// No player remain active in the game
+			StringBuilder message = new StringBuilder();
+			message.append(mResources.getString(R.string.dialog_no_more_active));
+
+			Toast toast = Toast.makeText(this, message.toString(),
+					Toast.LENGTH_SHORT);
+			toast.show();
+		}
 	}
 
 	private void launchScoreChart() {
@@ -218,7 +228,7 @@ public class ScoreBoard extends Activity {
 				mGameManager.endTurn(score);
 			}
 		}
-		
+
 		refreshList();
 	}
 
@@ -291,7 +301,7 @@ public class ScoreBoard extends Activity {
 		message.append(Constants.NEW_LINE);
 		message.append(String.format(mResources
 				.getString(R.string.dialog_next_player), mGameManager
-				.getNextPlayer().getName()));
+				.getNextPlayer(false).getName()));
 	}
 
 	private void buildPenaltyMessage(Player player, Turn playedTurn,
