@@ -17,9 +17,9 @@ import android.widget.Toast;
 
 /**
  * Activity adding a new player to current game.
- * 
+ *
  * @author florent
- * 
+ *
  */
 public class AddPlayer extends Activity implements OnClickListener {
 
@@ -152,14 +152,14 @@ public class AddPlayer extends Activity implements OnClickListener {
 
 	/**
 	 * Check that no other player has the same score.
-	 * 
+	 *
 	 * @param playerScore
 	 * @return
 	 */
 	private boolean isExistingScore(Integer playerScore) {
 		boolean exist = false;
 		for (Player player : mGameManager.getGame().getPlayerList()) {
-			if (playerScore.equals(player.getTotalScore())) {
+			if (playerScore.equals(player.getTotalScore(true))) {
 				exist = true;
 				break;
 			}
@@ -169,7 +169,7 @@ public class AddPlayer extends Activity implements OnClickListener {
 
 	/**
 	 * Check that no other player has the same name.
-	 * 
+	 *
 	 * @param playerName
 	 * @return
 	 */

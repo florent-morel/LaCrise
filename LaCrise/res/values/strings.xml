@@ -15,6 +15,7 @@
     <string name="menu_start_new_game">Start a new game</string>
     <string name="menu_rename_players">Rename players</string>
     <string name="menu_turn_history">Turn history</string>
+    <string name="menu_score_chart">Score chart</string>
 
     <string name="create_game">Create game</string>
     <string name="number_player">Number of players</string>
@@ -91,6 +92,9 @@
     <string name="dialog_options_score_invalid">New score must be superior to %1$d</string>
     <string name="new_total_confirm">New total to reach: %1$s</string>
     <string name="submit_options">Validate</string>
+
+    <string name="score_chart">Score chart</string>
+    <string name="score_chart_img_alt">Current game score chart.</string>
 
 
 </resources>

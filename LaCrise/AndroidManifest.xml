@@ -39,6 +39,10 @@
             android:label="@string/score_board" >
         </activity>
         <activity
+            android:name=".activity.run.ScoreChart"
+            android:label="@string/score_chart" >
+        </activity>
+        <activity
             android:name=".activity.run.EnterTurnScore"
             android:label="@string/turn_score" >
         </activity>

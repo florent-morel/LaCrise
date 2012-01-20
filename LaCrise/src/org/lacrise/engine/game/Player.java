@@ -64,8 +64,24 @@ public class Player implements Comparable<Player> {
 		return mId;
 	}
 
-	public Integer getTotalScore() {
-		return mPlayerScore.getTotal();
+	/**
+	 * Return current total score.
+	 * 
+	 * @param nullable
+	 * 		if true and score is null, return null
+	 * 			if false, return zero
+	 * @return
+	 * 	Player current score.
+	 *  
+	 */
+	public Integer getTotalScore(boolean nullable) {
+		Integer total = mPlayerScore.getTotal();
+		
+		if (total == null && !nullable) {
+			total = Constants.ZERO_VALUE;
+		}
+		
+		return total;
 	}
 
 	public PlayerScore getPlayerScore() {
@@ -97,9 +113,9 @@ public class Player implements Comparable<Player> {
 		int toReturn = 0;
 
 		if (!this.equals(another)) {
-			if (this.getTotalScore() == null) {
+			if (this.getTotalScore(true) == null) {
 				// Current player has no score yet.
-				if (another.getTotalScore() != null) {
+				if (another.getTotalScore(true) != null) {
 					toReturn = -1;
 				}
 				else {
@@ -109,10 +125,10 @@ public class Player implements Comparable<Player> {
 				}
 			}
 			else {
-				if (another.getTotalScore() != null) {
+				if (another.getTotalScore(true) != null) {
 					// Both have a non null score, order by score
-					toReturn = this.getTotalScore().compareTo(
-							another.getTotalScore());
+					toReturn = this.getTotalScore(true).compareTo(
+							another.getTotalScore(true));
 				}
 				else {
 					toReturn = 1;

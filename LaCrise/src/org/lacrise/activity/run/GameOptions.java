@@ -15,10 +15,10 @@ import android.widget.Toast;
 
 /**
  * Display ongoing game options.
- * 
- * 
+ *
+ *
  * @author fmorel
- * 
+ *
  */
 public class GameOptions extends Activity implements OnClickListener {
 
@@ -69,7 +69,7 @@ public class GameOptions extends Activity implements OnClickListener {
 
 	/**
 	 * Check if new score is valid (superior to current maximum player score).
-	 * 
+	 *
 	 * @param string
 	 * @return
 	 */
@@ -77,7 +77,7 @@ public class GameOptions extends Activity implements OnClickListener {
 		Integer toReturn = null;
 
 		Integer newTotal = Integer.valueOf(string);
-		Integer maxScore = mGameManager.getFirstRankedPlayer().getTotalScore();
+		Integer maxScore = mGameManager.getFirstRankedPlayer().getTotalScore(true);
 		if (newTotal != null) {
 			if (maxScore == null) {
 				// No player scored yet, new total to reach has to be > 0
