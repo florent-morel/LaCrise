@@ -17,11 +17,11 @@ import org.lacrise.engine.game.Turn;
 
 /**
  * Singleton handling the game instance.
- *
+ * 
  * Starts a new game, sorts players by rank, computes a turn score...
- *
+ * 
  * @author florent
- *
+ * 
  */
 public class GameManager {
 
@@ -124,33 +124,28 @@ public class GameManager {
 
 	}
 
-  /**
-   * Get the next player to play.
-   *
-   * @return
-   */
-  public Player getNextPlayer() {
-    Player nextPlayer;
+	/**
+	 * Get the next player to play.
+	 * 
+	 * @return
+	 */
+	public Player getNextPlayer() {
+		Player nextPlayer;
 
-    int nbPlayers = mGame.getPlayerList().size();
-    Player players[] = new Player[nbPlayers];
-    players = mGame.getPlayerList().toArray(players);
+		int nbPlayers = mGame.getPlayerList().size();
+		Player players[] = new Player[nbPlayers];
+		players = mGame.getPlayerList().toArray(players);
 
-    int modulo = mNbPlayersForThisRound % nbPlayers;
-    nextPlayer = players[modulo];
+		int modulo = mNbPlayersForThisRound % nbPlayers;
+		nextPlayer = players[modulo];
 
-    return nextPlayer;
-  }
+		return nextPlayer;
+	}
 
 	private Integer checkEndGame(Integer result) {
-<<<<<<< HEAD
 		if (getPlayersByRank().size() > 0
-				&& getPlayersByRank().first().getTotalScore() != null) {
-			if (getPlayersByRank().first().getTotalScore() >= mGame
-=======
-		if (getPlayersByRank().size() > 0 && getPlayersByRank().first().getTotalScore(true) != null) {
+				&& getPlayersByRank().first().getTotalScore(true) != null) {
 			if (getPlayersByRank().first().getTotalScore(true) >= mGame
->>>>>>> dev
 					.getScoreToReach()) {
 				// Total score reached
 				if (!mGame.isTotalReached()) {
@@ -174,7 +169,7 @@ public class GameManager {
 
 	/**
 	 * Shortcut to get current #1 ranked player in current game.
-	 *
+	 * 
 	 * @return
 	 */
 	public Player getFirstRankedPlayer() {
@@ -183,7 +178,7 @@ public class GameManager {
 
 	/**
 	 * Get the set of game players sorted by score value.
-	 *
+	 * 
 	 * @return
 	 */
 	public SortedSet<Player> getPlayersByRank() {
@@ -195,7 +190,7 @@ public class GameManager {
 	/**
 	 * Get the set of game players sorted by gap value compared to given
 	 * {@link#Player}.
-	 *
+	 * 
 	 * @return
 	 */
 	public SortedMap<Integer, Player> getPlayersGap(Player player) {
@@ -223,18 +218,19 @@ public class GameManager {
 	public void playTurn() {
 		initNextPlayer();
 
-    while (!mCurrentPlayer.isActive()) {
-      mNbPlayersForThisRound++;
-      initNextPlayer();
-    }
+		while (!mCurrentPlayer.isActive()) {
+			mNbPlayersForThisRound++;
+			initNextPlayer();
+		}
 
-		mCurrentTurn = new Turn(mGame.getRoundNumber(), !mCurrentPlayer.hasStarted());
+		mCurrentTurn = new Turn(mGame.getRoundNumber(),
+				!mCurrentPlayer.hasStarted());
 	}
 
 	/**
 	 * Terminates a run. Store turn score. Compute other scores for penalties.
 	 * Check for end of game after this turn.
-	 *
+	 * 
 	 * @param turnScore
 	 * @return
 	 */
@@ -274,7 +270,7 @@ public class GameManager {
 
 	/**
 	 * Check if a score is valid (Integer multiple of 50).
-	 *
+	 * 
 	 * @param score
 	 * @return
 	 */
@@ -316,13 +312,12 @@ public class GameManager {
 				|| mCurrentTurn.getScore() > Constants.ZERO_VALUE) {
 			mCurrentPlayer.setHasStarted();
 			PlayerScore playerScore = player.getPlayerScore();
-			
+
 			if (Constants.ZERO_VALUE.equals(mCurrentTurn.getScore())) {
 				if (playerScore.hasZero()) {
 					Penalty penalty = new Penalty(mCurrentPlayer,
 							mCurrentPlayer, mCurrentTurn.getId());
 					mGame.applyPenalty(player, penalty);
-//					mCurrentTurn.setScore(penalty.getPenaltyValue());
 					playerScore.setHasZero(false);
 					result = Constants.PENALTY_APPLIED;
 				} else {
@@ -332,15 +327,9 @@ public class GameManager {
 				playerScore.setHasZero(false);
 			}
 
-<<<<<<< HEAD
-			if (playerScore.getTotal() != null
-					|| !Constants.ZERO_VALUE.equals(mCurrentTurn.getScore())) {
-				playerScore.addTurnScoreToTotal(mCurrentTurn.getScore());
-=======
 			if (player.getTotalScore(true) != null
 					|| !Constants.ZERO_VALUE.equals(mCurrentTurn.getScore())) {
 				mGame.addTurnScoreToTotal(player, mCurrentTurn.getScore());
->>>>>>> dev
 			}
 		}
 
@@ -350,7 +339,7 @@ public class GameManager {
 
 	/**
 	 * Check recursively whether current player got another's total score.
-	 *
+	 * 
 	 * @param currentPlayer
 	 * @param filteredPlayerList
 	 * @deprecated TODO use a linear way (list) instead of recursivity.
@@ -386,7 +375,7 @@ public class GameManager {
 
 	/**
 	 * Set player name.
-	 *
+	 * 
 	 * @param playerId
 	 * @param playerName
 	 */

@@ -55,11 +55,9 @@ public interface Constants {
 
   static final int MENU_SCORE_CHART = 102;
 
+  static final int MENU_START_NEW = 103;
+
   static final int MENU_SIMULATE_ROUNDS = 1001;
-
-	static final int MENU_ADD_PLAYER = 11;
-
-	static final int MENU_STAR_NEW = 12;
 	
 	static final int ACTIVITY_LAUNCH = 0;
 
