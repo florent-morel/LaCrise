@@ -14,18 +14,21 @@ public class Player implements Comparable<Player> {
 
 	private Turn mCurrentTurn;
 
-	private boolean mHasStarted;
+  private boolean mHasStarted;
+
+  private boolean mActive;
 
 	public Player(Integer internalId) {
 		super();
 		this.mId = internalId;
 		this.initPlayer();
 	}
-	
-	public void initPlayer() {
-		mPlayerScore = new PlayerScore();
-		mCurrentTurn = null;
-		mHasStarted = false;
+
+  public void initPlayer() {
+	  this.mPlayerScore = new PlayerScore();
+	  this.mCurrentTurn = null;
+    this.mHasStarted = false;
+    this.mActive = true;
 	}
 
 	public Turn getCurrentTurn() {
@@ -79,6 +82,15 @@ public class Player implements Comparable<Player> {
 	public void setHasStarted() {
 		this.mHasStarted = true;
 	}
+
+	public boolean isActive() {
+    return mActive;
+  }
+
+	public boolean toggleActive() {
+    this.mActive = !this.mActive;
+    return this.mActive;
+  }
 
 	@Override
 	public int compareTo(Player another) {

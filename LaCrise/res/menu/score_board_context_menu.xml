@@ -4,4 +4,6 @@
           android:title="@string/rename_player" />
     <item android:id="@+id/turn_history_id"
           android:title="@string/turn_history" />
+    <item android:id="@+id/activate_player_id"
+          android:title="@string/activate_player" />
 </menu>

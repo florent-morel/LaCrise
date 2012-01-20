@@ -17,11 +17,11 @@ import org.lacrise.engine.game.Turn;
 
 /**
  * Singleton handling the game instance.
- * 
+ *
  * Starts a new game, sorts players by rank, computes a turn score...
- * 
+ *
  * @author florent
- * 
+ *
  */
 public class GameManager {
 
@@ -36,7 +36,7 @@ public class GameManager {
 	private Player mCurrentPlayer;
 
 	// TODO should create Rounds and store them in the Game.
-	private int mRoundNumbers = 0;
+	private int mNbPlayersForThisRound = 0;
 
 	public static Pattern mScorePattern = Pattern.compile("[0-9]{1,5}");
 
@@ -61,7 +61,7 @@ public class GameManager {
 			Integer nbWarmUps, boolean isDebug, List<Player> playerList) {
 		mGame = new Game();
 		mCurrentPlayer = null;
-		mRoundNumbers = 0;
+		mNbPlayersForThisRound = 0;
 
 		if (playerList == null) {
 			playerList = new ArrayList<Player>(numberOfPlayers);
@@ -124,23 +124,23 @@ public class GameManager {
 
 	}
 
-	/**
-	 * Get the next player to play.
-	 * 
-	 * @return
-	 */
-	public Player getNextPlayer() {
-		Player nextPlayer;
+  /**
+   * Get the next player to play.
+   *
+   * @return
+   */
+  public Player getNextPlayer() {
+    Player nextPlayer;
 
-		int nbPlayers = mGame.getPlayerList().size();
-		Player players[] = new Player[nbPlayers];
-		players = mGame.getPlayerList().toArray(players);
+    int nbPlayers = mGame.getPlayerList().size();
+    Player players[] = new Player[nbPlayers];
+    players = mGame.getPlayerList().toArray(players);
 
-		int modulo = mRoundNumbers % nbPlayers;
-		nextPlayer = players[modulo];
+    int modulo = mNbPlayersForThisRound % nbPlayers;
+    nextPlayer = players[modulo];
 
-		return nextPlayer;
-	}
+    return nextPlayer;
+  }
 
 	private Integer checkEndGame(Integer result) {
 		if (getPlayersByRank().size() > 0
@@ -169,7 +169,7 @@ public class GameManager {
 
 	/**
 	 * Shortcut to get current #1 ranked player in current game.
-	 * 
+	 *
 	 * @return
 	 */
 	public Player getFirstRankedPlayer() {
@@ -178,7 +178,7 @@ public class GameManager {
 
 	/**
 	 * Get the set of game players sorted by score value.
-	 * 
+	 *
 	 * @return
 	 */
 	public SortedSet<Player> getPlayersByRank() {
@@ -190,7 +190,7 @@ public class GameManager {
 	/**
 	 * Get the set of game players sorted by gap value compared to given
 	 * {@link#Player}.
-	 * 
+	 *
 	 * @return
 	 */
 	public SortedMap<Integer, Player> getPlayersGap(Player player) {
@@ -217,13 +217,19 @@ public class GameManager {
 	 */
 	public void playTurn() {
 		initNextPlayer();
+
+    if (!mCurrentPlayer.isActive()) {
+      mNbPlayersForThisRound++;
+      initNextPlayer();
+    }
+
 		mCurrentTurn = new Turn(mGame.getRoundNumber(), !mCurrentPlayer.hasStarted());
 	}
 
 	/**
 	 * Terminates a run. Store turn score. Compute other scores for penalties.
 	 * Check for end of game after this turn.
-	 * 
+	 *
 	 * @param turnScore
 	 * @return
 	 */
@@ -254,7 +260,7 @@ public class GameManager {
 			result = checkEndGame;
 		}
 
-		mRoundNumbers++;
+		mNbPlayersForThisRound++;
 
 		mCurrentTurn.setTurnResultCode(result);
 
@@ -263,7 +269,7 @@ public class GameManager {
 
 	/**
 	 * Check if a score is valid (Integer multiple of 50).
-	 * 
+	 *
 	 * @param score
 	 * @return
 	 */
@@ -294,7 +300,7 @@ public class GameManager {
 	/**
 	 * Compute player score only if the player has already started the game
 	 * (i.e. he is done with the warm-up rounds).
-	 * 
+	 *
 	 * @param playerScore
 	 * @return
 	 */
@@ -331,7 +337,7 @@ public class GameManager {
 
 	/**
 	 * Check recursively whether current player got another's total score.
-	 * 
+	 *
 	 * @param currentPlayer
 	 * @param filteredPlayerList
 	 * @deprecated TODO use a linear way (list) instead of recursivity.
@@ -367,7 +373,7 @@ public class GameManager {
 
 	/**
 	 * Set player name.
-	 * 
+	 *
 	 * @param playerId
 	 * @param playerName
 	 */

@@ -34,7 +34,7 @@
     <string name="number_of_warmups">Number of warm-up rounds</string>
     <string name="default_score_to_reach">5000</string>
     <string name="default_warm_up_rounds">3</string>
-    
+
     <string name="add_player">Add player</string>
     <string name="add_player_no_score_text">Player will start with no score.</string>
     <string name="add_player_confirm">Player %1$s added to game.</string>
@@ -76,6 +76,10 @@
     <string name="target_player">%1$s: %2$s</string>
     <string name="submit_turn_score">Validate</string>
 
+    <string name="activate_player">Toggle is active</string>
+    <string name="dialog_activate_player">Player %1$s is now</string>
+    <string name="dialog_player_active">active</string>
+    <string name="dialog_player_non_active">not active</string>
 
     <string name="turn_history">Turn history</string>
     <string name="turn_history_title">Player %1$s, turn history.</string>
