@@ -218,7 +218,7 @@ public class GameManager {
 	public void playTurn() {
 		initNextPlayer();
 
-    if (!mCurrentPlayer.isActive()) {
+    while (!mCurrentPlayer.isActive()) {
       mNbPlayersForThisRound++;
       initNextPlayer();
     }
