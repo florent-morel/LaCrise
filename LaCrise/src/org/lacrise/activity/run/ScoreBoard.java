@@ -143,6 +143,18 @@ public class ScoreBoard extends Activity {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.score_board_context_menu, menu);
+
+		// Display player name as header
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+		Player player = (Player) mScoreList.getAdapter().getItem(info.position);
+		StringBuilder message = new StringBuilder();
+		message.append(player.getName());
+		if (!player.isActive()) {
+			message.append(Constants.SPACE);
+			message.append(mResources
+					.getString(R.string.dialog_player_non_active));
+		}
+		menu.setHeaderTitle(message.toString());
 	}
 
 	@Override
@@ -173,7 +185,7 @@ public class ScoreBoard extends Activity {
 		buildPlayerActiveMessage(player, message);
 
 		Toast toast = Toast.makeText(this, message.toString(),
-				Toast.LENGTH_SHORT);
+				Toast.LENGTH_LONG);
 		toast.show();
 
 		refreshList();
@@ -203,7 +215,7 @@ public class ScoreBoard extends Activity {
 			message.append(mResources.getString(R.string.dialog_no_more_active));
 
 			Toast toast = Toast.makeText(this, message.toString(),
-					Toast.LENGTH_SHORT);
+					Toast.LENGTH_LONG);
 			toast.show();
 		}
 	}
