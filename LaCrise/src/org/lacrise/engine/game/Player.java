@@ -14,9 +14,9 @@ public class Player implements Comparable<Player> {
 
 	private Turn mCurrentTurn;
 
-  private boolean mHasStarted;
+	private boolean mHasStarted;
 
-  private boolean mActive;
+	private boolean mActive;
 
 	public Player(Integer internalId) {
 		super();
@@ -24,11 +24,11 @@ public class Player implements Comparable<Player> {
 		this.initPlayer();
 	}
 
-  public void initPlayer() {
-	  this.mPlayerScore = new PlayerScore();
-	  this.mCurrentTurn = null;
-    this.mHasStarted = false;
-    this.mActive = true;
+	public void initPlayer() {
+		this.mPlayerScore = new PlayerScore();
+		this.mCurrentTurn = null;
+		this.mHasStarted = false;
+		this.mActive = true;
 	}
 
 	public Turn getCurrentTurn() {
@@ -41,6 +41,7 @@ public class Player implements Comparable<Player> {
 
 	/**
 	 * Get last played turn id.
+	 * 
 	 * @return
 	 */
 	public Integer getLastPlayedTurnId() {
@@ -68,19 +69,17 @@ public class Player implements Comparable<Player> {
 	 * Return current total score.
 	 * 
 	 * @param nullable
-	 * 		if true and score is null, return null
-	 * 			if false, return zero
-	 * @return
-	 * 	Player current score.
-	 *  
+	 *            if true and score is null, return null if false, return zero
+	 * @return Player current score.
+	 * 
 	 */
 	public Integer getTotalScore(boolean nullable) {
 		Integer total = mPlayerScore.getTotal();
-		
+
 		if (total == null && !nullable) {
 			total = Constants.ZERO_VALUE;
 		}
-		
+
 		return total;
 	}
 
@@ -100,13 +99,13 @@ public class Player implements Comparable<Player> {
 	}
 
 	public boolean isActive() {
-    return mActive;
-  }
+		return mActive;
+	}
 
 	public boolean toggleActive() {
-    this.mActive = !this.mActive;
-    return this.mActive;
-  }
+		this.mActive = !this.mActive;
+		return this.mActive;
+	}
 
 	@Override
 	public int compareTo(Player another) {
@@ -117,20 +116,16 @@ public class Player implements Comparable<Player> {
 				// Current player has no score yet.
 				if (another.getTotalScore(true) != null) {
 					toReturn = -1;
-				}
-				else {
+				} else {
 					// Both have null score, order by id
-					toReturn = another.getId().compareTo(
-							this.getId());
+					toReturn = another.getId().compareTo(this.getId());
 				}
-			}
-			else {
+			} else {
 				if (another.getTotalScore(true) != null) {
 					// Both have a non null score, order by score
 					toReturn = this.getTotalScore(true).compareTo(
 							another.getTotalScore(true));
-				}
-				else {
+				} else {
 					toReturn = 1;
 				}
 			}

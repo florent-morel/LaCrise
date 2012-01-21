@@ -72,12 +72,10 @@ public class ScoreBoard extends Activity {
 		});
 
 	}
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, Constants.MENU_GAME_OPTIONS, 0, R.string.menu_game_options);
-		menu.add(0, Constants.MENU_ADD_PLAYER, 0, R.string.menu_add_player);
 		menu.add(0, Constants.MENU_START_NEW, 0, R.string.menu_start_new_game);
 		menu.add(0, Constants.MENU_SCORE_CHART, 0, R.string.menu_score_chart);
 		menu.add(0, Constants.MENU_SIMULATE_ROUNDS, 0, "simulate rounds");
@@ -90,9 +88,6 @@ public class ScoreBoard extends Activity {
 		switch (item.getItemId()) {
 		case Constants.MENU_GAME_OPTIONS:
 			launchGameOptions();
-			return true;
-		case Constants.MENU_ADD_PLAYER:
-			launchAddPlayer();
 			return true;
 		case Constants.MENU_START_NEW:
 			launchNewGame();
@@ -110,11 +105,6 @@ public class ScoreBoard extends Activity {
 
 	private void launchGameOptions() {
 		Intent intent = new Intent(this, GameOptions.class);
-		startActivityForResult(intent, Constants.ACTIVITY_LAUNCH);
-	}
-
-	private void launchAddPlayer() {
-		Intent intent = new Intent(this, AddPlayer.class);
 		startActivityForResult(intent, Constants.ACTIVITY_LAUNCH);
 	}
 
@@ -137,6 +127,12 @@ public class ScoreBoard extends Activity {
 		}
 	}
 
+	/**
+	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+	 * 
+	 * Builds the contextual menu when long press on a player.
+	 * 
+	 */
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
@@ -166,6 +162,9 @@ public class ScoreBoard extends Activity {
 		case R.id.rename:
 			renamePlayer(player.getId(), player.getName());
 			return true;
+		case R.id.player_statistics:
+			displayStats(player.getId());
+			return true;
 		case R.id.turn_history_id:
 			displayTurnHistory(player.getId());
 			return true;
@@ -177,18 +176,28 @@ public class ScoreBoard extends Activity {
 		}
 	}
 
+	private void displayStats(Integer playerId) {
+		Intent intent = new Intent(this, Statistics.class);
+		intent.putExtra(Constants.PLAYER_ID, playerId);
+		startActivityForResult(intent, Constants.ACTIVITY_LAUNCH);
+	}
+
 	private void toggleActivePlayer(Integer playerId) {
 		final Player player = mGameManager.getGame().getPlayerById(playerId);
 		player.toggleActive();
 
 		StringBuilder message = new StringBuilder();
 		buildPlayerActiveMessage(player, message);
+		
+		// Display next player dialog
+		buildNextPlayerMessage(message);
 
 		Toast toast = Toast.makeText(this, message.toString(),
 				Toast.LENGTH_LONG);
 		toast.show();
 
 		refreshList();
+		
 	}
 
 	private void displayTurnHistory(Integer playerId) {
@@ -234,10 +243,12 @@ public class ScoreBoard extends Activity {
 			// Play one turn per player
 			for (Player player : mGameManager.getGame().getPlayerList()) {
 
-				mGameManager.playTurn();
-				Integer score = Double.valueOf(Math.random() * 10 * 50)
-						.intValue();
-				mGameManager.endTurn(score);
+				if (player.isActive()) {
+					mGameManager.playTurn();
+					Integer score = Double.valueOf(Math.random() * 10 * 50)
+							.intValue();
+					mGameManager.endTurn(score);
+				}
 			}
 		}
 
@@ -298,8 +309,14 @@ public class ScoreBoard extends Activity {
 			// In any case, build the zero, score and next player messages
 			this.buildZeroMessage(player, message);
 			this.buildScoreMessage(player, message);
+			
 			if (!mGameManager.getGame().isGameOver()) {
-				this.buildNextPlayerMessage(message);
+				StringBuilder nextMessage = new StringBuilder();
+				this.buildNextPlayerMessage(nextMessage);
+
+				Toast toast = Toast.makeText(this, nextMessage.toString(),
+						Toast.LENGTH_LONG);
+				toast.show();
 			}
 
 			// Create the dialog
@@ -310,7 +327,9 @@ public class ScoreBoard extends Activity {
 	}
 
 	private void buildNextPlayerMessage(StringBuilder message) {
-		message.append(Constants.NEW_LINE);
+		if (message.length() > 0) {
+			message.append(Constants.NEW_LINE);
+		}
 		message.append(String.format(mResources
 				.getString(R.string.dialog_next_player), mGameManager
 				.getNextPlayer(mGameManager.getCurrentPlayer(), false).getName()));
@@ -379,7 +398,9 @@ public class ScoreBoard extends Activity {
 			builder.append(player.getPlayerScore().getTotal().toString());
 		}
 
-		message.append(Constants.NEW_LINE);
+		if (message.length() > 0) {
+			message.append(Constants.NEW_LINE);
+		}
 		message.append(String.format(
 				mResources.getString(R.string.dialog_player_new_score),
 				player.getName(), builder));

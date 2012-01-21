@@ -58,7 +58,7 @@ public class GameManager {
 	}
 
 	public void startNewGame(Integer numberOfPlayers, Integer scoreToReach,
-			Integer nbWarmUps, boolean isDebug, List<Player> playerList) {
+			Integer nbWarmUps, List<Player> playerList) {
 		mGame = new Game();
 		mCurrentPlayer = null;
 		mNbPlayersForThisRound = 0;
@@ -72,14 +72,14 @@ public class GameManager {
 			if (i < playerList.size()) {
 				Player player = playerList.get(i);
 				if (player == null) {
-					createNewPlayer(playerList, isDebug, i);
+					createNewPlayer(playerList, i);
 				} else {
 					// Reset player game history
 					player.initPlayer();
 				}
 			} else {
 				// More requested players than existing
-				createNewPlayer(playerList, isDebug, i);
+				createNewPlayer(playerList, i);
 			}
 
 		}
@@ -92,39 +92,25 @@ public class GameManager {
 
 	}
 
-	private void createNewPlayer(List<Player> playerList, boolean isDebug, int i) {
+	private void createNewPlayer(List<Player> playerList, int i) {
 		Player player;
 		player = new Player(Integer.valueOf(i));
 		// TODO StringBuilder nameBuilder = new
 		// StringBuilder(R.string.player_name_default);
 		// nameBuilder.append((i+1));
 		player.setName("P #" + (i + 1));
-		if (isDebug) {
-			player.getPlayerScore().setTotal((i + 1) * 100);
-		}
 		playerList.add(player);
 	}
 
+	 /**
+	 * Get the next player to play and initialize him for next turn.
+	 */
 	public Player getNextPlayer(Player currentPlayer, boolean initPlayer) {
-		Player nextPlayer;
-		int nbPlayers = mGame.getPlayerList().size();
-		Player players[] = new Player[nbPlayers];
-		players = mGame.getPlayerList().toArray(players);
-
-		Integer nextId = Constants.ZERO_VALUE;
-		if (currentPlayer == null) {
-			nextId = Constants.ZERO_VALUE;
-		} else {
-			// Increment to get next player id
-			nextId = currentPlayer.getId() + 1;
-		}
-
-		int modulo = nextId % nbPlayers;
-		nextPlayer = players[modulo];
+		Player nextPlayer = computeNextPlayer(currentPlayer);
 
 		if (initPlayer) {
 
-			if (nextId.equals(Constants.ZERO_VALUE)) {
+			if (Constants.ZERO_VALUE.equals(nextPlayer.getId())) {
 				// Each time first player plays, increment the number of played
 				// rounds
 				mGame.createNewRound();
@@ -147,51 +133,26 @@ public class GameManager {
 		return nextPlayer;
 	}
 
-	// /**
-	// * Get the next player to play and initialize him for next turn.
-	// */
-	// public Player getNextPlayer(boolean initPlayer) {
-	// mCurrentPlayer = computeNextPlayer();
-	//
-	// if (initPlayer) {
-	//
-	// if (mCurrentPlayer.getId().equals(Constants.ZERO_VALUE)) {
-	// // Each time first player plays, increment the number of played
-	// // rounds
-	// mGame.createNewRound();
-	// }
-	// // In case warm rounds are over, force player to enter the game
-	// if (!mCurrentPlayer.hasStarted()
-	// && mGame.getRoundNumber() > mGame.getWarmUpRounds()) {
-	// mCurrentPlayer.setHasStarted();
-	// }
-	// }
-	//
-	// if (mGame.getNumberActivePlayer() > 0) {
-	// // Skip player if not active
-	// while (!mCurrentPlayer.isActive()) {
-	// mNbPlayersForThisRound++;
-	// getNextPlayer(initPlayer);
-	// }
-	// }
-	//
-	// return mCurrentPlayer;
-	//
-	// }
-
 	/**
 	 * Get the next player to play.
 	 * 
 	 * @return
 	 */
-	private Player computeNextPlayer() {
+	private Player computeNextPlayer(Player currentPlayer) {
 		Player nextPlayer;
-
 		int nbPlayers = mGame.getPlayerList().size();
 		Player players[] = new Player[nbPlayers];
 		players = mGame.getPlayerList().toArray(players);
 
-		int modulo = mNbPlayersForThisRound % nbPlayers;
+		Integer nextId = Constants.ZERO_VALUE;
+		if (currentPlayer == null) {
+			nextId = Constants.ZERO_VALUE;
+		} else {
+			// Increment to get next player id
+			nextId = currentPlayer.getId() + 1;
+		}
+
+		int modulo = nextId % nbPlayers;
 		nextPlayer = players[modulo];
 
 		return nextPlayer;

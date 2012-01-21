@@ -54,6 +54,10 @@
             android:name=".activity.run.GameOptions"
             android:label="@string/game_options" >
         </activity>
+        <activity
+            android:name=".activity.run.Statistics"
+            android:label="@string/statistics" >
+        </activity>
     </application>
 
 </manifest>

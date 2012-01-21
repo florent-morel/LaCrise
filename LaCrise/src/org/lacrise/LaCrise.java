@@ -49,7 +49,6 @@ public class LaCrise extends Activity {
 	private void buildMenu(Menu menu, boolean isOnCreate) {
 		if (isOnCreate) {
 			menu.add(0, Constants.GAME_NEW, 0, R.string.menu_new);
-			menu.add(0, Constants.NEW_GAME_DEBUG, 1, R.string.menu_new_debug);
 			menu.add(0, Constants.NEW_GAME_QUICK, 1, R.string.menu_new_quick);
 		}
 
@@ -88,9 +87,6 @@ public class LaCrise extends Activity {
 		case Constants.NEW_GAME_QUICK:
 			createQuickGame();
 			return true;
-		case Constants.NEW_GAME_DEBUG:
-			createGameDebug();
-			return true;
 		case Constants.GAME_CONTINUE:
 			continueGame();
 			return true;
@@ -111,14 +107,9 @@ public class LaCrise extends Activity {
 	}
 
 	private void createQuickGame() {
-		mGameManager.startNewGame(3, 1500, 1, false, null);
+		mGameManager.startNewGame(3, 1500, 1, null);
 		Intent intent = new Intent(this, ScoreBoard.class);
 		startActivityForResult(intent, Constants.NEW_GAME_QUICK);
 	}
 
-	private void createGameDebug() {
-		mGameManager.startNewGame(3, 1500, 1, true, null);
-		Intent intent = new Intent(this, ScoreBoard.class);
-		startActivityForResult(intent, Constants.NEW_GAME_DEBUG);
-	}
 }

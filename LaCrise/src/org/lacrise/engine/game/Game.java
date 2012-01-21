@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -99,7 +101,7 @@ public class Game {
 	public SortedSet<Player> getSortedPlayers() {
 		SortedSet<Player> sortedSet = null;
 		TreeSet<Player> sortedPlayers = new TreeSet<Player>(mPlayerList);
-			sortedSet = sortedPlayers.descendingSet();
+		sortedSet = sortedPlayers.descendingSet();
 		return sortedSet;
 	}
 
@@ -146,14 +148,10 @@ public class Game {
 	public void createNewRound() {
 		this.mRoundNumber++;
 
-		Map <Integer, List<Integer>> playerScoreMap = new HashMap<Integer, List<Integer>>();
+		Map<Integer, List<Integer>> playerScoreMap = new HashMap<Integer, List<Integer>>();
 
 		for (Player player : this.getPlayerList()) {
 			List<Integer> listRoundScore = new ArrayList<Integer>();
-//			Integer totalScore = player.getTotalScore(true);
-//			if (totalScore != null) {
-//				listRoundScore.add(totalScore);
-//			}
 			playerScoreMap.put(player.getId(), listRoundScore);
 		}
 
@@ -163,8 +161,9 @@ public class Game {
 	}
 
 	/**
-	 * Check if all player entered the game (i.e. are not in warm-up rounds anymore).
-	 *
+	 * Check if all player entered the game (i.e. are not in warm-up rounds
+	 * anymore).
+	 * 
 	 * @return false if at least one player is still in warm-up rounds.
 	 */
 	public boolean allPlayerStarted() {
@@ -185,7 +184,7 @@ public class Game {
 
 	/**
 	 * Add given score to player's total.
-	 *
+	 * 
 	 * @param newScore
 	 *            value <i>to be added</i> to the player's total.
 	 */
@@ -200,7 +199,8 @@ public class Game {
 		playerScore.setTotal(newTotal);
 
 		// Add score to current round player score
-		List<Integer> list = currentRound.getPlayerScoreMap().get(player.getId());
+		List<Integer> list = currentRound.getPlayerScoreMap().get(
+				player.getId());
 		list.add(newTotal);
 		currentRound.getPlayerScoreMap().put(player.getId(), list);
 
@@ -213,13 +213,12 @@ public class Game {
 			mMinScore = newTotal;
 		}
 
-
 	}
 
 	/**
 	 * Add the penalty to the list of player's penalties. Commit penalty score
 	 * to player's total.
-	 *
+	 * 
 	 * @param penalty
 	 */
 	public void applyPenalty(Player player, Penalty penalty) {
@@ -236,5 +235,66 @@ public class Game {
 			}
 		}
 		return nbActive;
+	}
+
+	/**
+	 * Get the best score so far for a given player.
+	 * 
+	 * @param mPlayer
+	 * @return
+	 */
+	public Integer getBestRoundScore(Player mPlayer) {
+		Integer bestScore = Constants.ZERO_VALUE;
+		Set<Entry<Integer, Integer>> entrySet = getPlayerRoundsScore(mPlayer)
+				.entrySet();
+		for (Entry<Integer, Integer> entry : entrySet) {
+
+			Integer roundScore = entry.getValue();
+
+			if (roundScore.compareTo(bestScore) > 0) {
+				bestScore = roundScore;
+			}
+
+		}
+		return bestScore;
+	}
+
+	public Map<Integer, Integer> getPlayerRoundsScore(Player player) {
+		Map<Integer, Integer> roundScores = new HashMap<Integer, Integer>();
+		for (Turn turn : player.getPlayerScore().getTurnList()) {
+
+			Integer roundScore = Constants.ZERO_VALUE;
+
+			roundScores.put(turn.getId(), turn.getScore());
+
+		}
+		return roundScores;
+	}
+	
+	public Integer getAverageScore(Player player) {
+		Integer averageScore = Constants.ZERO_VALUE;
+		if (player.getLastPlayedTurnId().compareTo(Constants.ZERO_VALUE) > 0) {
+			averageScore = player.getTotalScore(false) / player.getLastPlayedTurnId();
+		}
+		return averageScore;
+	}
+
+	/**
+	 * A quick dirty way to get the current rank of given player.
+	 * 
+	 * @param mPlayer
+	 * @return
+	 */
+	public Integer getPlayerRank(Player mPlayer) {
+		SortedSet<Player> sortedPlayers = getSortedPlayers();
+		Integer rank = 1;
+
+		for (Player player : sortedPlayers) {
+			if (!player.getId().equals(mPlayer.getId())) {
+				rank++;
+			}
+		}
+
+		return rank;
 	}
 }

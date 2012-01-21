@@ -2,23 +2,26 @@ package org.lacrise.activity.run;
 
 import org.lacrise.GameManager;
 import org.lacrise.R;
+import org.lacrise.activity.create.AddPlayer;
 import org.lacrise.engine.Constants;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
  * Display ongoing game options.
- *
- *
+ * 
+ * 
  * @author fmorel
- *
+ * 
  */
 public class GameOptions extends Activity implements OnClickListener {
 
@@ -29,6 +32,8 @@ public class GameOptions extends Activity implements OnClickListener {
 	private EditText mScoreToReachText;
 
 	private Button mButton;
+
+	private Button mTextAddPlayer;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +47,9 @@ public class GameOptions extends Activity implements OnClickListener {
 				.toString());
 		mButton = (Button) findViewById(R.id.submit_options);
 
+		mTextAddPlayer = (Button) findViewById(R.id.buttonAddPlayer);
+		mTextAddPlayer.setOnClickListener(this);
+
 		// Display new score to reach only if not already reached
 		if (mGameManager.getGame().isTotalReached()) {
 			mScoreToReachText.setEnabled(false);
@@ -53,23 +61,34 @@ public class GameOptions extends Activity implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		Integer newTotal = processNewScore(mScoreToReachText.getText()
-				.toString());
-		if (newTotal != null) {
-			mGameManager.getGame().setScoreToReach(newTotal);
-			Toast toast = Toast.makeText(this, String.format(
-					mResources.getString(R.string.new_total_confirm),
-					newTotal.toString()), Toast.LENGTH_SHORT);
-			toast.show();
 
-			this.setResult(Constants.ACTIVITY_SUCCESS);
-			finish();
+		if (v.getId() == mTextAddPlayer.getId()) {
+			launchAddPlayer();
+		} else if (v.getId() == mButton.getId()) {
+			Integer newTotal = processNewScore(mScoreToReachText.getText()
+					.toString());
+			if (newTotal != null) {
+				mGameManager.getGame().setScoreToReach(newTotal);
+				Toast toast = Toast.makeText(this, String.format(
+						mResources.getString(R.string.new_total_confirm),
+						newTotal.toString()), Toast.LENGTH_SHORT);
+				toast.show();
+
+				this.setResult(Constants.ACTIVITY_SUCCESS);
+				finish();
+			}
+
 		}
+	}
+
+	private void launchAddPlayer() {
+		Intent intent = new Intent(this, AddPlayer.class);
+		startActivityForResult(intent, Constants.ACTIVITY_LAUNCH);
 	}
 
 	/**
 	 * Check if new score is valid (superior to current maximum player score).
-	 *
+	 * 
 	 * @param string
 	 * @return
 	 */
@@ -77,7 +96,8 @@ public class GameOptions extends Activity implements OnClickListener {
 		Integer toReturn = null;
 
 		Integer newTotal = Integer.valueOf(string);
-		Integer maxScore = mGameManager.getFirstRankedPlayer().getTotalScore(true);
+		Integer maxScore = mGameManager.getFirstRankedPlayer().getTotalScore(
+				true);
 		if (newTotal != null) {
 			if (maxScore == null) {
 				// No player scored yet, new total to reach has to be > 0

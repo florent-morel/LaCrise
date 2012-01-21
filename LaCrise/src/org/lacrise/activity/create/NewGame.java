@@ -48,7 +48,8 @@ public class NewGame extends Activity implements OnClickListener {
 		Game currentGame = mGameManager.getGame();
 
 		if (currentGame != null && !currentGame.getPlayerList().isEmpty()) {
-			mNbPlayerText.setText(String.valueOf(currentGame.getPlayerList().size()));
+			mNbPlayerText.setText(String.valueOf(currentGame.getPlayerList()
+					.size()));
 			mScoreToReachText.setText(currentGame.getScoreToReach().toString());
 			mWarmUps.setText(currentGame.getWarmUpRounds().toString());
 		}
@@ -58,16 +59,15 @@ public class NewGame extends Activity implements OnClickListener {
 	private void startNewGame() {
 
 		List<Player> playerList = null;
-		
+
 		if (mGameManager.getGame() != null) {
 			playerList = mGameManager.getGame().getPlayerList();
 		}
-		
+
 		mGameManager.startNewGame(
 				Integer.valueOf(mNbPlayerText.getText().toString()),
 				Integer.valueOf(mScoreToReachText.getText().toString()),
-				Integer.valueOf(mWarmUps.getText().toString()), false,
-				playerList);
+				Integer.valueOf(mWarmUps.getText().toString()), playerList);
 
 		Intent intent = new Intent(this, ScoreBoard.class);
 		startActivityForResult(intent, Constants.GAME_NEW);
@@ -76,12 +76,6 @@ public class NewGame extends Activity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		this.startNewGame();
-//		this.createBoardGame();
 	}
-
-//	private void createBoardGame() {
-//		Intent i = new Intent(this, GameBoard.class);
-//		startActivityForResult(i, Constants.NEW_GAME);
-//	}
 
 }
