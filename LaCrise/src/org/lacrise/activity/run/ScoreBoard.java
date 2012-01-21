@@ -313,7 +313,7 @@ public class ScoreBoard extends Activity {
 		message.append(Constants.NEW_LINE);
 		message.append(String.format(mResources
 				.getString(R.string.dialog_next_player), mGameManager
-				.getNextPlayer(false).getName()));
+				.getNextPlayer(mGameManager.getCurrentPlayer(), false).getName()));
 	}
 
 	private void buildPenaltyMessage(Player player, Turn playedTurn,

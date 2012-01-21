@@ -105,37 +105,79 @@ public class GameManager {
 		playerList.add(player);
 	}
 
-	/**
-	 * Get the next player to play and initialize him for next turn.
-	 */
-	public Player getNextPlayer(boolean initPlayer) {
-		mCurrentPlayer = computeNextPlayer();
+	public Player getNextPlayer(Player currentPlayer, boolean initPlayer) {
+		Player nextPlayer;
+		int nbPlayers = mGame.getPlayerList().size();
+		Player players[] = new Player[nbPlayers];
+		players = mGame.getPlayerList().toArray(players);
+
+		Integer nextId = Constants.ZERO_VALUE;
+		if (currentPlayer == null) {
+			nextId = Constants.ZERO_VALUE;
+		} else {
+			// Increment to get next player id
+			nextId = currentPlayer.getId() + 1;
+		}
+
+		int modulo = nextId % nbPlayers;
+		nextPlayer = players[modulo];
 
 		if (initPlayer) {
 
-			if (mCurrentPlayer.getId().equals(Constants.ZERO_VALUE)) {
+			if (nextId.equals(Constants.ZERO_VALUE)) {
 				// Each time first player plays, increment the number of played
 				// rounds
 				mGame.createNewRound();
 			}
 			// In case warm rounds are over, force player to enter the game
-			if (!mCurrentPlayer.hasStarted()
+			if (!nextPlayer.hasStarted()
 					&& mGame.getRoundNumber() > mGame.getWarmUpRounds()) {
-				mCurrentPlayer.setHasStarted();
+				nextPlayer.setHasStarted();
 			}
 		}
 
 		if (mGame.getNumberActivePlayer() > 0) {
 			// Skip player if not active
-			while (!mCurrentPlayer.isActive()) {
+			while (!nextPlayer.isActive()) {
 				mNbPlayersForThisRound++;
-				getNextPlayer(initPlayer);
+				nextPlayer = getNextPlayer(nextPlayer, initPlayer);
 			}
 		}
 
-		return mCurrentPlayer;
-
+		return nextPlayer;
 	}
+
+	// /**
+	// * Get the next player to play and initialize him for next turn.
+	// */
+	// public Player getNextPlayer(boolean initPlayer) {
+	// mCurrentPlayer = computeNextPlayer();
+	//
+	// if (initPlayer) {
+	//
+	// if (mCurrentPlayer.getId().equals(Constants.ZERO_VALUE)) {
+	// // Each time first player plays, increment the number of played
+	// // rounds
+	// mGame.createNewRound();
+	// }
+	// // In case warm rounds are over, force player to enter the game
+	// if (!mCurrentPlayer.hasStarted()
+	// && mGame.getRoundNumber() > mGame.getWarmUpRounds()) {
+	// mCurrentPlayer.setHasStarted();
+	// }
+	// }
+	//
+	// if (mGame.getNumberActivePlayer() > 0) {
+	// // Skip player if not active
+	// while (!mCurrentPlayer.isActive()) {
+	// mNbPlayersForThisRound++;
+	// getNextPlayer(initPlayer);
+	// }
+	// }
+	//
+	// return mCurrentPlayer;
+	//
+	// }
 
 	/**
 	 * Get the next player to play.
@@ -229,7 +271,7 @@ public class GameManager {
 	 * Initiate a turn: get next player and create new turn.
 	 */
 	public void playTurn() {
-		getNextPlayer(true);
+		mCurrentPlayer = getNextPlayer(mCurrentPlayer, true);
 
 		mCurrentTurn = new Turn(mGame.getRoundNumber(),
 				!mCurrentPlayer.hasStarted());
