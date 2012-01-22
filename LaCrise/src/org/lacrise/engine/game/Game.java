@@ -290,7 +290,9 @@ public class Game {
 		Integer rank = 1;
 
 		for (Player player : sortedPlayers) {
-			if (!player.getId().equals(mPlayer.getId())) {
+			if (player.getId().equals(mPlayer.getId())) {
+				break;
+			} else {
 				rank++;
 			}
 		}
