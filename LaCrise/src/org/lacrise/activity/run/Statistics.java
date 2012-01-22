@@ -119,6 +119,7 @@ public class Statistics extends Activity implements OnGesturePerformedListener {
 		Intent intent = new Intent(this, Statistics.class);
 		intent.putExtra(Constants.PLAYER_ID, playerId);
 		startActivityForResult(intent, Constants.ACTIVITY_LAUNCH);
+		finish();
 	}
 
 }
