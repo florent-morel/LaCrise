@@ -35,9 +35,6 @@ public class GameManager {
 
 	private Player mCurrentPlayer;
 
-	// TODO should create Rounds and store them in the Game.
-	private int mNbPlayersForThisRound = 0;
-
 	public static Pattern mScorePattern = Pattern.compile("[0-9]{1,5}");
 
 	private GameManager() {
@@ -61,7 +58,6 @@ public class GameManager {
 			Integer nbWarmUps, List<Player> playerList) {
 		mGame = new Game();
 		mCurrentPlayer = null;
-		mNbPlayersForThisRound = 0;
 
 		if (playerList == null) {
 			playerList = new ArrayList<Player>(numberOfPlayers);
@@ -102,11 +98,18 @@ public class GameManager {
 		playerList.add(player);
 	}
 
-	 /**
-	 * Get the next player to play and initialize him for next turn.
+	/**
+	 * Get the next or previous player to play and initialize him for next turn.
+	 * 
+	 * @param currentPlayer
+	 * @param initPlayer
+	 * @param getNext
+	 *            get next player if true. get previous player otherwise.
+	 * @return
 	 */
-	public Player getNextPlayer(Player currentPlayer, boolean initPlayer) {
-		Player nextPlayer = computeNextPlayer(currentPlayer);
+	public Player getNextPlayer(Player currentPlayer, boolean initPlayer,
+			boolean getNext) {
+		Player nextPlayer = computeNextPlayer(currentPlayer, getNext);
 
 		if (initPlayer) {
 
@@ -125,8 +128,7 @@ public class GameManager {
 		if (mGame.getNumberActivePlayer() > 0) {
 			// Skip player if not active
 			while (!nextPlayer.isActive()) {
-				mNbPlayersForThisRound++;
-				nextPlayer = getNextPlayer(nextPlayer, initPlayer);
+				nextPlayer = getNextPlayer(nextPlayer, initPlayer, getNext);
 			}
 		}
 
@@ -136,9 +138,12 @@ public class GameManager {
 	/**
 	 * Get the next player to play.
 	 * 
+	 * @param getNext
+	 *            get next player if true. get previous player otherwise.
+	 * 
 	 * @return
 	 */
-	private Player computeNextPlayer(Player currentPlayer) {
+	private Player computeNextPlayer(Player currentPlayer, boolean getNext) {
 		Player nextPlayer;
 		int nbPlayers = mGame.getPlayerList().size();
 		Player players[] = new Player[nbPlayers];
@@ -149,7 +154,17 @@ public class GameManager {
 			nextId = Constants.ZERO_VALUE;
 		} else {
 			// Increment to get next player id
-			nextId = currentPlayer.getId() + 1;
+			nextId = currentPlayer.getId();
+			if (getNext) {
+				nextId += 1;
+			} else {
+				if (nextId == Constants.ZERO_VALUE) {
+					// first player, set next id as player list size to get last
+					// player
+					nextId = mGame.getPlayerList().size();
+				}
+				nextId -= 1;
+			}
 		}
 
 		int modulo = nextId % nbPlayers;
@@ -232,7 +247,7 @@ public class GameManager {
 	 * Initiate a turn: get next player and create new turn.
 	 */
 	public void playTurn() {
-		mCurrentPlayer = getNextPlayer(mCurrentPlayer, true);
+		mCurrentPlayer = getNextPlayer(mCurrentPlayer, true, true);
 
 		mCurrentTurn = new Turn(mGame.getRoundNumber(),
 				!mCurrentPlayer.hasStarted());
@@ -271,8 +286,6 @@ public class GameManager {
 		if (!Integer.valueOf(Constants.RESULT_OK).equals(checkEndGame)) {
 			result = checkEndGame;
 		}
-
-		mNbPlayersForThisRound++;
 
 		mCurrentTurn.setTurnResultCode(result);
 

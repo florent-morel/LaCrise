@@ -1,14 +1,25 @@
 package org.lacrise.activity.run;
 
+import java.util.ArrayList;
+
 import org.lacrise.GameManager;
 import org.lacrise.R;
 import org.lacrise.engine.Constants;
 import org.lacrise.engine.game.Player;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.gesture.Gesture;
+import android.gesture.GestureLibraries;
+import android.gesture.GestureLibrary;
+import android.gesture.GestureOverlayView;
+import android.gesture.GestureOverlayView.OnGesturePerformedListener;
+import android.gesture.Prediction;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Display ongoing game options.
@@ -17,7 +28,9 @@ import android.widget.TextView;
  * @author fmorel
  * 
  */
-public class Statistics extends Activity {
+public class Statistics extends Activity implements OnGesturePerformedListener {
+
+	private GestureLibrary mGestureLib;
 
 	private static GameManager mGameManager;
 
@@ -27,9 +40,9 @@ public class Statistics extends Activity {
 
 	private TextView mCurrentRank;
 
-	private TextView mBestRank;
-
-	private TextView mWorstRank;
+//	private TextView mBestRank;
+//
+//	private TextView mWorstRank;
 
 	private TextView mCurrentScore;
 
@@ -47,11 +60,26 @@ public class Statistics extends Activity {
 		mGameManager = GameManager.getSingletonObject();
 
 		Integer playerId = this.getIntent().getIntExtra(Constants.PLAYER_ID, 0);
+		GestureOverlayView gestureOverlayView = new GestureOverlayView(this);
+		View inflate = getLayoutInflater().inflate(R.layout.player_stats, null);
+		gestureOverlayView.addView(inflate);
+		gestureOverlayView.addOnGesturePerformedListener(this);
+		mGestureLib = GestureLibraries.fromRawResource(this,
+				R.raw.gestures);
+		if (!mGestureLib.load()) {
+			finish();
+		}
+		setContentView(gestureOverlayView);
 
 		mPlayer = mGameManager.getGame().getPlayerById(playerId);
 		setTitle(String.format(mResources.getString(R.string.statistics),
 				mPlayer.getName()));
 
+		fillStatsItems();
+
+	}
+
+	private void fillStatsItems() {
 		mCurrentRank = (TextView) findViewById(R.id.rank_text);
 		mCurrentRank.setText(mGameManager.getGame().getPlayerRank(mPlayer)
 				.toString());
@@ -69,7 +97,28 @@ public class Statistics extends Activity {
 		mAverageTurn = (TextView) findViewById(R.id.turn_score_average_text);
 		mAverageTurn.setText(mGameManager.getGame().getAverageScore(mPlayer)
 				.toString());
+	}
 
+	@Override
+	public void onGesturePerformed(GestureOverlayView arg0, Gesture gesture) {
+		ArrayList<Prediction> predictions = mGestureLib.recognize(gesture);
+		for (Prediction prediction : predictions) {
+			if (prediction.score > 1.0) {
+				if (Constants.RIGHT.equalsIgnoreCase(prediction.name)) {
+					// Get next player id
+					displayStats(mGameManager.getNextPlayer(mPlayer, false, true).getId());
+				} else if (Constants.LEFT.equalsIgnoreCase(prediction.name)) {
+					// Get previous player id
+					displayStats(mGameManager.getNextPlayer(mPlayer, false, false).getId());
+				} 
+			}
+		}
+	}
+
+	private void displayStats(Integer playerId) {
+		Intent intent = new Intent(this, Statistics.class);
+		intent.putExtra(Constants.PLAYER_ID, playerId);
+		startActivityForResult(intent, Constants.ACTIVITY_LAUNCH);
 	}
 
 }

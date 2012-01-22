@@ -4,7 +4,6 @@ import java.util.SortedSet;
 
 import org.lacrise.GameManager;
 import org.lacrise.R;
-import org.lacrise.activity.create.AddPlayer;
 import org.lacrise.activity.create.NewGame;
 import org.lacrise.activity.create.RenamePlayer;
 import org.lacrise.adapter.PlayerScoreAdapter;
@@ -332,7 +331,7 @@ public class ScoreBoard extends Activity {
 		}
 		message.append(String.format(mResources
 				.getString(R.string.dialog_next_player), mGameManager
-				.getNextPlayer(mGameManager.getCurrentPlayer(), false).getName()));
+				.getNextPlayer(mGameManager.getCurrentPlayer(), false, true).getName()));
 	}
 
 	private void buildPenaltyMessage(Player player, Turn playedTurn,

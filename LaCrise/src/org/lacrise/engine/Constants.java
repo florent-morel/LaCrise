@@ -1,6 +1,5 @@
 package org.lacrise.engine;
 
-
 public interface Constants {
 
 	static final Integer ZERO_VALUE = 0;
@@ -53,13 +52,17 @@ public interface Constants {
 
 	static final int MENU_ADD_PLAYER = 101;
 
-  static final int MENU_SCORE_CHART = 102;
+	static final int MENU_SCORE_CHART = 102;
 
-  static final int MENU_START_NEW = 103;
+	static final int MENU_START_NEW = 103;
 
-  static final int MENU_SIMULATE_ROUNDS = 1001;
-	
+	static final int MENU_SIMULATE_ROUNDS = 1001;
+
 	static final int ACTIVITY_LAUNCH = 0;
 
 	static final int ACTIVITY_SUCCESS = 20;
+
+	static final String RIGHT = "right";
+
+	static final String LEFT = "left";
 }

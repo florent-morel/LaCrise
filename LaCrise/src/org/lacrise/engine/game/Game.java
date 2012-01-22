@@ -262,11 +262,7 @@ public class Game {
 	public Map<Integer, Integer> getPlayerRoundsScore(Player player) {
 		Map<Integer, Integer> roundScores = new HashMap<Integer, Integer>();
 		for (Turn turn : player.getPlayerScore().getTurnList()) {
-
-			Integer roundScore = Constants.ZERO_VALUE;
-
 			roundScores.put(turn.getId(), turn.getScore());
-
 		}
 		return roundScores;
 	}
