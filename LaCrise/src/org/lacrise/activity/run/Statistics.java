@@ -1,6 +1,7 @@
 package org.lacrise.activity.run;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.lacrise.GameManager;
 import org.lacrise.R;
@@ -23,10 +24,10 @@ import android.widget.Toast;
 
 /**
  * Display ongoing game options.
- * 
- * 
+ *
+ *
  * @author fmorel
- * 
+ *
  */
 public class Statistics extends Activity implements OnGesturePerformedListener {
 
@@ -38,7 +39,11 @@ public class Statistics extends Activity implements OnGesturePerformedListener {
 
 	private TextView mNumberRounds;
 
-	private TextView mCurrentRank;
+  private TextView mCurrentRank;
+
+  private TextView mHit;
+
+  private TextView mHitVictim;
 
 //	private TextView mBestRank;
 //
@@ -53,31 +58,29 @@ public class Statistics extends Activity implements OnGesturePerformedListener {
 	private Player mPlayer;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.player_stats);
-		mResources = getResources();
-		mGameManager = GameManager.getSingletonObject();
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.player_stats);
+    mResources = getResources();
+    mGameManager = GameManager.getSingletonObject();
 
-		Integer playerId = this.getIntent().getIntExtra(Constants.PLAYER_ID, 0);
-		GestureOverlayView gestureOverlayView = new GestureOverlayView(this);
-		View inflate = getLayoutInflater().inflate(R.layout.player_stats, null);
-		gestureOverlayView.addView(inflate);
-		gestureOverlayView.addOnGesturePerformedListener(this);
-		mGestureLib = GestureLibraries.fromRawResource(this,
-				R.raw.gestures);
-		if (!mGestureLib.load()) {
-			finish();
-		}
-		setContentView(gestureOverlayView);
+    Integer playerId = this.getIntent().getIntExtra(Constants.PLAYER_ID, 0);
+    GestureOverlayView gestureOverlayView = new GestureOverlayView(this);
+    View inflate = getLayoutInflater().inflate(R.layout.player_stats, null);
+    gestureOverlayView.addView(inflate);
+    gestureOverlayView.addOnGesturePerformedListener(this);
+    mGestureLib = GestureLibraries.fromRawResource(this, R.raw.gestures);
+    if (!mGestureLib.load()) {
+      finish();
+    }
+    setContentView(gestureOverlayView);
 
-		mPlayer = mGameManager.getGame().getPlayerById(playerId);
-		setTitle(String.format(mResources.getString(R.string.statistics),
-				mPlayer.getName()));
+    mPlayer = mGameManager.getGame().getPlayerById(playerId);
+    setTitle(String.format(mResources.getString(R.string.statistics), mPlayer.getName()));
 
-		fillStatsItems();
+    fillStatsItems();
 
-	}
+  }
 
 	private void fillStatsItems() {
 		mCurrentRank = (TextView) findViewById(R.id.rank_text);
@@ -87,8 +90,15 @@ public class Statistics extends Activity implements OnGesturePerformedListener {
 		mNumberRounds = (TextView) findViewById(R.id.number_of_rounds_text);
 		mNumberRounds.setText(mPlayer.getLastPlayedTurnId().toString());
 
-		mCurrentScore = (TextView) findViewById(R.id.turn_score_current_text);
-		mCurrentScore.setText(mPlayer.getTotalScore(false).toString());
+    mCurrentScore = (TextView) findViewById(R.id.turn_score_current_text);
+    mCurrentScore.setText(mPlayer.getTotalScore(false).toString());
+
+    mGameManager.getGame().getMaxHit(mPlayer);
+
+    buildVictimStat();
+
+    mCurrentScore = (TextView) findViewById(R.id.turn_score_current_text);
+    mCurrentScore.setText(mPlayer.getTotalScore(false).toString());
 
 		mBestTurn = (TextView) findViewById(R.id.turn_score_best_text);
 		mBestTurn.setText(mGameManager.getGame().getBestRoundScore(mPlayer)
@@ -99,18 +109,36 @@ public class Statistics extends Activity implements OnGesturePerformedListener {
 				.toString());
 	}
 
+  /**
+   *
+   */
+  private void buildVictimStat() {
+    List<Player> hitList = mGameManager.getGame().getMaxHitVictim(mPlayer);
+    if (hitList != null && !hitList.isEmpty()) {
+      StringBuilder message = new StringBuilder();
+      for (Player player : hitList) {
+        message.append(player.getName());
+        message.append(Constants.SPACE);
+      }
+
+      mHitVictim = (TextView) findViewById(R.id.penalty_victim_text);
+      mHitVictim.setText(String.format(mResources
+          .getString(R.string.penalty_hit_value), message.toString(), 1));
+    }
+  }
+
 	@Override
 	public void onGesturePerformed(GestureOverlayView arg0, Gesture gesture) {
 		ArrayList<Prediction> predictions = mGestureLib.recognize(gesture);
 		for (Prediction prediction : predictions) {
 			if (prediction.score > 1.0) {
 				if (Constants.RIGHT.equalsIgnoreCase(prediction.name)) {
-					// Get next player id
-					displayStats(mGameManager.getNextPlayer(mPlayer, false, true).getId());
-				} else if (Constants.LEFT.equalsIgnoreCase(prediction.name)) {
 					// Get previous player id
 					displayStats(mGameManager.getNextPlayer(mPlayer, false, false).getId());
-				} 
+				} else if (Constants.LEFT.equalsIgnoreCase(prediction.name)) {
+				  // Get next player id
+				  displayStats(mGameManager.getNextPlayer(mPlayer, false, true).getId());
+				}
 			}
 		}
 	}
