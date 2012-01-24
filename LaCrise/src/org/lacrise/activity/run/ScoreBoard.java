@@ -71,6 +71,7 @@ public class ScoreBoard extends Activity {
 		});
 
 	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
@@ -129,7 +130,7 @@ public class ScoreBoard extends Activity {
 	/**
 	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
 	 * 
-	 * Builds the contextual menu when long press on a player.
+	 *      Builds the contextual menu when long press on a player.
 	 * 
 	 */
 	@Override
@@ -187,7 +188,7 @@ public class ScoreBoard extends Activity {
 
 		StringBuilder message = new StringBuilder();
 		buildPlayerActiveMessage(player, message);
-		
+
 		// Display next player dialog
 		buildNextPlayerMessage(message);
 
@@ -196,7 +197,7 @@ public class ScoreBoard extends Activity {
 		toast.show();
 
 		refreshList();
-		
+
 	}
 
 	private void displayTurnHistory(Integer playerId) {
@@ -244,8 +245,18 @@ public class ScoreBoard extends Activity {
 
 				if (player.isActive()) {
 					mGameManager.playTurn();
-					Integer score = Double.valueOf(Math.random() * 10 * 50)
-							.intValue();
+					Integer score = null;
+					if (i < 3) {
+						// start with some same score to get penalties
+						score = 150;
+					} else if (i < 5) {
+						// then some zeros to get some penalties
+						score = Constants.ZERO_VALUE;
+					} else {
+
+						score = Double.valueOf(Math.random() * 10 * 50)
+								.intValue();
+					}
 					mGameManager.endTurn(score);
 				}
 			}
@@ -267,7 +278,8 @@ public class ScoreBoard extends Activity {
 		mScoreList = (ListView) findViewById(R.id.scoreList);
 		mScoreAdapter = new PlayerScoreAdapter(this, R.layout.player_row);
 
-		SortedSet<Player> playersByRank = mGameManager.getPlayersByRank();
+		SortedSet<Player> playersByRank = mGameManager.getGame()
+				.getPlayersByRank();
 
 		for (Player player : playersByRank) {
 			mScoreAdapter.addItem(player);
@@ -308,7 +320,7 @@ public class ScoreBoard extends Activity {
 			// In any case, build the zero, score and next player messages
 			this.buildZeroMessage(player, message);
 			this.buildScoreMessage(player, message);
-			
+
 			if (!mGameManager.getGame().isGameOver()) {
 				StringBuilder nextMessage = new StringBuilder();
 				this.buildNextPlayerMessage(nextMessage);
@@ -331,7 +343,8 @@ public class ScoreBoard extends Activity {
 		}
 		message.append(String.format(mResources
 				.getString(R.string.dialog_next_player), mGameManager
-				.getNextPlayer(mGameManager.getCurrentPlayer(), false, true).getName()));
+				.getNextPlayer(mGameManager.getCurrentPlayer(), false, true)
+				.getName()));
 	}
 
 	private void buildPenaltyMessage(Player player, Turn playedTurn,
@@ -415,9 +428,9 @@ public class ScoreBoard extends Activity {
 
 		message.append(mResources.getString(R.string.dialog_game_over));
 		message.append(Constants.NEW_LINE);
-		message.append(String.format(mResources
-				.getString(R.string.dialog_winner_is), mGameManager
-				.getFirstRankedPlayer().getName()));
+		message.append(String.format(
+				mResources.getString(R.string.dialog_winner_is), mGameManager
+						.getGame().getFirstRankedPlayer().getName()));
 	}
 
 	private void createAlert(String message) {

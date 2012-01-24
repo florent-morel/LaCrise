@@ -95,8 +95,8 @@ public class GameOptions extends Activity implements OnClickListener {
 		Integer toReturn = null;
 
 		Integer newTotal = Integer.valueOf(string);
-		Integer maxScore = mGameManager.getFirstRankedPlayer().getTotalScore(
-				true);
+		Integer maxScore = mGameManager.getGame().getFirstRankedPlayer()
+				.getTotalScore(true);
 		if (newTotal != null) {
 			if (maxScore == null) {
 				// No player scored yet, new total to reach has to be > 0

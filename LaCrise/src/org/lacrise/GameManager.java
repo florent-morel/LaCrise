@@ -29,8 +29,6 @@ public class GameManager {
 
 	private Game mGame;
 
-	private SortedSet<Player> mRankingSet;
-
 	private Turn mCurrentTurn;
 
 	private Player mCurrentPlayer;
@@ -174,9 +172,9 @@ public class GameManager {
 	}
 
 	private Integer checkEndGame(Integer result) {
-		if (getPlayersByRank().size() > 0
-				&& getPlayersByRank().first().getTotalScore(true) != null) {
-			if (getPlayersByRank().first().getTotalScore(true) >= mGame
+		if (mGame.getPlayersByRank().size() > 0
+				&& mGame.getPlayersByRank().first().getTotalScore(true) != null) {
+			if (mGame.getPlayersByRank().first().getTotalScore(true) >= mGame
 					.getScoreToReach()) {
 				// Total score reached
 				if (!mGame.isTotalReached()) {
@@ -199,26 +197,6 @@ public class GameManager {
 	}
 
 	/**
-	 * Shortcut to get current #1 ranked player in current game.
-	 * 
-	 * @return
-	 */
-	public Player getFirstRankedPlayer() {
-		return this.getPlayersByRank().first();
-	}
-
-	/**
-	 * Get the set of game players sorted by score value.
-	 * 
-	 * @return
-	 */
-	public SortedSet<Player> getPlayersByRank() {
-		mRankingSet = mGame.getSortedPlayers();
-
-		return mRankingSet;
-	}
-
-	/**
 	 * Get the set of game players sorted by gap value compared to given
 	 * {@link#Player}.
 	 * 
@@ -231,8 +209,7 @@ public class GameManager {
 			playerScore = Constants.ZERO_VALUE;
 		}
 
-		SortedSet<Player> rankingSet = mGame.getSortedPlayers();
-		for (Player otherPlayer : rankingSet) {
+		for (Player otherPlayer : mGame.getPlayersByRank()) {
 			Integer otherScore = otherPlayer.getTotalScore(true);
 			if (otherScore != null) {
 				playerGap.put(otherScore - playerScore, otherPlayer);
@@ -288,6 +265,9 @@ public class GameManager {
 		}
 
 		mCurrentTurn.setTurnResultCode(result);
+
+		// First set player rank at the end of current turn
+		mCurrentTurn.setPlayerEndRank(mGame.getPlayerRank(mCurrentPlayer));
 
 		return mCurrentTurn;
 	}

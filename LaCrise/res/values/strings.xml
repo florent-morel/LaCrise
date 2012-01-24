@@ -107,6 +107,7 @@
     <string name="rank_default">No rank yet</string>
     <string name="rank_best">Best rank</string>
     <string name="rank_worst">Worst rank</string>
+    <string name="rank_value">%1$s (round #%2$d)</string>
 
     <string name="zero_penalty">Number of 2 zeros penalty</string>
     <string name="zero_penalty_default">No 2 zeros penalty yet</string>

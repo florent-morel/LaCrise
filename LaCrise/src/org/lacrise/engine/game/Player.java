@@ -18,6 +18,7 @@ public class Player implements Comparable<Player> {
 
 	private boolean mActive;
 
+
 	public Player(Integer internalId) {
 		super();
 		this.mId = internalId;
@@ -37,6 +38,30 @@ public class Player implements Comparable<Player> {
 
 	public void setCurrentTurn(Turn currentTurn) {
 		this.mCurrentTurn = currentTurn;
+	}
+
+	public Turn getBestRank() {
+		Turn turnBestRank = null;
+		for (Turn turn : getPlayerScore().getTurnList()) {
+			if (turnBestRank == null
+					|| turn.getPlayerEndRank().compareTo(
+							turnBestRank.getPlayerEndRank()) < 0) {
+				turnBestRank = turn;
+			}
+		}
+		return turnBestRank;
+	}
+
+	public Turn getWorstRank() {
+		Turn turnWorstRank = null;
+		for (Turn turn : getPlayerScore().getTurnList()) {
+			if (turnWorstRank == null
+					|| turn.getPlayerEndRank().compareTo(
+							turnWorstRank.getPlayerEndRank()) > 0) {
+				turnWorstRank = turn;
+			}
+		}
+		return turnWorstRank;
 	}
 
 	/**

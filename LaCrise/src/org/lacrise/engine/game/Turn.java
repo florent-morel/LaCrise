@@ -13,6 +13,11 @@ public class Turn {
 
 	private Integer mScore = Constants.ZERO_VALUE;
 
+	/**
+	 * Player rank at the end of this turn
+	 */
+	private Integer mPlayerEndRank = Constants.ZERO_VALUE;
+	
 	private boolean mIsWarmup;
 
 	private boolean mIsWhite;
@@ -65,5 +70,14 @@ public class Turn {
 	public boolean isWarmup() {
 		return mIsWarmup;
 	}
+
+	public Integer getPlayerEndRank() {
+		return mPlayerEndRank;
+	}
+
+	public void setPlayerEndRank(Integer playerEndRank) {
+		this.mPlayerEndRank = playerEndRank;
+	}
+
 
 }
