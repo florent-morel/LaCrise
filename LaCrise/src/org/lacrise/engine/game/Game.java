@@ -100,7 +100,7 @@ public class Game {
 
 	/**
 	 * Shortcut to get current #1 ranked player in current game.
-	 * 
+	 *
 	 * @return
 	 */
 	public Player getFirstRankedPlayer() {
@@ -109,7 +109,7 @@ public class Game {
 
 	/**
 	 * Get the set of game players sorted by score value.
-	 * 
+	 *
 	 * @return
 	 */
 	public SortedSet<Player> getPlayersByRank() {
@@ -159,7 +159,11 @@ public class Game {
 		return mMinScore;
 	}
 
-	public void createNewRound() {
+	public Round getCurrentRound() {
+    return currentRound;
+  }
+
+  public void createNewRound() {
 
 		this.mRoundNumber++;
 
@@ -178,7 +182,7 @@ public class Game {
 	/**
 	 * Check if all player entered the game (i.e. are not in warm-up rounds
 	 * anymore).
-	 * 
+	 *
 	 * @return false if at least one player is still in warm-up rounds.
 	 */
 	public boolean allPlayerStarted() {
@@ -199,7 +203,7 @@ public class Game {
 
 	/**
 	 * Add given score to player's total.
-	 * 
+	 *
 	 * @param newScore
 	 *            value <i>to be added</i> to the player's total.
 	 */
@@ -218,6 +222,7 @@ public class Game {
 				player.getId());
 		list.add(newTotal);
 		currentRound.getPlayerScoreMap().put(player.getId(), list);
+		currentRound.setAtLeastOneScore(true);
 
 		// Check it against max and min scores so far
 		if (mMaxScore.compareTo(newTotal) < 0) {
@@ -232,7 +237,7 @@ public class Game {
 
 	/**
 	 * A quick dirty way to get the current rank of given player.
-	 * 
+	 *
 	 * @param player
 	 * @return
 	 */
@@ -254,7 +259,7 @@ public class Game {
 	/**
 	 * Add the penalty to the list of player's penalties. Commit penalty score
 	 * to player's total.
-	 * 
+	 *
 	 * @param penalty
 	 */
 	public void applyPenalty(Player player, Penalty penalty) {
@@ -275,7 +280,7 @@ public class Game {
 
 	/**
 	 * Get the best score so far for a given player.
-	 * 
+	 *
 	 * @param mPlayer
 	 * @return
 	 */
@@ -314,7 +319,7 @@ public class Game {
 
 	/**
 	 * Returns the list of player who hit given player, the dirty way.
-	 * 
+	 *
 	 * @param player
 	 * @return
 	 */
@@ -358,7 +363,7 @@ public class Game {
 
 	/**
 	 * Return the list of player having the maximum number of penalties.
-	 * 
+	 *
 	 * @param penaltyPerPlayer
 	 * @return
 	 */

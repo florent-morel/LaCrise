@@ -5,7 +5,9 @@ import java.util.Map;
 
 public class Round {
 
-	private Integer mRoundNumber;
+  private Integer mRoundNumber;
+
+  private boolean mAtLeastOneScore = false;
 
 	private Map<Integer, List<Integer>> mPlayerScoreMap;
 
@@ -21,6 +23,14 @@ public class Round {
 
   protected Integer getRoundNumber() {
     return mRoundNumber;
+  }
+
+  public boolean atLeastOneScore() {
+    return mAtLeastOneScore;
+  }
+
+  public void setAtLeastOneScore(boolean atLeastOneScore) {
+    this.mAtLeastOneScore = atLeastOneScore;
   }
 
 }

@@ -3,7 +3,6 @@ package org.lacrise;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
-import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,15 +12,16 @@ import org.lacrise.engine.game.Game;
 import org.lacrise.engine.game.Penalty;
 import org.lacrise.engine.game.Player;
 import org.lacrise.engine.game.PlayerScore;
+import org.lacrise.engine.game.Round;
 import org.lacrise.engine.game.Turn;
 
 /**
  * Singleton handling the game instance.
- * 
+ *
  * Starts a new game, sorts players by rank, computes a turn score...
- * 
+ *
  * @author florent
- * 
+ *
  */
 public class GameManager {
 
@@ -32,6 +32,8 @@ public class GameManager {
 	private Turn mCurrentTurn;
 
 	private Player mCurrentPlayer;
+
+	private Integer mRoundNumberPlayers = Constants.ZERO_VALUE;
 
 	public static Pattern mScorePattern = Pattern.compile("[0-9]{1,5}");
 
@@ -98,7 +100,7 @@ public class GameManager {
 
 	/**
 	 * Get the next or previous player to play and initialize him for next turn.
-	 * 
+	 *
 	 * @param currentPlayer
 	 * @param initPlayer
 	 * @param getNext
@@ -112,9 +114,13 @@ public class GameManager {
 		if (initPlayer) {
 
 			if (Constants.ZERO_VALUE.equals(nextPlayer.getId())) {
-				// Each time first player plays, increment the number of played
-				// rounds
-				mGame.createNewRound();
+			  Round currentRound = mGame.getCurrentRound();
+			  // TODO check that we can create a new round in a cleaner way.
+        if (currentRound == null || currentRound.atLeastOneScore()) {
+          // Each time first player plays, increment the number of played
+          // rounds
+          mGame.createNewRound();
+        }
 			}
 			// In case warm rounds are over, force player to enter the game
 			if (!nextPlayer.hasStarted()
@@ -135,10 +141,10 @@ public class GameManager {
 
 	/**
 	 * Get the next player to play.
-	 * 
+	 *
 	 * @param getNext
 	 *            get next player if true. get previous player otherwise.
-	 * 
+	 *
 	 * @return
 	 */
 	private Player computeNextPlayer(Player currentPlayer, boolean getNext) {
@@ -147,25 +153,26 @@ public class GameManager {
 		Player players[] = new Player[nbPlayers];
 		players = mGame.getPlayerList().toArray(players);
 
-		Integer nextId = Constants.ZERO_VALUE;
-		if (currentPlayer == null) {
-			nextId = Constants.ZERO_VALUE;
-		} else {
-			// Increment to get next player id
-			nextId = currentPlayer.getId();
-			if (getNext) {
-				nextId += 1;
-			} else {
-				if (nextId == Constants.ZERO_VALUE) {
-					// first player, set next id as player list size to get last
-					// player
-					nextId = mGame.getPlayerList().size();
-				}
-				nextId -= 1;
-			}
-		}
+//		Integer nextId = Constants.ZERO_VALUE;
+//		if (currentPlayer == null) {
+//			nextId = Constants.ZERO_VALUE;
+//		} else {
+//			// Increment to get next player id
+//			nextId = currentPlayer.getId();
+//			if (getNext) {
+//				nextId += 1;
+//			} else {
+//				if (nextId == Constants.ZERO_VALUE) {
+//					// first player, set next id as player list size to get last
+//					// player
+//					nextId = mGame.getPlayerList().size();
+//				}
+//				nextId -= 1;
+//			}
+//		}
 
-		int modulo = nextId % nbPlayers;
+//    int modulo = nextId % nbPlayers;
+    int modulo = mRoundNumberPlayers % nbPlayers;
 		nextPlayer = players[modulo];
 
 		return nextPlayer;
@@ -199,7 +206,7 @@ public class GameManager {
 	/**
 	 * Get the set of game players sorted by gap value compared to given
 	 * {@link#Player}.
-	 * 
+	 *
 	 * @return
 	 */
 	public SortedMap<Integer, Player> getPlayersGap(Player player) {
@@ -233,7 +240,7 @@ public class GameManager {
 	/**
 	 * Terminates a run. Store turn score. Compute other scores for penalties.
 	 * Check for end of game after this turn.
-	 * 
+	 *
 	 * @param turnScore
 	 * @return
 	 */
@@ -269,12 +276,14 @@ public class GameManager {
 		// First set player rank at the end of current turn
 		mCurrentTurn.setPlayerEndRank(mGame.getPlayerRank(mCurrentPlayer));
 
+		mRoundNumberPlayers++;
+
 		return mCurrentTurn;
 	}
 
 	/**
 	 * Check if a score is valid (Integer multiple of 50).
-	 * 
+	 *
 	 * @param score
 	 * @return
 	 */
@@ -305,7 +314,7 @@ public class GameManager {
 	/**
 	 * Compute player score only if the player has already started the game
 	 * (i.e. he is done with the warm-up rounds).
-	 * 
+	 *
 	 * @param player
 	 * @return
 	 */
@@ -343,7 +352,7 @@ public class GameManager {
 
 	/**
 	 * Check recursively whether current player got another's total score.
-	 * 
+	 *
 	 * @param currentPlayer
 	 * @param filteredPlayerList
 	 * @deprecated TODO use a linear way (list) instead of recursivity.
@@ -379,7 +388,7 @@ public class GameManager {
 
 	/**
 	 * Set player name.
-	 * 
+	 *
 	 * @param playerId
 	 * @param playerName
 	 */
