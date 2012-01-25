@@ -1,7 +1,11 @@
 package org.lacrise.activity.run;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.lacrise.GameManager;
 import org.lacrise.R;
@@ -24,10 +28,10 @@ import android.widget.TextView;
 
 /**
  * Display ongoing game options.
- * 
- * 
+ *
+ *
  * @author fmorel
- * 
+ *
  */
 public class Statistics extends Activity implements OnGesturePerformedListener {
 
@@ -96,8 +100,8 @@ public class Statistics extends Activity implements OnGesturePerformedListener {
 
 		buildRankStat();
 		buildZeroStat();
-		buildHitStat();
-		buildHitVictimStat();
+		buildHitStat(false);
+		buildHitStat(true);
 
 		mBestTurn = (TextView) findViewById(R.id.turn_score_best_text);
 		mBestTurn.setText(mGameManager.getGame().getBestRoundScore(mPlayer)
@@ -134,37 +138,34 @@ public class Statistics extends Activity implements OnGesturePerformedListener {
 		}
 	}
 
-	private void buildHitStat() {
-		List<Player> hitList = mGameManager.getGame().getMaxHit(mPlayer, false);
-		if (hitList != null && !hitList.isEmpty()) {
-			StringBuilder message = new StringBuilder();
-			for (Player player : hitList) {
-				message.append(player.getName());
-				message.append(Constants.SPACE);
-			}
+  private void buildHitStat(boolean isVictim) {
+    Map<Integer, List<Player>> playerPenaltyMap = mGameManager.getGame().getMaxHit(mPlayer, isVictim);
+    if (playerPenaltyMap != null && !playerPenaltyMap.isEmpty()) {
+      StringBuilder message = new StringBuilder();
+      Integer nbHits = Constants.ZERO_VALUE;
+      for (Entry<Integer, List<Player>> entry : playerPenaltyMap.entrySet()) {
+        nbHits = entry.getKey();
+        if (nbHits > Constants.ZERO_VALUE) {
+          for (Player player : entry.getValue()) {
+            message.append(player.getName());
+            message.append(Constants.SPACE);
+          }
+        }
+      }
 
-			mHit = (TextView) findViewById(R.id.penalty_hit_text);
-			mHit.setText(String.format(
-					mResources.getString(R.string.penalty_hit_value),
-					message.toString(), 1));
-		}
-	}
-
-	private void buildHitVictimStat() {
-		List<Player> hitList = mGameManager.getGame().getMaxHit(mPlayer, true);
-		if (hitList != null && !hitList.isEmpty()) {
-			StringBuilder message = new StringBuilder();
-			for (Player player : hitList) {
-				message.append(player.getName());
-				message.append(Constants.SPACE);
-			}
-
-			mHitVictim = (TextView) findViewById(R.id.penalty_victim_text);
-			mHitVictim.setText(String.format(
-					mResources.getString(R.string.penalty_hit_value),
-					message.toString(), 1));
-		}
-	}
+      if (nbHits > Constants.ZERO_VALUE) {
+        if (isVictim) {
+          mHitVictim = (TextView)findViewById(R.id.penalty_victim_text);
+          mHitVictim
+              .setText(String.format(mResources.getString(R.string.penalty_hit_value), message.toString(), nbHits));
+        }
+        else {
+          mHit = (TextView)findViewById(R.id.penalty_hit_text);
+          mHit.setText(String.format(mResources.getString(R.string.penalty_hit_value), message.toString(), nbHits));
+        }
+      }
+    }
+  }
 
 	@Override
 	public void onGesturePerformed(GestureOverlayView arg0, Gesture gesture) {

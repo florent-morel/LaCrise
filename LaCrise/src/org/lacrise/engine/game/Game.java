@@ -323,7 +323,7 @@ public class Game {
 	 * @param player
 	 * @return
 	 */
-	public List<Player> getMaxHit(Player player, boolean isVictim) {
+	public Map<Integer, List<Player>> getMaxHit(Player player, boolean isVictim) {
 
 		Map<Player, List<Penalty>> penaltyPerPlayer = new HashMap<Player, List<Penalty>>();
 
@@ -367,7 +367,7 @@ public class Game {
 	 * @param penaltyPerPlayer
 	 * @return
 	 */
-	private List<Player> getPenaltyPlayerList(
+	private Map<Integer, List<Player>> getPenaltyPlayerList(
 			Map<Player, List<Penalty>> penaltyPerPlayer) {
 		int maxHits = 0;
 		List<Player> playerList = new ArrayList<Player>();
@@ -391,9 +391,12 @@ public class Game {
 				}
 				penaltyMap.put(maxHits, playerList);
 			}
-
 		}
-		return penaltyMap.get(maxHits);
+
+		Map<Integer, List<Player>> maxPenaltyMap = new HashMap<Integer, List<Player>>();
+		maxPenaltyMap.put(maxHits, penaltyMap.get(maxHits));
+
+		return maxPenaltyMap;
 	}
 
 	public Integer getNumberZeroPenalty(Player player) {
