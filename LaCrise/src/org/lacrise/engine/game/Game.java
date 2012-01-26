@@ -420,4 +420,51 @@ public class Game {
 
 		return number;
 	}
+
+  /**
+   * Update turn with players rank.
+   *
+   * @param currentTurn
+   */
+  public void updateTurnRanks(Turn currentTurn) {
+    for (Player player : this.getPlayerList()) {
+      currentTurn.setPlayerEndRank(player.getId(), this.getPlayerRank(player));
+    }
+  }
+
+  public Turn getBestRank(Player player) {
+    Turn turnBestRank = null;
+    for (Round round : this.getRoundList()) {
+      Set<Entry<Integer, Turn>> entrySet = round.getPlayerTurnMap().entrySet();
+      for (Entry<Integer, Turn> entry : entrySet) {
+        if (player.getId().equals(entry.getKey())) {
+          Turn turn = entry.getValue();
+          if (turnBestRank == null ||
+              turn.getPlayerEndRank().get(player.getId())
+                  .compareTo(turnBestRank.getPlayerEndRank().get(player.getId())) < 0) {
+            turnBestRank = turn;
+          }
+        }
+      }
+    }
+    return turnBestRank;
+  }
+
+  public Turn getWorstRank(Player player) {
+    Turn turnBestRank = null;
+    for (Round round : this.getRoundList()) {
+      Set<Entry<Integer, Turn>> entrySet = round.getPlayerTurnMap().entrySet();
+      for (Entry<Integer, Turn> entry : entrySet) {
+        if (player.getId().equals(entry.getKey())) {
+          Turn turn = entry.getValue();
+          if (turnBestRank == null ||
+              turn.getPlayerEndRank().get(player.getId())
+                  .compareTo(turnBestRank.getPlayerEndRank().get(player.getId())) > 0) {
+            turnBestRank = turn;
+          }
+        }
+      }
+    }
+    return turnBestRank;
+  }
 }

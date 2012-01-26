@@ -40,33 +40,9 @@ public class Player implements Comparable<Player> {
 		this.mCurrentTurn = currentTurn;
 	}
 
-	public Turn getBestRank() {
-		Turn turnBestRank = null;
-		for (Turn turn : getPlayerScore().getTurnList()) {
-			if (turnBestRank == null
-					|| turn.getPlayerEndRank().compareTo(
-							turnBestRank.getPlayerEndRank()) < 0) {
-				turnBestRank = turn;
-			}
-		}
-		return turnBestRank;
-	}
-
-	public Turn getWorstRank() {
-		Turn turnWorstRank = null;
-		for (Turn turn : getPlayerScore().getTurnList()) {
-			if (turnWorstRank == null
-					|| turn.getPlayerEndRank().compareTo(
-							turnWorstRank.getPlayerEndRank()) > 0) {
-				turnWorstRank = turn;
-			}
-		}
-		return turnWorstRank;
-	}
-
 	/**
 	 * Get last played turn id.
-	 * 
+	 *
 	 * @return
 	 */
 	public Integer getLastPlayedTurnId() {
@@ -92,11 +68,11 @@ public class Player implements Comparable<Player> {
 
 	/**
 	 * Return current total score.
-	 * 
+	 *
 	 * @param nullable
 	 *            if true and score is null, return null if false, return zero
 	 * @return Player current score.
-	 * 
+	 *
 	 */
 	public Integer getTotalScore(boolean nullable) {
 		Integer total = mPlayerScore.getTotal();

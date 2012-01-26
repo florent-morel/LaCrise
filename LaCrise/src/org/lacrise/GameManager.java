@@ -279,8 +279,11 @@ public class GameManager {
 
 		mCurrentTurn.setTurnResultCode(result);
 
-		// First set player rank at the end of current turn
-		mCurrentTurn.setPlayerEndRank(mGame.getPlayerRank(mCurrentPlayer));
+		// First update players rank at the end of current turn
+		mGame.updateTurnRanks(mCurrentTurn);
+
+		// Add the current turn for this player to current round
+		mGame.getCurrentRound().addTurnToPlayerMap(mCurrentPlayer.getId(), mCurrentTurn);
 
 		mRoundNumberPlayers++;
 

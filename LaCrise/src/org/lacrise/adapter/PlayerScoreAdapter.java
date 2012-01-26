@@ -39,7 +39,7 @@ public class PlayerScoreAdapter extends ArrayAdapter<Player> {
     mGameManager = GameManager.getSingletonObject();
 
     if (!mGameManager.getGame().isGameOver()) {
-      mNextPlayer = mGameManager.getNextPlayer(mGameManager.getCurrentPlayer(), true, true);
+      mNextPlayer = mGameManager.getNextPlayer(mGameManager.getCurrentPlayer(), false, true);
     }
 
     this.mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

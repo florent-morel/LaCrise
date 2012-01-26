@@ -115,17 +115,17 @@ public class Statistics extends Activity implements OnGesturePerformedListener {
 		mCurrentRank.setText(mGameManager.getGame().getPlayerRank(mPlayer)
 				.toString());
 
-		Turn bestRank = mPlayer.getBestRank();
+		Turn bestRank = mGameManager.getGame().getBestRank(mPlayer);
 		mBestRank = (TextView) findViewById(R.id.rank_best_text);
 		mBestRank.setText(String.format(
 				mResources.getString(R.string.rank_value),
-				bestRank.getPlayerEndRank(), bestRank.getId()));
+				bestRank.getPlayerEndRank().get(mPlayer.getId()), bestRank.getId()));
 
-		Turn worstRank = mPlayer.getWorstRank();
+		Turn worstRank = mGameManager.getGame().getWorstRank(mPlayer);
 		mWorstRank = (TextView) findViewById(R.id.rank_worst_text);
 		mWorstRank.setText(String.format(
 				mResources.getString(R.string.rank_value),
-				worstRank.getPlayerEndRank(), worstRank.getId()));
+				worstRank.getPlayerEndRank().get(mPlayer.getId()), worstRank.getId()));
 	}
 
 	private void buildZeroStat() {
