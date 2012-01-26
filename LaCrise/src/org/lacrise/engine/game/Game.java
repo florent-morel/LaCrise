@@ -323,43 +323,51 @@ public class Game {
 	 * @param player
 	 * @return
 	 */
-	public Map<Integer, List<Player>> getMaxHit(Player player, boolean isVictim) {
+  public Map<Integer, List<Player>> getMaxHit(Player player, boolean isVictim) {
 
-		Map<Player, List<Penalty>> penaltyPerPlayer = new HashMap<Player, List<Penalty>>();
+    Map<Player, List<Penalty>> penaltyPerPlayer = new HashMap<Player, List<Penalty>>();
 
-		PlayerScore playerScore = player.getPlayerScore();
-		for (Penalty penalty : playerScore.getPenaltyList()) {
+    for (Player currentPlayer : this.getPlayerList()) {
+      PlayerScore playerScore = currentPlayer.getPlayerScore();
+      for (Penalty penalty : playerScore.getPenaltyList()) {
 
-			boolean computeCurrentPlayer = false;
-			// victim case: player is not the one who hit but the one who was
-			// hit
+        boolean computeCurrentPlayer = false;
+        // victim case: player is not the one who hit but the one who was
+        // hit
+        if (isVictim) {
+          if (!penalty.getPlayer().getId().equals(player.getId()) && penalty.getVictim().getId().equals(player.getId())) {
+            computeCurrentPlayer = true;
+          }
+        }
+        else {
+          // Hit case: player is the one who hit
+          if (penalty.getPlayer().getId().equals(player.getId()) && !penalty.getVictim().getId().equals(player.getId())) {
+            computeCurrentPlayer = true;
+          }
+        }
 
-			if (isVictim) {
-				if (!penalty.getPlayer().getId().equals(player.getId())
-						&& penalty.getVictim().getId().equals(player.getId())) {
-					computeCurrentPlayer = true;
-				}
-			} else {
-				// Hit case: player is the one who hit
-				if (penalty.getPlayer().getId().equals(player.getId())
-						&& !penalty.getVictim().getId().equals(player.getId())) {
-					computeCurrentPlayer = true;
-				}
-			}
+        if (computeCurrentPlayer) {
+          Player playerToStore = null;
+          if (isVictim) {
+            playerToStore = penalty.getPlayer();
+          } else {
+            playerToStore = penalty.getVictim();
+          }
 
-			if (computeCurrentPlayer) {
-				List<Penalty> list = penaltyPerPlayer.get(penalty.getPlayer());
-				if (list == null) {
-					list = new ArrayList<Penalty>();
-				}
-				if (!list.contains(penalty)) {
-					list.add(penalty);
-				}
-				penaltyPerPlayer.put(penalty.getPlayer(), list);
-			}
-		}
-		return getPenaltyPlayerList(penaltyPerPlayer);
-	}
+          List<Penalty> list = penaltyPerPlayer.get(playerToStore);
+          if (list == null) {
+            list = new ArrayList<Penalty>();
+          }
+          if (!list.contains(penalty)) {
+            list.add(penalty);
+          }
+
+          penaltyPerPlayer.put(playerToStore, list);
+        }
+      }
+    }
+    return getPenaltyPlayerList(penaltyPerPlayer);
+  }
 
 	/**
 	 * Return the list of player having the maximum number of penalties.

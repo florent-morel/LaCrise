@@ -1,11 +1,9 @@
 package org.lacrise.activity.run;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.lacrise.GameManager;
 import org.lacrise.R;
@@ -174,11 +172,11 @@ public class Statistics extends Activity implements OnGesturePerformedListener {
 			if (prediction.score > 1.0) {
 				if (Constants.RIGHT.equalsIgnoreCase(prediction.name)) {
 					// Get previous player id
-					displayStats(mGameManager.getNextPlayer(mPlayer, false,
+					displayStats(mGameManager.getNextPlayer(mPlayer, true,
 							false).getId());
 				} else if (Constants.LEFT.equalsIgnoreCase(prediction.name)) {
 					// Get next player id
-					displayStats(mGameManager.getNextPlayer(mPlayer, false,
+					displayStats(mGameManager.getNextPlayer(mPlayer, true,
 							true).getId());
 				}
 			}

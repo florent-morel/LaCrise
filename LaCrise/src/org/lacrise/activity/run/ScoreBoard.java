@@ -129,9 +129,9 @@ public class ScoreBoard extends Activity {
 
 	/**
 	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
-	 * 
+	 *
 	 *      Builds the contextual menu when long press on a player.
-	 * 
+	 *
 	 */
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
@@ -267,7 +267,7 @@ public class ScoreBoard extends Activity {
 
 	/**
 	 * Refresh the score board player list.
-	 * 
+	 *
 	 * @param descending
 	 */
 	private void refreshList() {
@@ -343,7 +343,7 @@ public class ScoreBoard extends Activity {
 		}
 		message.append(String.format(mResources
 				.getString(R.string.dialog_next_player), mGameManager
-				.getNextPlayer(mGameManager.getCurrentPlayer(), false, true)
+				.getNextPlayer(mGameManager.getCurrentPlayer(), true, true)
 				.getName()));
 	}
 
