@@ -81,11 +81,9 @@ public class GameManager {
 		}
 
 		mGame.setPlayerList(playerList);
-
 		mGame.setScoreToReach(scoreToReach);
-
 		mGame.setWarmUpRounds(nbWarmUps);
-
+		mRoundNumberPlayers = Constants.ZERO_VALUE;
 	}
 
 	private void createNewPlayer(List<Player> playerList, int i) {
@@ -107,11 +105,11 @@ public class GameManager {
 	 *            get next player if true. get previous player otherwise.
 	 * @return
 	 */
-	public Player getNextPlayer(Player currentPlayer, boolean displayPurpose,
+	public Player getNextPlayer(Player currentPlayer, boolean initPlayer, boolean displayPurpose,
 			boolean getNext) {
 		Player nextPlayer = computeNextPlayer(currentPlayer, displayPurpose, getNext);
 
-		if (!displayPurpose) {
+		if (initPlayer) {
 
 			if (Constants.ZERO_VALUE.equals(nextPlayer.getId())) {
 			  Round currentRound = mGame.getCurrentRound();
@@ -132,7 +130,7 @@ public class GameManager {
 		if (mGame.getNumberActivePlayer() > 0) {
 			// Skip player if not active
 			while (!nextPlayer.isActive()) {
-				nextPlayer = getNextPlayer(nextPlayer, displayPurpose, getNext);
+				nextPlayer = getNextPlayer(nextPlayer, initPlayer, displayPurpose, getNext);
 			}
 		}
 
@@ -237,7 +235,7 @@ public class GameManager {
 	 * Initiate a turn: get next player and create new turn.
 	 */
 	public void playTurn() {
-		mCurrentPlayer = getNextPlayer(mCurrentPlayer, false, true);
+		mCurrentPlayer = getNextPlayer(mCurrentPlayer, true, false, true);
 
 		mCurrentTurn = new Turn(mGame.getRoundNumber(),
 				!mCurrentPlayer.hasStarted());
@@ -281,6 +279,8 @@ public class GameManager {
 
 		// First update players rank at the end of current turn
 		mGame.updateTurnRanks(mCurrentTurn);
+
+		mGame.getCurrentRound().setAtLeastOneScore(true);
 
 		// Add the current turn for this player to current round
 		mGame.getCurrentRound().addTurnToPlayerMap(mCurrentPlayer.getId(), mCurrentTurn);

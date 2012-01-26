@@ -343,7 +343,7 @@ public class ScoreBoard extends Activity {
 		}
 		message.append(String.format(mResources
 				.getString(R.string.dialog_next_player), mGameManager
-				.getNextPlayer(mGameManager.getCurrentPlayer(), false, true)
+				.getNextPlayer(mGameManager.getCurrentPlayer(), false, false, true)
 				.getName()));
 	}
 

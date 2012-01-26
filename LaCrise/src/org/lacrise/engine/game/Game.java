@@ -222,7 +222,6 @@ public class Game {
 				player.getId());
 		list.add(newTotal);
 		currentRound.getPlayerScoreMap().put(player.getId(), list);
-		currentRound.setAtLeastOneScore(true);
 
 		// Check it against max and min scores so far
 		if (mMaxScore.compareTo(newTotal) < 0) {

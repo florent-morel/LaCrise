@@ -172,11 +172,11 @@ public class Statistics extends Activity implements OnGesturePerformedListener {
 			if (prediction.score > 1.0) {
 				if (Constants.RIGHT.equalsIgnoreCase(prediction.name)) {
 					// Get previous player id
-					displayStats(mGameManager.getNextPlayer(mPlayer, true,
+					displayStats(mGameManager.getNextPlayer(mPlayer, false, true,
 							false).getId());
 				} else if (Constants.LEFT.equalsIgnoreCase(prediction.name)) {
 					// Get next player id
-					displayStats(mGameManager.getNextPlayer(mPlayer, true,
+					displayStats(mGameManager.getNextPlayer(mPlayer, false, true,
 							true).getId());
 				}
 			}
