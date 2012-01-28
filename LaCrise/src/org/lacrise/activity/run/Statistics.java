@@ -26,10 +26,10 @@ import android.widget.TextView;
 
 /**
  * Display ongoing game options.
- *
- *
+ * 
+ * 
  * @author fmorel
- *
+ * 
  */
 public class Statistics extends Activity implements OnGesturePerformedListener {
 
@@ -116,16 +116,24 @@ public class Statistics extends Activity implements OnGesturePerformedListener {
 				.toString());
 
 		Turn bestRank = mGameManager.getGame().getBestRank(mPlayer);
-		mBestRank = (TextView) findViewById(R.id.rank_best_text);
-		mBestRank.setText(String.format(
-				mResources.getString(R.string.rank_value),
-				bestRank.getPlayerEndRank().get(mPlayer.getId()), bestRank.getId()));
+		if (bestRank != null) {
+			mBestRank = (TextView) findViewById(R.id.rank_best_text);
+			mBestRank
+					.setText(String.format(mResources
+							.getString(R.string.rank_value), bestRank
+							.getPlayerEndRank().get(mPlayer.getId()), bestRank
+							.getId()));
+		}
 
 		Turn worstRank = mGameManager.getGame().getWorstRank(mPlayer);
-		mWorstRank = (TextView) findViewById(R.id.rank_worst_text);
-		mWorstRank.setText(String.format(
-				mResources.getString(R.string.rank_value),
-				worstRank.getPlayerEndRank().get(mPlayer.getId()), worstRank.getId()));
+		if (worstRank != null) {
+			mWorstRank = (TextView) findViewById(R.id.rank_worst_text);
+			mWorstRank
+					.setText(String.format(
+							mResources.getString(R.string.rank_value),
+							worstRank.getPlayerEndRank().get(mPlayer.getId()),
+							worstRank.getId()));
+		}
 	}
 
 	private void buildZeroStat() {
@@ -136,34 +144,38 @@ public class Statistics extends Activity implements OnGesturePerformedListener {
 		}
 	}
 
-  private void buildHitStat(boolean isVictim) {
-    Map<Integer, List<Player>> playerPenaltyMap = mGameManager.getGame().getMaxHit(mPlayer, isVictim);
-    if (playerPenaltyMap != null && !playerPenaltyMap.isEmpty()) {
-      StringBuilder message = new StringBuilder();
-      Integer nbHits = Constants.ZERO_VALUE;
-      for (Entry<Integer, List<Player>> entry : playerPenaltyMap.entrySet()) {
-        nbHits = entry.getKey();
-        if (nbHits > Constants.ZERO_VALUE) {
-          for (Player player : entry.getValue()) {
-            message.append(player.getName());
-            message.append(Constants.SPACE);
-          }
-        }
-      }
+	private void buildHitStat(boolean isVictim) {
+		Map<Integer, List<Player>> playerPenaltyMap = mGameManager.getGame()
+				.getMaxHit(mPlayer, isVictim);
+		if (playerPenaltyMap != null && !playerPenaltyMap.isEmpty()) {
+			StringBuilder message = new StringBuilder();
+			Integer nbHits = Constants.ZERO_VALUE;
+			for (Entry<Integer, List<Player>> entry : playerPenaltyMap
+					.entrySet()) {
+				nbHits = entry.getKey();
+				if (nbHits > Constants.ZERO_VALUE) {
+					for (Player player : entry.getValue()) {
+						message.append(player.getName());
+						message.append(Constants.SPACE);
+					}
+				}
+			}
 
-      if (nbHits > Constants.ZERO_VALUE) {
-        if (isVictim) {
-          mHitVictim = (TextView)findViewById(R.id.penalty_victim_text);
-          mHitVictim
-              .setText(String.format(mResources.getString(R.string.penalty_hit_value), message.toString(), nbHits));
-        }
-        else {
-          mHit = (TextView)findViewById(R.id.penalty_hit_text);
-          mHit.setText(String.format(mResources.getString(R.string.penalty_hit_value), message.toString(), nbHits));
-        }
-      }
-    }
-  }
+			if (nbHits > Constants.ZERO_VALUE) {
+				if (isVictim) {
+					mHitVictim = (TextView) findViewById(R.id.penalty_victim_text);
+					mHitVictim.setText(String.format(
+							mResources.getString(R.string.penalty_hit_value),
+							message.toString(), nbHits));
+				} else {
+					mHit = (TextView) findViewById(R.id.penalty_hit_text);
+					mHit.setText(String.format(
+							mResources.getString(R.string.penalty_hit_value),
+							message.toString(), nbHits));
+				}
+			}
+		}
+	}
 
 	@Override
 	public void onGesturePerformed(GestureOverlayView arg0, Gesture gesture) {
@@ -172,12 +184,12 @@ public class Statistics extends Activity implements OnGesturePerformedListener {
 			if (prediction.score > 1.0) {
 				if (Constants.RIGHT.equalsIgnoreCase(prediction.name)) {
 					// Get previous player id
-					displayStats(mGameManager.getNextPlayer(mPlayer, false, true,
-							false).getId());
+					displayStats(mGameManager.getNextPlayer(mPlayer, false,
+							true, false).getId());
 				} else if (Constants.LEFT.equalsIgnoreCase(prediction.name)) {
 					// Get next player id
-					displayStats(mGameManager.getNextPlayer(mPlayer, false, true,
-							true).getId());
+					displayStats(mGameManager.getNextPlayer(mPlayer, false,
+							true, true).getId());
 				}
 			}
 		}
