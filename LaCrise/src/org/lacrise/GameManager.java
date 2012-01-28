@@ -58,7 +58,7 @@ public class GameManager {
 	}
 
 	public void startNewGame(Integer numberOfPlayers, Integer scoreToReach,
-			Integer nbWarmUps, boolean isDebug, List<Player> playerList) {
+			Integer nbWarmUps, List<Player> playerList) {
 		mGame = new Game();
 		mCurrentPlayer = null;
 		mNbPlayersForThisRound = 0;
@@ -72,14 +72,14 @@ public class GameManager {
 			if (i < playerList.size()) {
 				Player player = playerList.get(i);
 				if (player == null) {
-					createNewPlayer(playerList, isDebug, i);
+					createNewPlayer(playerList, i);
 				} else {
 					// Reset player game history
 					player.initPlayer();
 				}
 			} else {
 				// More requested players than existing
-				createNewPlayer(playerList, isDebug, i);
+				createNewPlayer(playerList, i);
 			}
 
 		}
@@ -92,16 +92,13 @@ public class GameManager {
 
 	}
 
-	private void createNewPlayer(List<Player> playerList, boolean isDebug, int i) {
+	private void createNewPlayer(List<Player> playerList, int i) {
 		Player player;
 		player = new Player(Integer.valueOf(i));
 		// TODO StringBuilder nameBuilder = new
 		// StringBuilder(R.string.player_name_default);
 		// nameBuilder.append((i+1));
 		player.setName("P #" + (i + 1));
-		if (isDebug) {
-			player.getPlayerScore().setTotal((i + 1) * 100);
-		}
 		playerList.add(player);
 	}
 
