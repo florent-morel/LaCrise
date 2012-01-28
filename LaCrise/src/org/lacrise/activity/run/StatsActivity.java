@@ -26,6 +26,15 @@ public class StatsActivity extends Activity {
         statsPager = (ViewPager) findViewById(R.id.stats_pager);
         statsPager.setAdapter(statsAdapter);
         statsPager.setCurrentItem(playerId);
+        
+		// If you are asking how one could implements a carousel (infinite
+		// loop), then that would involve manipulating the PagerAdapter to
+		// return a x+1 for getCount() and getItem(int position) to perform a
+		// modulus operation on the ‘position’ parameter to determine the
+		// correct Fragment index in the member variable ‘List fragments’ e.g:
+		//
+		// int i = position % fragments.size();
+        
     }
     
 }
