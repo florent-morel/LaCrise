@@ -20,8 +20,6 @@ import android.widget.TextView;
 
 public class PlayerScoreAdapter extends ArrayAdapter<Player> {
 
-  private Context mContext;
-
   private List<Player> mItems = new ArrayList<Player>();
 
   private Resources mResources;
@@ -34,8 +32,7 @@ public class PlayerScoreAdapter extends ArrayAdapter<Player> {
 
   public PlayerScoreAdapter(Context context, int textViewResourceId) {
     super(context, textViewResourceId);
-    this.mContext = context;
-    this.mResources = mContext.getResources();
+    this.mResources = context.getResources();
     mGameManager = GameManager.getSingletonObject();
 
     if (!mGameManager.getGame().isGameOver()) {

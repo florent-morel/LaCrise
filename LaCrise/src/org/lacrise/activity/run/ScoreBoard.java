@@ -177,7 +177,8 @@ public class ScoreBoard extends Activity {
 	}
 
 	private void displayStats(Integer playerId) {
-		Intent intent = new Intent(this, Statistics.class);
+//		Intent intent = new Intent(this, Statistics.class);
+		Intent intent = new Intent(this, StatsActivity.class);
 		intent.putExtra(Constants.PLAYER_ID, playerId);
 		startActivityForResult(intent, Constants.ACTIVITY_LAUNCH);
 	}

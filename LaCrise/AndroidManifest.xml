@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.lacrise"
     android:versionCode="0"
-    android:versionName="0.1.1" android:installLocation="preferExternal">
+    android:versionName="0.1.2" android:installLocation="preferExternal">
 
     <uses-sdk android:minSdkVersion="10" />
 
@@ -55,7 +55,11 @@
             android:label="@string/game_options" >
         </activity>
         <activity
-            android:name=".activity.run.Statistics"
+            android:name=".activity.run.StatsActivity"
+            android:label="@string/statistics" >
+        </activity>
+        <activity
+            android:name=".activity.run.PlayerStatsAdapter"
             android:label="@string/statistics" >
         </activity>
     </application>
