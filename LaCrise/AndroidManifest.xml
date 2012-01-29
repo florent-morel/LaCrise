@@ -59,7 +59,7 @@
             android:label="@string/statistics" >
         </activity>
         <activity
-            android:name=".activity.run.PlayerStatsAdapter"
+            android:name=".adapter.PlayerStatsAdapter"
             android:label="@string/statistics" >
         </activity>
     </application>

@@ -1,4 +1,4 @@
-package org.lacrise.activity.run;
+package org.lacrise.adapter;
 
 import java.util.List;
 import java.util.Map;

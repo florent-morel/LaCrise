@@ -1,6 +1,7 @@
 package org.lacrise.activity.run;
 
 import org.lacrise.R;
+import org.lacrise.adapter.PlayerStatsAdapter;
 import org.lacrise.engine.Constants;
 
 import android.app.Activity;
