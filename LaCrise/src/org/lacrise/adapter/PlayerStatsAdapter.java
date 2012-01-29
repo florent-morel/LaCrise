@@ -41,7 +41,9 @@ public class PlayerStatsAdapter extends PagerAdapter {
 
 	private TextView mCurrentRank;
 
-	private TextView mZeroPenalty;
+	private TextView mNbWhite;
+
+	private TextView mNbZeroPenalty;
 
 	private TextView mHit;
 
@@ -82,6 +84,7 @@ public class PlayerStatsAdapter extends PagerAdapter {
 
 		buildRankStat();
 		buildZeroStat();
+		buildWhiteStat();
 		buildHitStat(false);
 		buildHitStat(true);
 
@@ -123,8 +126,16 @@ public class PlayerStatsAdapter extends PagerAdapter {
 	private void buildZeroStat() {
 		Integer number = mGameManager.getGame().getNumberZeroPenalty(mPlayer);
 		if (number > 0) {
-			mZeroPenalty = (TextView) mView.findViewById(R.id.zero_penalty_text);
-			mZeroPenalty.setText(number.toString());
+			mNbZeroPenalty = (TextView) mView.findViewById(R.id.zero_penalty_text);
+			mNbZeroPenalty.setText(number.toString());
+		}
+	}
+
+	private void buildWhiteStat() {
+		Integer number = mGameManager.getGame().getNumberOfWhite(mPlayer.getId());
+		if (number > 0) {
+			mNbWhite = (TextView) mView.findViewById(R.id.number_of_whites_text);
+			mNbWhite.setText(number.toString());
 		}
 	}
 

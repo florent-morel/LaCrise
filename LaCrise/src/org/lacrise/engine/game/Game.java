@@ -469,11 +469,11 @@ public class Game {
 	 * @param playerId
 	 * @return
 	 */
-	public Integer getPlayerWhiteNumber(Integer playerId) {
+	public Integer getNumberOfWhite(Integer playerId) {
 		Integer nbOfWhites = Constants.ZERO_VALUE;
 		for (Round round : this.getRoundList()) {
 			Turn turn = round.getPlayerTurnMap().get(playerId);
-			if (turn.isWhite()) {
+			if (turn != null && turn.isWhite()) {
 				nbOfWhites++;
 			}
 		}
