@@ -62,17 +62,6 @@ public class Game {
 		return mRoundList;
 	}
 
-	public Map<Integer, List<Integer>> getPlayerScorePerRound(Integer playerId) {
-		Map<Integer, List<Integer>> mapRoundScore = new HashMap<Integer, List<Integer>>();
-		for (Round round : this.mRoundList) {
-			List<Integer> scoreList = round.getPlayerScoreMap().get(playerId);
-			if (scoreList != null && !scoreList.isEmpty()) {
-				mapRoundScore.put(round.getRoundNumber(), scoreList);
-			}
-		}
-		return mapRoundScore;
-	}
-
 	public Player getPlayerById(Integer playerId) {
 		Player player = null;
 
@@ -431,39 +420,63 @@ public class Game {
     }
   }
 
-  public Turn getBestRank(Player player) {
-    Turn turnBestRank = null;
-    for (Round round : this.getRoundList()) {
-      Set<Entry<Integer, Turn>> entrySet = round.getPlayerTurnMap().entrySet();
-      for (Entry<Integer, Turn> entry : entrySet) {
-        if (player.getId().equals(entry.getKey())) {
-          Turn turn = entry.getValue();
-          if (turnBestRank == null ||
-              turn.getPlayerEndRank().get(player.getId())
-                  .compareTo(turnBestRank.getPlayerEndRank().get(player.getId())) < 0) {
-            turnBestRank = turn;
-          }
-        }
-      }
-    }
-    return turnBestRank;
-  }
+	public Turn getBestRank(Player player) {
+		Turn turnBestRank = null;
+		for (Round round : this.getRoundList()) {
+			Turn turn = round.getPlayerTurnMap().get(player.getId());
+			if (turnBestRank == null
+					|| turn.getPlayerEndRank()
+							.get(player.getId())
+							.compareTo(
+									turnBestRank.getPlayerEndRank().get(
+											player.getId())) < 0) {
+				turnBestRank = turn;
+			}
+		}
+		return turnBestRank;
+	}
 
-  public Turn getWorstRank(Player player) {
-    Turn turnBestRank = null;
-    for (Round round : this.getRoundList()) {
-      Set<Entry<Integer, Turn>> entrySet = round.getPlayerTurnMap().entrySet();
-      for (Entry<Integer, Turn> entry : entrySet) {
-        if (player.getId().equals(entry.getKey())) {
-          Turn turn = entry.getValue();
-          if (turnBestRank == null ||
-              turn.getPlayerEndRank().get(player.getId())
-                  .compareTo(turnBestRank.getPlayerEndRank().get(player.getId())) > 0) {
-            turnBestRank = turn;
-          }
-        }
-      }
-    }
-    return turnBestRank;
-  }
+	public Turn getWorstRank(Player player) {
+		Turn turnBestRank = null;
+		for (Round round : this.getRoundList()) {
+			Turn turn = round.getPlayerTurnMap().get(player.getId());
+			if (turnBestRank == null
+					|| turn.getPlayerEndRank()
+							.get(player.getId())
+							.compareTo(
+									turnBestRank.getPlayerEndRank().get(
+											player.getId())) > 0) {
+				turnBestRank = turn;
+			}
+		}
+		return turnBestRank;
+	}
+
+	public Map<Integer, List<Integer>> getPlayerScorePerRound(Integer playerId) {
+		Map<Integer, List<Integer>> mapRoundScore = new HashMap<Integer, List<Integer>>();
+		for (Round round : this.mRoundList) {
+			List<Integer> scoreList = round.getPlayerScoreMap().get(playerId);
+			if (scoreList != null && !scoreList.isEmpty()) {
+				mapRoundScore.put(round.getRoundNumber(), scoreList);
+			}
+		}
+		return mapRoundScore;
+	}
+
+	/**
+	 * Return the number of white so far.
+	 * 
+	 * @param playerId
+	 * @return
+	 */
+	public Integer getPlayerWhiteNumber(Integer playerId) {
+		Integer nbOfWhites = Constants.ZERO_VALUE;
+		for (Round round : this.getRoundList()) {
+			Turn turn = round.getPlayerTurnMap().get(playerId);
+			if (turn.isWhite()) {
+				nbOfWhites++;
+			}
+		}
+		return nbOfWhites;
+	}
 }

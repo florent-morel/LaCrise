@@ -129,9 +129,9 @@ public class ScoreBoard extends Activity {
 
 	/**
 	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
-	 *
+	 * 
 	 *      Builds the contextual menu when long press on a player.
-	 *
+	 * 
 	 */
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
@@ -177,7 +177,7 @@ public class ScoreBoard extends Activity {
 	}
 
 	private void displayStats(Integer playerId) {
-//		Intent intent = new Intent(this, Statistics.class);
+		// Intent intent = new Intent(this, Statistics.class);
 		Intent intent = new Intent(this, StatsActivity.class);
 		intent.putExtra(Constants.PLAYER_ID, playerId);
 		startActivityForResult(intent, Constants.ACTIVITY_LAUNCH);
@@ -268,7 +268,7 @@ public class ScoreBoard extends Activity {
 
 	/**
 	 * Refresh the score board player list.
-	 *
+	 * 
 	 * @param descending
 	 */
 	private void refreshList() {
@@ -342,10 +342,10 @@ public class ScoreBoard extends Activity {
 		if (message.length() > 0) {
 			message.append(Constants.NEW_LINE);
 		}
-		message.append(String.format(mResources
-				.getString(R.string.dialog_next_player), mGameManager
-				.getNextPlayer(mGameManager.getCurrentPlayer(), false, false, true)
-				.getName()));
+		message.append(String.format(
+				mResources.getString(R.string.dialog_next_player),
+				mGameManager.getNextPlayer(mGameManager.getCurrentPlayer(),
+						false, mGameManager.getRoundNumberPlayers()).getName()));
 	}
 
 	private void buildPenaltyMessage(Player player, Turn playedTurn,

@@ -63,33 +63,6 @@ public class PlayerStatsAdapter extends PagerAdapter {
 
 	private Activity mActivity;
 
-//	@Override
-//	protected void onCreate(Bundle savedInstanceState) {
-//		super.onCreate(savedInstanceState);
-//		setContentView(R.layout.player_stats);
-//
-//		mResources = getResources();
-//		mGameManager = GameManager.getSingletonObject();
-//
-//		Integer playerId = this.getIntent().getIntExtra(Constants.PLAYER_ID, 0);
-//		GestureOverlayView gestureOverlayView = new GestureOverlayView(this);
-//		View inflate = getLayoutInflater().inflate(R.layout.player_stats, null);
-//		gestureOverlayView.addView(inflate);
-//		gestureOverlayView.addOnGesturePerformedListener(this);
-//		mGestureLib = GestureLibraries.fromRawResource(this, R.raw.gestures);
-//		if (!mGestureLib.load()) {
-//			finish();
-//		}
-//		setContentView(gestureOverlayView);
-//
-//		mPlayer = mGameManager.getGame().getPlayerById(playerId);
-//		setTitle(String.format(mResources.getString(R.string.statistics),
-//				mPlayer.getName()));
-//
-//		fillStatsItems();
-//
-//	}
-
 	public PlayerStatsAdapter(Activity activity) {
 		super();
 		mActivity = activity;
@@ -97,8 +70,6 @@ public class PlayerStatsAdapter extends PagerAdapter {
 	    this.mResources = mContext.getResources();
 		mGameManager = GameManager.getSingletonObject();
 
-
-//		fillStatsItems();
 	}
 
 	private void fillStatsItems() {
@@ -189,31 +160,6 @@ public class PlayerStatsAdapter extends PagerAdapter {
 			}
 		}
 	}
-
-//	@Override
-//	public void onGesturePerformed(GestureOverlayView arg0, Gesture gesture) {
-//		ArrayList<Prediction> predictions = mGestureLib.recognize(gesture);
-//		for (Prediction prediction : predictions) {
-//			if (prediction.score > 1.0) {
-//				if (Constants.RIGHT.equalsIgnoreCase(prediction.name)) {
-//					// Get previous player id
-//					displayStats(mGameManager.getNextPlayer(mPlayer, false,
-//							true, false).getId());
-//				} else if (Constants.LEFT.equalsIgnoreCase(prediction.name)) {
-//					// Get next player id
-//					displayStats(mGameManager.getNextPlayer(mPlayer, false,
-//							true, true).getId());
-//				}
-//			}
-//		}
-//	}
-
-//	private void displayStats(Integer playerId) {
-//		Intent intent = new Intent(this, PlayerStatsAdapter.class);
-//		intent.putExtra(Constants.PLAYER_ID, playerId);
-//		startActivityForResult(intent, Constants.ACTIVITY_LAUNCH);
-//		finish();
-//	}
 
 	@Override
 	public int getCount() {
