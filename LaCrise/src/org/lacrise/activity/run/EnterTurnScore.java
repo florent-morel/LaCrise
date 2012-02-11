@@ -116,8 +116,8 @@ public class EnterTurnScore extends Activity implements OnClickListener {
 
 				if (player.getId().equals(currentPlayer.getId())) {
 					String playerScoreText;
-					if (currentPlayer.getTotalScore() != null) {
-						playerScoreText = currentPlayer.getTotalScore()
+					if (currentPlayer.getTotalScore(true) != null) {
+						playerScoreText = currentPlayer.getTotalScore(true)
 								.toString();
 					} else {
 						playerScoreText = mResources
@@ -139,7 +139,14 @@ public class EnterTurnScore extends Activity implements OnClickListener {
 			}
 			targetDialog.setText(targetString.toString());
 		}
-  }
+
+		// Display warning in case player risks penalty
+		TextView warningDialog = (TextView) findViewById(R.id.turn_score_warning);
+		if (!currentPlayer.getPlayerScore().hasZero()) {
+			// Remove the TextView in case no zero
+			warningDialog.setVisibility(View.GONE);
+		}
+	}
 
 	private Turn submitTurnScore() {
 		return mGameManager.endTurn(Integer.valueOf(mTurnScoreField.getText()

@@ -15,6 +15,7 @@
     <string name="menu_start_new_game">Start a new game</string>
     <string name="menu_rename_players">Rename players</string>
     <string name="menu_turn_history">Turn history</string>
+    <string name="menu_score_chart">Score chart</string>
 
     <string name="create_game">Create game</string>
     <string name="number_player">Number of players</string>
@@ -76,7 +77,9 @@
     <string name="target_player">%1$s: %2$s</string>
     <string name="submit_turn_score">Validate</string>
 
+    <string name="menu_player_statistics">Statistics</string>
     <string name="activate_player">Toggle is active</string>
+    <string name="dialog_no_more_active">No active player in the game.</string>
     <string name="dialog_activate_player">Player %1$s is now</string>
     <string name="dialog_player_active">active</string>
     <string name="dialog_player_non_active">not active</string>
@@ -92,5 +95,34 @@
     <string name="new_total_confirm">New total to reach: %1$s</string>
     <string name="submit_options">Validate</string>
 
+    <string name="score_chart">Score chart</string>
+    <string name="score_chart_img_alt">Current game score chart.</string>
+
+    <!-- Stats -->
+    <string name="statistics">%1s Stats</string>
+    <string name="number_of_rounds">Round(s) played so far</string>
+    <string name="number_of_rounds_default">No round played</string>
+
+    <string name="rank">Current rank</string>
+    <string name="rank_default">No rank yet</string>
+    <string name="rank_best">Best rank</string>
+    <string name="rank_worst">Worst rank</string>
+    <string name="rank_value">%1$s (round #%2$d)</string>
+
+    <string name="zero_penalty">Number of 2 zeros penalty</string>
+    <string name="zero_penalty_default">No 2 zeros penalty yet</string>
+
+	<string name="number_of_whites">Number of white(s)</string>
+    <string name="number_of_whites_default">No white yet</string>
+    
+    <string name="penalty_hit">Player you hit most</string>
+    <string name="penalty_hit_value">%1$s (%2$d times)</string>
+    <string name="penalty_victim">Player who hit you most</string>
+    <string name="penalty_hit_default">No penalty hit yet</string>
+
+    <string name="turn_score_current">Current total score</string>
+    <string name="turn_score_default">No turn score yet</string>
+    <string name="turn_score_best">Best round score</string>
+    <string name="turn_score_average">Average round score</string>
 
 </resources>

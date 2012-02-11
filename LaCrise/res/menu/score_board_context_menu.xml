@@ -6,4 +6,6 @@
           android:title="@string/turn_history" />
     <item android:id="@+id/activate_player_id"
           android:title="@string/activate_player" />
+    <item android:id="@+id/player_statistics"
+          android:title="@string/menu_player_statistics" />
 </menu>

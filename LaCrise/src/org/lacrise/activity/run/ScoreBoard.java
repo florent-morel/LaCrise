@@ -4,7 +4,6 @@ import java.util.SortedSet;
 
 import org.lacrise.GameManager;
 import org.lacrise.R;
-import org.lacrise.activity.create.AddPlayer;
 import org.lacrise.activity.create.NewGame;
 import org.lacrise.activity.create.RenamePlayer;
 import org.lacrise.adapter.PlayerScoreAdapter;
@@ -34,309 +33,418 @@ import android.widget.Toast;
 
 public class ScoreBoard extends Activity {
 
-  private static GameManager mGameManager;
+	private static GameManager mGameManager;
 
-  private Resources mResources;
+	private Resources mResources;
 
-  private ListView mScoreList;
+	private ListView mScoreList;
 
-  private PlayerScoreAdapter mScoreAdapter;
+	private PlayerScoreAdapter mScoreAdapter;
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.score_board);
-    mResources = getResources();
-    mGameManager = GameManager.getSingletonObject();
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.score_board);
+		mResources = getResources();
+		mGameManager = GameManager.getSingletonObject();
 
-    initListView();
-    displayWelcomeDialog();
-  }
+		initListView();
+		displayWelcomeDialog();
+	}
 
-  private void initListView() {
-    refreshList();
+	private void initListView() {
+		refreshList();
 
-    mScoreList.setOnItemClickListener(new OnItemClickListener() {
-      public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (mGameManager.getGame().isGameOver()) {
-          // Prevent from creating next turn
-          buildGameOverMessage(null, null, new StringBuilder());
-        }
-        else {
-          playNextTurn();
-        }
+		mScoreList.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				if (mGameManager.getGame().isGameOver()) {
+					// Prevent from creating next turn
+					StringBuilder message = new StringBuilder();
+					buildGameOverMessage(null, null, message);
+					// Create the dialog
+					createAlert(message.toString());
+				} else {
+					playNextTurn();
+				}
+			}
+		});
 
-      }
-    });
+	}
 
-  }
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		menu.add(0, Constants.MENU_GAME_OPTIONS, 0, R.string.menu_game_options);
+		menu.add(0, Constants.MENU_START_NEW, 0, R.string.menu_start_new_game);
+		menu.add(0, Constants.MENU_SCORE_CHART, 0, R.string.menu_score_chart);
+		menu.add(0, Constants.MENU_SIMULATE_ROUNDS, 0, "simulate rounds");
 
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    super.onCreateOptionsMenu(menu);
-    menu.add(0, Constants.MENU_GAME_OPTIONS, 0, R.string.menu_game_options);
-    menu.add(0, Constants.MENU_ADD_PLAYER, 0, R.string.menu_add_player);
-    menu.add(0, Constants.MENU_STAR_NEW, 0, R.string.menu_start_new_game);
+		return true;
+	}
 
-    return true;
-  }
+	@Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		switch (item.getItemId()) {
+		case Constants.MENU_GAME_OPTIONS:
+			launchGameOptions();
+			return true;
+		case Constants.MENU_START_NEW:
+			launchNewGame();
+			return true;
+		case Constants.MENU_SCORE_CHART:
+			launchScoreChart();
+			return true;
+		case Constants.MENU_SIMULATE_ROUNDS:
+			simulateRounds();
+			return true;
+		}
 
-  @Override
-  public boolean onMenuItemSelected(int featureId, MenuItem item) {
-    switch (item.getItemId()) {
-    case Constants.MENU_GAME_OPTIONS:
-      launchGameOptions();
-      return true;
-    case Constants.MENU_ADD_PLAYER:
-      launchAddPlayer();
-      return true;
-    case Constants.MENU_STAR_NEW:
-      launchNewGame();
-      return true;
-    }
+		return super.onMenuItemSelected(featureId, item);
+	}
 
-    return super.onMenuItemSelected(featureId, item);
-  }
+	private void launchGameOptions() {
+		Intent intent = new Intent(this, GameOptions.class);
+		startActivityForResult(intent, Constants.ACTIVITY_LAUNCH);
+	}
 
-  private void launchGameOptions() {
-    Intent intent = new Intent(this, GameOptions.class);
-    startActivityForResult(intent, Constants.ACTIVITY_LAUNCH);
-  }
+	private void launchNewGame() {
+		Intent i = new Intent(this, NewGame.class);
+		startActivityForResult(i, Constants.GAME_NEW);
+	}
 
-  private void launchAddPlayer() {
-    Intent intent = new Intent(this, AddPlayer.class);
-    startActivityForResult(intent, Constants.ACTIVITY_LAUNCH);
-  }
+	/**
+	 * Display welcome dialog message. Display toast with remaining number of
+	 * warm-up rounds.
+	 */
+	private void displayWelcomeDialog() {
+		if (!mGameManager.getGame().allPlayerStarted()) {
+			Context context = getApplicationContext();
+			Toast toast = Toast.makeText(context, String.format(mResources
+					.getString(R.string.dialog_welcome), mGameManager.getGame()
+					.getWarmUpRounds()), Toast.LENGTH_LONG);
+			toast.show();
+		}
+	}
 
-  private void launchNewGame() {
-    Intent i = new Intent(this, NewGame.class);
-    startActivityForResult(i, Constants.GAME_NEW);
-  }
+	/**
+	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+	 * 
+	 *      Builds the contextual menu when long press on a player.
+	 * 
+	 */
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.score_board_context_menu, menu);
 
-  /**
-   * Display welcome dialog message. Display toast with remaining number of
-   * warm-up rounds.
-   */
-  private void displayWelcomeDialog() {
-    if (!mGameManager.getGame().allPlayerStarted()) {
-      Context context = getApplicationContext();
-      Toast toast = Toast.makeText(context,
-          String.format(mResources.getString(R.string.dialog_welcome), mGameManager.getGame().getWarmUpRounds()),
-          Toast.LENGTH_LONG);
-      toast.show();
-    }
-  }
+		// Display player name as header
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+		Player player = (Player) mScoreList.getAdapter().getItem(info.position);
+		StringBuilder message = new StringBuilder();
+		message.append(player.getName());
+		if (!player.isActive()) {
+			message.append(Constants.SPACE);
+			message.append(mResources
+					.getString(R.string.dialog_player_non_active));
+		}
+		menu.setHeaderTitle(message.toString());
+	}
 
-  @Override
-  public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-    super.onCreateContextMenu(menu, v, menuInfo);
-    MenuInflater inflater = getMenuInflater();
-    inflater.inflate(R.menu.score_board_context_menu, menu);
-  }
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+				.getMenuInfo();
+		Player player = (Player) mScoreList.getAdapter().getItem(info.position);
+		switch (item.getItemId()) {
+		case R.id.rename:
+			renamePlayer(player.getId(), player.getName());
+			return true;
+		case R.id.player_statistics:
+			displayStats(player.getId());
+			return true;
+		case R.id.turn_history_id:
+			displayTurnHistory(player.getId());
+			return true;
+		case R.id.activate_player_id:
+			toggleActivePlayer(player.getId());
+			return true;
+		default:
+			return super.onContextItemSelected(item);
+		}
+	}
 
-  @Override
-  public boolean onContextItemSelected(MenuItem item) {
-    AdapterContextMenuInfo info = (AdapterContextMenuInfo)item.getMenuInfo();
-    Player player = (Player)mScoreList.getAdapter().getItem(info.position);
-    switch (item.getItemId()) {
-    case R.id.rename:
-      renamePlayer(player.getId(), player.getName());
-      return true;
-    case R.id.turn_history_id:
-      displayTurnHistory(player.getId());
-      return true;
-    case R.id.activate_player_id:
-      activatePlayer(player.getId());
-      return true;
-    default:
-      return super.onContextItemSelected(item);
-    }
-  }
+	private void displayStats(Integer playerId) {
+		// Intent intent = new Intent(this, Statistics.class);
+		Intent intent = new Intent(this, StatsActivity.class);
+		intent.putExtra(Constants.PLAYER_ID, playerId);
+		startActivityForResult(intent, Constants.ACTIVITY_LAUNCH);
+	}
 
-  private void activatePlayer(Integer playerId) {
-    final Player player = mGameManager.getGame().getPlayerById(playerId);
-    player.toggleActive();
+	private void toggleActivePlayer(Integer playerId) {
+		final Player player = mGameManager.getGame().getPlayerById(playerId);
+		player.toggleActive();
 
-    StringBuilder message = new StringBuilder();
-    buildPlayerActiveMessage(player, message);
+		StringBuilder message = new StringBuilder();
+		buildPlayerActiveMessage(player, message);
 
-    Toast toast = Toast.makeText(this, message.toString(), Toast.LENGTH_SHORT);
-    toast.show();
+		// Display next player dialog
+		buildNextPlayerMessage(message);
 
-    refreshList();
-  }
+		Toast toast = Toast.makeText(this, message.toString(),
+				Toast.LENGTH_LONG);
+		toast.show();
 
-  private void displayTurnHistory(Integer playerId) {
-    Intent intent = new Intent(this, TurnHistory.class);
-    intent.putExtra(Constants.PLAYER_ID, playerId);
-    startActivityForResult(intent, Constants.GAME_TURN_HISTORY);
-  }
+		refreshList();
 
-  private void renamePlayer(Integer playerId, String playerName) {
-    Intent intent = new Intent(this, RenamePlayer.class);
-    intent.putExtra(Constants.PLAYER_ID, playerId);
-    intent.putExtra(Constants.PLAYER_NAME, playerName);
-    startActivityForResult(intent, Constants.GAME_RENAME_PLAYERS);
-  }
+	}
 
-  private void playNextTurn() {
-    mGameManager.playTurn();
-    Intent intent = new Intent(this, EnterTurnScore.class);
-    startActivityForResult(intent, Constants.ENTER_TURN_SCORE);
-  }
+	private void displayTurnHistory(Integer playerId) {
+		Intent intent = new Intent(this, TurnHistory.class);
+		intent.putExtra(Constants.PLAYER_ID, playerId);
+		startActivityForResult(intent, Constants.GAME_TURN_HISTORY);
+	}
 
-  /**
-   * Refresh the score board player list.
-   *
-   * @param descending
-   */
-  private void refreshList() {
-    setTitle(String.format(mResources.getString(R.string.score_board), mGameManager.getGame().getRoundNumber(),
-        mGameManager.getGame().getScoreToReach()));
+	private void renamePlayer(Integer playerId, String playerName) {
+		Intent intent = new Intent(this, RenamePlayer.class);
+		intent.putExtra(Constants.PLAYER_ID, playerId);
+		intent.putExtra(Constants.PLAYER_NAME, playerName);
+		startActivityForResult(intent, Constants.GAME_RENAME_PLAYERS);
+	}
 
-    mScoreList = (ListView)findViewById(R.id.scoreList);
-    mScoreAdapter = new PlayerScoreAdapter(this, R.layout.player_row);
+	private void playNextTurn() {
+		if (mGameManager.getGame().getNumberActivePlayer() > 0) {
+			mGameManager.playTurn();
+			Intent intent = new Intent(this, EnterTurnScore.class);
+			startActivityForResult(intent, Constants.ENTER_TURN_SCORE);
+		} else {
+			// No player remain active in the game
+			StringBuilder message = new StringBuilder();
+			message.append(mResources.getString(R.string.dialog_no_more_active));
 
-    SortedSet<Player> playersByRank = mGameManager.getPlayersByRank();
+			Toast toast = Toast.makeText(this, message.toString(),
+					Toast.LENGTH_LONG);
+			toast.show();
+		}
+	}
 
-    for (Player player : playersByRank) {
-      mScoreAdapter.addItem(player);
-    }
+	private void launchScoreChart() {
+		Intent intent = new Intent(this, ScoreChart.class);
+		startActivityForResult(intent, Constants.ACTIVITY_LAUNCH);
+	}
 
-    mScoreList.setAdapter(mScoreAdapter);
+	private void simulateRounds() {
 
-    registerForContextMenu(mScoreList);
-  }
+		int NB_ROUNDS = 10;
+		// Simulate NB_ROUNDS number of rounds
+		for (int i = 0; i < NB_ROUNDS; i++) {
 
-  @Override
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+			// Play one turn per player
+			for (Player player : mGameManager.getGame().getPlayerList()) {
 
-    StringBuilder message = new StringBuilder();
-    Turn playedTurn = null;
-    Player player = mGameManager.getCurrentPlayer();
-    if (player != null) {
-      playedTurn = player.getCurrentTurn();
+				if (player.isActive()) {
+					mGameManager.playTurn();
+					Integer score = null;
+					if (i < 3) {
+						// start with some same score to get penalties
+						score = 150;
+					} else if (i < 5) {
+						// then some zeros to get some penalties
+						score = Constants.ZERO_VALUE;
+					} else {
 
-      switch (resultCode) {
-      case RESULT_OK:
-        break;
-      case Constants.PENALTY_APPLIED:
-        buildPenaltyMessage(player, playedTurn, message);
-        break;
-      case Constants.TOTAL_REACHED:
-        buildTotalReachedMessage(player, playedTurn, message);
-        break;
-      case Constants.GAME_OVER:
-        buildGameOverMessage(player, playedTurn, message);
-        break;
+						score = Double.valueOf(Math.random() * 10 * 50)
+								.intValue();
+					}
+					mGameManager.endTurn(score);
+				}
+			}
+		}
 
-      default:
-        // TODO Something went wrong
-        break;
-      }
+		refreshList();
+	}
 
-      // In any case, build the zero, score and next player messages
-      this.buildZeroMessage(player, message);
-      this.buildScoreMessage(player, message);
-      if (!mGameManager.getGame().isGameOver()) {
-        this.buildNextPlayerMessage(message);
-      }
+	/**
+	 * Refresh the score board player list.
+	 * 
+	 * @param descending
+	 */
+	private void refreshList() {
+		setTitle(String.format(mResources.getString(R.string.score_board),
+				mGameManager.getGame().getRoundNumber(), mGameManager.getGame()
+						.getScoreToReach()));
 
-      // Create the dialog
-      createAlert(message.toString());
-    }
+		mScoreList = (ListView) findViewById(R.id.scoreList);
+		mScoreAdapter = new PlayerScoreAdapter(this, R.layout.player_row);
 
-    refreshList();
-  }
+		SortedSet<Player> playersByRank = mGameManager.getGame()
+				.getPlayersByRank();
 
-  private void buildNextPlayerMessage(StringBuilder message) {
-    message.append(Constants.NEW_LINE);
-    message.append(String.format(mResources.getString(R.string.dialog_next_player), mGameManager
-        .getNextPlayer().getName()));
-  }
+		for (Player player : playersByRank) {
+			mScoreAdapter.addItem(player);
+		}
 
-  private void buildPenaltyMessage(Player player, Turn playedTurn, StringBuilder message) {
-    if (playedTurn != null) {
-      message.append(mResources.getString(R.string.dialog_penalty));
-      for (Penalty penalty : playedTurn.getPenaltyList()) {
-        message.append(Constants.NEW_LINE);
+		mScoreList.setAdapter(mScoreAdapter);
 
-        Player victim = penalty.getVictim();
-        if (player.getId().equals(victim.getId())) {
-          message.append(mResources.getString(R.string.penalty_reason_own));
-        }
-        else {
-          message.append(String.format(mResources.getString(R.string.penalty_reason_other), penalty.getPlayer()
-              .getName(), victim.getName()));
-          message.append(Constants.NEW_LINE);
-          message.append(String.format(mResources.getString(R.string.dialog_player_new_score), victim.getName(),
-              victim.getTotalScore()));
-        }
+		registerForContextMenu(mScoreList);
+	}
 
-      }
-    }
-  }
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-  private void buildPlayerActiveMessage(Player player, StringBuilder message) {
-    message.append(String.format(
-        mResources.getString(R.string.dialog_activate_player),
-        player.getName()));
-    message.append(Constants.SPACE);
-    if (player.isActive()) {
-      message.append(mResources.getString(R.string.dialog_player_active));
-    } else {
-      message.append(mResources.getString(R.string.dialog_player_non_active));
-    }
-  }
+		StringBuilder message = new StringBuilder();
+		Turn playedTurn = null;
+		Player player = mGameManager.getCurrentPlayer();
+		if (player != null) {
+			playedTurn = player.getCurrentTurn();
 
-  private void buildTotalReachedMessage(Player player, Turn playedTurn, StringBuilder message) {
-    if (playedTurn != null) {
-      if (playedTurn.getPenaltyList().size() > 0) {
-        buildPenaltyMessage(player, playedTurn, message);
-      }
-      message.append(mResources.getString(R.string.dialog_total_reached));
-    }
-  }
+			switch (resultCode) {
+			case RESULT_OK:
+				break;
+			case Constants.PENALTY_APPLIED:
+				buildPenaltyMessage(player, playedTurn, message);
+				break;
+			case Constants.TOTAL_REACHED:
+				buildTotalReachedMessage(player, playedTurn, message);
+				break;
+			case Constants.GAME_OVER:
+				buildGameOverMessage(player, playedTurn, message);
+				break;
 
-  private void buildZeroMessage(Player player, StringBuilder message) {
-    if (player.getPlayerScore().hasZero()) {
-      message.append(mResources.getString(R.string.turn_score_player_warning));
-    }
-  }
+			default:
+				// TODO Something went wrong
+				break;
+			}
 
-  private void buildScoreMessage(Player player, StringBuilder message) {
-    StringBuilder builder = new StringBuilder();
-    if (player.getPlayerScore().getTotal() == null) {
-      builder.append(mResources.getString(R.string.no_score));
-    }
-    else {
-      builder.append(player.getPlayerScore().getTotal().toString());
-    }
+			// In any case, build the zero, score and next player messages
+			this.buildZeroMessage(player, message);
+			this.buildScoreMessage(player, message);
 
-    message.append(Constants.NEW_LINE);
-    message.append(String.format(mResources.getString(R.string.dialog_player_new_score), player.getName(), builder));
-  }
+			if (!mGameManager.getGame().isGameOver()) {
+				StringBuilder nextMessage = new StringBuilder();
+				this.buildNextPlayerMessage(nextMessage);
 
-  private void buildGameOverMessage(Player player, Turn playedTurn, StringBuilder message) {
-    if (player != null && playedTurn != null && playedTurn.getPenaltyList().size() > 0) {
-      buildPenaltyMessage(player, playedTurn, message);
-      message.append(Constants.NEW_LINE);
-    }
+				Toast toast = Toast.makeText(this, nextMessage.toString(),
+						Toast.LENGTH_LONG);
+				toast.show();
+			}
 
-    message.append(mResources.getString(R.string.dialog_game_over));
-    message.append(Constants.NEW_LINE);
-    message.append(String.format(mResources.getString(R.string.dialog_winner_is), mGameManager.getFirstRankedPlayer()
-        .getName()));
-  }
+			// Create the dialog
+			createAlert(message.toString());
+		}
 
-  private void createAlert(String message) {
-    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    builder.setMessage(message).setCancelable(false)
-        .setPositiveButton(mResources.getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
-          public void onClick(DialogInterface dialog, int id) {
-            dialog.cancel();
-          }
-        });
-    builder.show();
-  }
+		refreshList();
+	}
+
+	private void buildNextPlayerMessage(StringBuilder message) {
+		if (message.length() > 0) {
+			message.append(Constants.NEW_LINE);
+		}
+		message.append(String.format(
+				mResources.getString(R.string.dialog_next_player),
+				mGameManager.getNextPlayer(mGameManager.getCurrentPlayer(),
+						false, mGameManager.getRoundNumberPlayers()).getName()));
+	}
+
+	private void buildPenaltyMessage(Player player, Turn playedTurn,
+			StringBuilder message) {
+		if (playedTurn != null) {
+			message.append(mResources.getString(R.string.dialog_penalty));
+			for (Penalty penalty : playedTurn.getPenaltyList()) {
+				message.append(Constants.NEW_LINE);
+
+				Player victim = penalty.getVictim();
+				if (player.getId().equals(victim.getId())) {
+					message.append(mResources
+							.getString(R.string.penalty_reason_own));
+				} else {
+					message.append(String.format(
+							mResources.getString(R.string.penalty_reason_other),
+							penalty.getPlayer().getName(), victim.getName()));
+					message.append(Constants.NEW_LINE);
+					message.append(String.format(mResources
+							.getString(R.string.dialog_player_new_score),
+							victim.getName(), victim.getTotalScore(true)));
+				}
+
+			}
+		}
+	}
+
+	private void buildPlayerActiveMessage(Player player, StringBuilder message) {
+		message.append(String.format(
+				mResources.getString(R.string.dialog_activate_player),
+				player.getName()));
+		message.append(Constants.SPACE);
+		if (player.isActive()) {
+			message.append(mResources.getString(R.string.dialog_player_active));
+		} else {
+			message.append(mResources
+					.getString(R.string.dialog_player_non_active));
+		}
+	}
+
+	private void buildTotalReachedMessage(Player player, Turn playedTurn,
+			StringBuilder message) {
+		if (playedTurn != null) {
+			if (playedTurn.getPenaltyList().size() > 0) {
+				buildPenaltyMessage(player, playedTurn, message);
+			}
+			message.append(mResources.getString(R.string.dialog_total_reached));
+		}
+	}
+
+	private void buildZeroMessage(Player player, StringBuilder message) {
+		if (player.getPlayerScore().hasZero()) {
+			message.append(mResources
+					.getString(R.string.turn_score_player_warning));
+		}
+	}
+
+	private void buildScoreMessage(Player player, StringBuilder message) {
+		StringBuilder builder = new StringBuilder();
+		if (player.getPlayerScore().getTotal() == null) {
+			builder.append(mResources.getString(R.string.no_score));
+		} else {
+			builder.append(player.getPlayerScore().getTotal().toString());
+		}
+
+		if (message.length() > 0) {
+			message.append(Constants.NEW_LINE);
+		}
+		message.append(String.format(
+				mResources.getString(R.string.dialog_player_new_score),
+				player.getName(), builder));
+	}
+
+	private void buildGameOverMessage(Player player, Turn playedTurn,
+			StringBuilder message) {
+		if (player != null && playedTurn != null
+				&& playedTurn.getPenaltyList().size() > 0) {
+			buildPenaltyMessage(player, playedTurn, message);
+			message.append(Constants.NEW_LINE);
+		}
+
+		message.append(mResources.getString(R.string.dialog_game_over));
+		message.append(Constants.NEW_LINE);
+		message.append(String.format(
+				mResources.getString(R.string.dialog_winner_is), mGameManager
+						.getGame().getFirstRankedPlayer().getName()));
+	}
+
+	private void createAlert(String message) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(message)
+				.setCancelable(false)
+				.setPositiveButton(mResources.getString(R.string.dialog_ok),
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								dialog.cancel();
+							}
+						});
+		builder.show();
+	}
+
 }
