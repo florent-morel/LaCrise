@@ -77,8 +77,8 @@ public class ScoreBoard extends Activity {
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, Constants.MENU_GAME_OPTIONS, 0, R.string.menu_game_options);
 		menu.add(0, Constants.MENU_START_NEW, 0, R.string.menu_start_new_game);
-		menu.add(0, Constants.MENU_SCORE_CHART, 0, R.string.menu_score_chart);
-		menu.add(0, Constants.MENU_SIMULATE_ROUNDS, 0, "simulate rounds");
+//		menu.add(0, Constants.MENU_SCORE_CHART, 0, R.string.menu_score_chart);
+//		menu.add(0, Constants.MENU_SIMULATE_ROUNDS, 0, "simulate rounds");
 
 		return true;
 	}
